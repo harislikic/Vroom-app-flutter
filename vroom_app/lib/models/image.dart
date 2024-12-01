@@ -1,11 +1,11 @@
-class Image {
+class ImageModel {
   final int id;
   final String imageUrl;
 
-  Image({required this.id, required this.imageUrl});
+  ImageModel({required this.id, required this.imageUrl});
 
-  factory Image.fromJson(Map<String, dynamic> json) {
-    return Image(
+  factory ImageModel.fromJson(Map<String, dynamic> json) {
+    return ImageModel(
       id: json['id'],
       imageUrl: json['imageUrl'],
     );

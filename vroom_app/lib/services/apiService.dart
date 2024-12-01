@@ -1,14 +1,14 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../models/automobile_ad.dart';
+import '../models/automobileAd.dart';
 
 class ApiService {
-  static const String baseUrl = 'http://localhost:5194/AutomobileAd';
+  static const String baseUrl = 'http://localhost:5194';
 
   Future<List<AutomobileAd>> fetchAutomobileAds(
       {int page = 0, int pageSize = 25}) async {
-    final response =
-        await http.get(Uri.parse('$baseUrl?Page=$page&PageSize=$pageSize'));
+    final response = await http
+        .get(Uri.parse('$baseUrl/AutomobileAd?Page=$page&PageSize=$pageSize'));
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
@@ -23,6 +23,17 @@ class ApiService {
       }
     } else {
       throw Exception('Failed to load automobile ads');
+    }
+  }
+
+  Future<AutomobileAd> getAutomobileById(int id) async {
+    final response = await http.get(Uri.parse('$baseUrl/AutomobileAd/$id'));
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return AutomobileAd.fromJson(data);
+    } else {
+      throw Exception('Failed to load automobile details');
     }
   }
 }

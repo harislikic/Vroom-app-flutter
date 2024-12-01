@@ -1,3 +1,6 @@
+import 'package:vroom_app/models/comment.dart';
+
+import 'automobileAdEquipment.dart';
 import 'carBrand.dart';
 import 'carCategory.dart';
 import 'carModel.dart';
@@ -27,10 +30,11 @@ class AutomobileAd {
   final CarBrand? carBrand;
   final CarCategory? carCategory;
   final CarModel? carModel;
+  final Comment? comment;
   final FuelType? fuelType;
   final TransmissionType? transmissionType;
-  final List<Image> images;
-  final List<Equipment> equipments;
+  final List<ImageModel> images;
+  final List<AutomobileAdEquipment> automobileAdEquipments;
   final int enginePower;
   final int numberOfDoors;
   final int cubicCapacity;
@@ -57,12 +61,13 @@ class AutomobileAd {
     required this.mileage,
     required this.user,
     this.carBrand,
+    this.comment,
     this.carCategory,
     this.carModel,
     this.fuelType,
     this.transmissionType,
     required this.images,
-    required this.equipments,
+    required this.automobileAdEquipments,
     required this.enginePower,
     required this.numberOfDoors,
     required this.cubicCapacity,
@@ -106,17 +111,20 @@ class AutomobileAd {
           : null,
       carModel:
           json['carModel'] != null ? CarModel.fromJson(json['carModel']) : null,
+      comment:
+          json['comment'] != null ? Comment.fromJson(json['comment']) : null,
       fuelType:
           json['fuelType'] != null ? FuelType.fromJson(json['fuelType']) : null,
       transmissionType: json['transmissionType'] != null
           ? TransmissionType.fromJson(json['transmissionType'])
           : null,
       images: (json['images'] as List)
-          .map((image) => Image.fromJson(image))
+          .map((image) => ImageModel.fromJson(image))
           .toList(),
-      equipments: (json['automobileAdEquipments'] as List)
-          .map((equipment) => Equipment.fromJson(equipment['equipment']))
-          .toList(),
+       automobileAdEquipments: (json['automobileAdEquipments'] as List?)
+            ?.map((equipment) => AutomobileAdEquipment.fromJson(equipment))
+            .toList() ??
+        [],
       enginePower: json['enginePower'] ?? 0,
       numberOfDoors: json['numberOfDoors'] ?? 0,
       cubicCapacity: json['cubicCapacity'] ?? 0,

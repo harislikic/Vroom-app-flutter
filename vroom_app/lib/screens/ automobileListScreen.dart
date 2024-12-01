@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../models/automobile_ad.dart';
-import '../services/api_service.dart';
-import '../components/automobile_card.dart';
+import '../models/automobileAd.dart';
+import '../services/apiService.dart';
+import '../components/automobileCard.dart';
 
 class AutomobileListScreen extends StatefulWidget {
   const AutomobileListScreen({Key? key}) : super(key: key);
