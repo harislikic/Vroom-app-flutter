@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/automobileAd.dart';
-import '../services/apiService.dart';
+import '../services/AutomobileAdService.dart';
 import '../components/automobileCard.dart';
 
 class AutomobileListScreen extends StatefulWidget {
@@ -11,13 +11,13 @@ class AutomobileListScreen extends StatefulWidget {
 }
 
 class _AutomobileListScreenState extends State<AutomobileListScreen> {
-  final ApiService _apiService = ApiService();
+  final AutomobileAdService _automobileAdService = AutomobileAdService();
   late Future<List<AutomobileAd>> _automobileAds;
 
   @override
   void initState() {
     super.initState();
-    _automobileAds = _apiService.fetchAutomobileAds();
+    _automobileAds = _automobileAdService.fetchAutomobileAds();
   }
 
   @override

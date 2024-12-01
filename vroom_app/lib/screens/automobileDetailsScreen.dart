@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:vroom_app/components/CarDetailsCards/CarDescriptionCard.dart';
 import '../components/CarDetailsCards/AdditionalEquipmentCard.dart';
 import '../models/automobileAd.dart';
-import '../services/apiService.dart';
+import '../services/AutomobileAdService.dart';
 import '../components/CarDetailsCards/CarDetailsCard.dart';
 import '../components/CarDetailsCards/CarSpecificationsCard.dart';
 import '../components/CarDetailsCards/CarAdditionalInfoCard.dart';
@@ -22,12 +22,12 @@ class AutomobileDetailsScreen extends StatefulWidget {
 
 class _AutomobileDetailsScreenState extends State<AutomobileDetailsScreen> {
   late Future<AutomobileAd> futureAutomobileAd;
-  final ApiService apiService = ApiService();
+  final AutomobileAdService automobileAdService = AutomobileAdService();
 
   @override
   void initState() {
     super.initState();
-    futureAutomobileAd = apiService.getAutomobileById(widget.automobileAdId);
+    futureAutomobileAd = automobileAdService.getAutomobileById(widget.automobileAdId);
   }
 
   @override

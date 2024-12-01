@@ -12,7 +12,8 @@ class AutomobileCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Formatiramo datum u "dd.MM.yyyy" format
-    String formattedDate = DateFormat('dd.MM.yyyy').format(automobileAd.dateOfAdd);
+    String formattedDate =
+        DateFormat('dd.MM.yyyy').format(automobileAd.dateOfAdd);
 
     // Provjera da li je automobil izdvojen na osnovu highlightExpiryDate
     bool isHighlighted = automobileAd.highlightExpiryDate != null &&
@@ -59,35 +60,51 @@ class AutomobileCard extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 8.0, vertical: 4.0),
                         decoration: BoxDecoration(
-                          color: Colors.amberAccent,
+                          color: Colors.amber.withOpacity(
+                              0.5), // Lagano žuta pozadina sa prozirnošću za blur efekt
                           borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: Colors.amber, // Žuti border oko oznake
+                            width: 1.2,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(
+                                  0.1), // Blagi shadow za efekt zamućenja
+                              blurRadius: 10,
+                              spreadRadius: 5,
+                            ),
+                          ],
                         ),
                         child: Row(
-                          children: const [
-                            Icon(
+                          children: [
+                            const Icon(
                               Icons.star,
                               size: 16,
                               color: Colors.black,
                             ),
-                            SizedBox(width: 4),
+                            const SizedBox(width: 4),
                             Text(
                               'Highlighted',
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.black,
+                                color: Colors.black.withOpacity(
+                                    0.8), // Blaga prozirnost da ne bude previše upadljivo
                               ),
                             ),
                           ],
                         ),
                       ),
                     ),
+
                   // Avatar korisnika
                   Positioned(
                     bottom: -15, // Avatar preklapa sadržaj ispod
                     right: 8, // Pomeranje desno
                     child: Stack(
-                      alignment: Alignment.center, // Centriramo avatar unutar okvira
+                      alignment:
+                          Alignment.center, // Centriramo avatar unutar okvira
                       children: [
                         // Bela pozadina oko avatara
                         Container(
@@ -104,9 +121,40 @@ class AutomobileCard extends StatelessWidget {
                           backgroundImage: NetworkImage(
                             'http://localhost:5194${automobileAd.user.profilePicture}',
                           ), // Slika korisnika
-                          backgroundColor: Colors.grey.shade300, // Rezervna boja ako nema slike
+                          backgroundColor: Colors
+                              .grey.shade300, // Rezervna boja ako nema slike
                         ),
                       ],
+                    ),
+                  ),
+                  // View count ikonica u gornji lijevi ugao
+                  Positioned(
+                    bottom: -10,
+                    left: 8,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8.0, vertical: 4.0),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.6),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.visibility,
+                            size: 16,
+                            color: Colors.white,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            '${automobileAd.viewsCount}',
+                            style: const TextStyle(
+                              fontSize: 10,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],
@@ -116,83 +164,92 @@ class AutomobileCard extends StatelessWidget {
                 height: 140,
                 color: Colors.grey.shade200,
                 child: const Center(
-                  child: Icon(Icons.directions_car, size: 40, color: Colors.grey),
+                  child:
+                      Icon(Icons.directions_car, size: 40, color: Colors.grey),
                 ),
               ),
             // Sadržaj kartice
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 5.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 5.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Naslov oglasa
-                  Padding(
-                    padding: const EdgeInsets.only(right: 30), // Desni padding
-                    child: Text(
-                      automobileAd.title,
-                      style: const TextStyle(
-                        fontSize: 14, // Veličina fonta
-                        fontWeight: FontWeight.bold,
+                  SizedBox(
+                    height:
+                        40, // Fiksna visina za naslov, osigurava konzistentnost
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        automobileAd.title,
+                        style: const TextStyle(
+                          fontSize: 14, // Veličina fonta
+                          fontWeight: FontWeight.bold,
+                        ),
+                        maxLines: 2, // Maksimalno 2 reda
+                        overflow: TextOverflow.ellipsis, // Dodaje ellipsis
                       ),
-                      maxLines: 2, // Maksimalno 2 reda
-                      overflow: TextOverflow.ellipsis, // Dodaje ellipsis
                     ),
                   ),
-                  const SizedBox(height: 0), // Manji razmak
 
-                  // Datum dodavanja
-                  Text(
-                    'Date: $formattedDate',
-                    style: const TextStyle(fontSize: 10, color: Colors.grey),
-                  ),
-                  const SizedBox(height: 1), // Manji razmak
-
+                  const SizedBox(height: 2), // Manji razmak
                   // Ikonice i tekstovi ispod njih
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.white70, // Pozadinska boja
-                      borderRadius: BorderRadius.circular(10), // Zaobljeni uglovi od 10 piksela
+                      borderRadius: BorderRadius.circular(
+                          10), // Zaobljeni uglovi od 10 piksela
                     ),
-                    padding: const EdgeInsets.only(top: 8, left: 8, right: 8, bottom: 0),
+                    padding: const EdgeInsets.only(
+                        top: 8, left: 8, right: 8, bottom: 8),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         // Ikonica i tekst za gorivo
                         Column(
                           children: [
-                            const Icon(Icons.local_gas_station, size: 20, color: Colors.grey),
+                            const Icon(Icons.local_gas_station,
+                                size: 20, color: Colors.grey),
                             const SizedBox(height: 2),
                             Text(
                               automobileAd.fuelType?.name ?? '-',
-                              style: const TextStyle(fontSize: 10, color: Colors.grey),
+                              style: const TextStyle(
+                                  fontSize: 10, color: Colors.black),
                             ),
                           ],
                         ),
                         // Ikonica i tekst za kilometražu
                         Column(
                           children: [
-                            const Icon(Icons.speed, size: 20, color: Colors.grey),
+                            const Icon(Icons.speed,
+                                size: 20, color: Colors.grey),
                             const SizedBox(height: 2),
                             Text(
                               '${automobileAd.mileage} km',
-                              style: const TextStyle(fontSize: 10, color: Colors.grey),
+                              style: const TextStyle(
+                                  fontSize: 10, color: Colors.black),
                             ),
                           ],
                         ),
                         // Ikonica i tekst za godinu proizvodnje
                         Column(
                           children: [
-                            const Icon(Icons.calendar_today, size: 20, color: Colors.grey),
+                            const Icon(Icons.calendar_today,
+                                size: 20, color: Colors.grey),
                             const SizedBox(height: 2),
                             Text(
                               '${automobileAd.yearOfManufacture}',
-                              style: const TextStyle(fontSize: 10, color: Colors.grey),
+                              style: const TextStyle(
+                                  fontSize: 10, color: Colors.black),
                             ),
                           ],
                         ),
                       ],
                     ),
                   ),
+
+                  const SizedBox(height: 4), // Manji razmak
 
                   // Cijena
                   Text(
