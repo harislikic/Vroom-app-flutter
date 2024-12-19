@@ -59,7 +59,7 @@ class InfoColumn extends StatelessWidget {
           ),
           Text(
             label,
-            style: const TextStyle(fontSize: 10, color: Colors.grey),
+            style: const TextStyle(fontSize: 10, color: Colors.black),
           ),
         ],
       ),

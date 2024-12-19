@@ -25,7 +25,7 @@ class _AutomobileListScreenState extends State<AutomobileListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Oglasi Automobila'),
-        backgroundColor: Colors.indigo,
+        backgroundColor: Colors.blueGrey[900],
       ),
       body: FutureBuilder<List<AutomobileAd>>(
         future: _automobileAds,

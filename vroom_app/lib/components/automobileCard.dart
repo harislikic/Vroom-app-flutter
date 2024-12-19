@@ -54,8 +54,8 @@ class AutomobileCard extends StatelessWidget {
                   // Provjera da li je oglas izabran i dodavanje oznake
                   if (isHighlighted)
                     Positioned(
-                      top: 8,
-                      right: 8,
+                      top: 4,
+                      right: 2,
                       child: Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 8.0, vertical: 4.0),
