@@ -3,6 +3,8 @@ import 'package:vroom_app/screens/%20automobileListScreen.dart';
 
 import 'package:vroom_app/screens/AdAutomobileScreen.dart';
 import 'package:vroom_app/screens/FavoritesScreen.dart';
+import 'package:vroom_app/screens/LoginScreen.dart';
+import 'package:vroom_app/screens/MyAutomobileAdsScreen.dart';
 import 'package:vroom_app/screens/ProfileScreen.dart';
 import 'components/CustomNavigationBar.dart';
 
@@ -35,8 +37,10 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const MainScreen(),
         '/favorites': (context) => const MainScreen(initialIndex: 1),
+        '/my-ads': (context) => const MyAutomobileAdsScreen(),
         '/profile': (context) => const MainScreen(initialIndex: 3),
         '/add-ad': (context) => const AddAutomobileScreen(),
+        '/login': (context) => const LoginScreen(),
       },
     );
   }
@@ -57,8 +61,7 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _screens = [
     const AutomobileListScreen(),
     const FavoritesScreen(),
-    const Center(
-        child: Text('Dodavanje oglasa placeholder')), // Placeholder za AddAd
+    const MyAutomobileAdsScreen(),
     const ProfileScreen(),
   ];
 

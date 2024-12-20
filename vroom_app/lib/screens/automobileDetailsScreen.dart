@@ -27,7 +27,8 @@ class _AutomobileDetailsScreenState extends State<AutomobileDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    futureAutomobileAd = automobileAdService.getAutomobileById(widget.automobileAdId);
+    futureAutomobileAd =
+        automobileAdService.getAutomobileById(widget.automobileAdId);
   }
 
   @override
@@ -35,6 +36,9 @@ class _AutomobileDetailsScreenState extends State<AutomobileDetailsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Automobile Details'),
+        iconTheme: IconThemeData(
+          color: Colors.blue, // Set the back icon color to blue
+        ),
       ),
       body: FutureBuilder<AutomobileAd>(
         future: futureAutomobileAd,

@@ -42,6 +42,13 @@ class CustomNavigationBarWithButton extends StatelessWidget {
                   onPressed: () => onTap(1),
                 ),
                 const SizedBox(width: 40), // Prostor za centralno dugme
+                  IconButton(
+                  icon: Icon(
+                    Icons.dashboard, // Ikona za "Moji oglasi"
+                    color: currentIndex == 2 ? Colors.blue : Colors.grey[400],
+                  ),
+                  onPressed: () => onTap(2),
+                ),
                 IconButton(
                   icon: Icon(
                     Icons.person,
