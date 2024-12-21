@@ -75,7 +75,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             const Text(
-              "Morate se prijaviti.",
+              "Morate se prijaviti da vidite svoj profil.",
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,

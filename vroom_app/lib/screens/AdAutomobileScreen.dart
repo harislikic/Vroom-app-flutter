@@ -32,7 +32,7 @@ class AddAutomobileScreen extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const Text(
-                    "Morate se prijaviti da biste videli favorite.",
+                    "Morate se prijaviti da biste objavili oglas.",
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
