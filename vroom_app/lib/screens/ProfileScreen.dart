@@ -112,6 +112,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 onEdit: () {
                   Navigator.pushNamed(context, '/edit-profile');
                 },
+                onLogout: () async {
+                  await AuthService.logout(); // Perform logout action
+                  Navigator.pushReplacementNamed(
+                      context, '/login'); // Redirect to login screen
+                },
               ),
             ),
             const SizedBox(height: 20),
@@ -147,34 +152,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     value: formatDate(userProfile!["dateOfBirth"]),
                   ),
                   const SizedBox(height: 20),
-                  Center(
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        await AuthService.logout();
-                        Navigator.pushReplacementNamed(context, '/login');
-                      },
-                      style: ElevatedButton.styleFrom(
-                        side: BorderSide(
-                          color: Colors.blueGrey[200]!, // Blue 900 border color
-                          width: 2,
-                        ),
-                        backgroundColor: Colors.transparent, // Transparent background
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 24, vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        elevation: 0, // Remove elevation for a flat button
-                      ),
-                      child: const Text(
-                        "Odjavi se",
-                        style: TextStyle(
-                          color: Colors.black, // Black text color
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),

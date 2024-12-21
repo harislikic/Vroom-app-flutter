@@ -3,87 +3,111 @@ import 'package:flutter/material.dart';
 class ProfileHeader extends StatelessWidget {
   final String? profileImageUrl;
   final VoidCallback onEdit;
+  final VoidCallback onLogout;
 
   const ProfileHeader({
     Key? key,
     required this.profileImageUrl,
     required this.onEdit,
+    required this.onLogout,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: 200, // Visina za pozadinski deo
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: NetworkImage(
-            "https://img.freepik.com/free-vector/colorful-gradient-background-modern-design_361591-4093.jpg?t=st=1734703571~exp=1734707171~hmac=576932a3aa54197a728d2abc658730781b594380a3f3f9a1d2e75a35b7dacdd9&w=360",
-          ),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // Circle avatar with border
-          Container(
-            padding: const EdgeInsets.all(4), // Border width
-            decoration: BoxDecoration(
-              color: Colors.white, // Border color
-              shape: BoxShape.circle,
-            ),
-            child: CircleAvatar(
-              radius: 50,
-              backgroundImage: profileImageUrl != null
-                  ? NetworkImage(profileImageUrl!)
-                  : null,
-              backgroundColor: Colors.grey[300],
-              child: profileImageUrl == null
-                  ? const Icon(
-                      Icons.person,
-                      size: 50,
-                      color: Colors.white,
-                    )
-                  : null,
+    return Stack(
+      children: [
+        // Background container with image
+        Container(
+          width: double.infinity,
+          height: 200, // Height for the background section
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: NetworkImage(
+                "https://img.freepik.com/free-vector/colorful-gradient-background-modern-design_361591-4093.jpg?t=st=1734703571~exp=1734707171~hmac=576932a3aa54197a728d2abc658730781b594380a3f3f9a1d2e75a35b7dacdd9&w=360",
+              ),
+              fit: BoxFit.cover,
             ),
           ),
-          const SizedBox(height: 8),
-          // Edit profile button
-          ElevatedButton(
-            onPressed: onEdit,
-            style: ElevatedButton.styleFrom(
-              side: BorderSide(
-                color: Colors.blueGrey[400]!, // Blue 900 border color
-                width: 2,
-              ),
-              backgroundColor: Colors.transparent, // Transparent background
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              elevation: 0, // Remove elevation to keep it flat
-            ).copyWith(
-              shape: MaterialStateProperty.all(
-                RoundedRectangleBorder(
-                  side: BorderSide(
-                    width: 2,
-                    color: Colors.blue[900]!, // Blue 900 border color
-                  ),
-                  borderRadius: BorderRadius.circular(12),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Circle avatar with border
+              Container(
+                padding: const EdgeInsets.all(4), // Border width
+                decoration: BoxDecoration(
+                  color: Colors.white, // Border color
+                  shape: BoxShape.circle,
+                ),
+                child: CircleAvatar(
+                  radius: 50,
+                  backgroundImage: profileImageUrl != null
+                      ? NetworkImage(profileImageUrl!)
+                      : null,
+                  backgroundColor: Colors.grey[300],
+                  child: profileImageUrl == null
+                      ? const Icon(
+                          Icons.person,
+                          size: 50,
+                          color: Colors.white,
+                        )
+                      : null,
                 ),
               ),
-            ),
-            child: const Text(
-              "Uredi profil",
-              style: TextStyle(
-                color: Colors.black, // Black text color
-                fontSize: 14,
+              const SizedBox(height: 8),
+              // Edit profile button
+              ElevatedButton(
+                onPressed: onEdit,
+                style: ElevatedButton.styleFrom(
+                  side: BorderSide(
+                    color: Colors.blueGrey[400]!, // Blue 900 border color
+                    width: 2,
+                  ),
+                  backgroundColor: Colors.transparent, // Transparent background
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: 0, // Remove elevation to keep it flat
+                ),
+                child: const Text(
+                  "Uredi profil",
+                  style: TextStyle(
+                    color: Colors.black, // Black text color
+                    fontSize: 14,
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+        // Logout button in the top right corner
+        Positioned(
+          top: 16,
+          right: 16,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              IconButton(
+                icon: const Icon(
+                  Icons.logout,
+                  color: Colors.blueGrey, // Logout icon color
+                  size: 30, // Size of the icon
+                ),
+                onPressed: onLogout, // Logout action
               ),
-            ),
-          )
-        ],
-      ),
+              const Text(
+                'Odjava',
+                style: TextStyle(
+                  color: Colors.blueGrey, // Text color
+                  fontSize: 16, // Text size
+                  fontWeight: FontWeight.w600, // Text weight
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
