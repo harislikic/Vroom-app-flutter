@@ -18,7 +18,7 @@ class CarDescriptionCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Description:',
+              'Detaljan opis:',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,

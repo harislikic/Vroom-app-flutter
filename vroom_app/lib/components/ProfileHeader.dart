@@ -75,7 +75,7 @@ class ProfileHeader extends StatelessWidget {
               ),
             ),
             child: const Text(
-              "Edit Profile",
+              "Uredi profil",
               style: TextStyle(
                 color: Colors.black, // Black text color
                 fontSize: 14,

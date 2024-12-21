@@ -36,7 +36,7 @@ class CarAdditionalInfoCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      'Date Added: $formattedDate',
+                      'Datum dodavanja: $formattedDate',
                       style: const TextStyle(
                         fontSize: 16,
                         color: Colors.black87,
@@ -53,7 +53,7 @@ class CarAdditionalInfoCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      'Views: ${automobileAd.viewsCount}',
+                      '${automobileAd.viewsCount}',
                       style: const TextStyle(
                         fontSize: 16,
                         color: Colors.black87,
@@ -81,7 +81,7 @@ class CarAdditionalInfoCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     const Text(
-                      'Registered:',
+                      'Registrovan:',
                       style: TextStyle(fontSize: 16, color: Colors.black87),
                     ),
                     const SizedBox(width: 8),
@@ -109,7 +109,7 @@ class CarAdditionalInfoCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      'Condition: ${automobileAd.vehicleCondition?.name ?? '-'}',
+                      'Stanje: ${automobileAd.vehicleCondition?.name ?? '-'}',
                       style:
                           const TextStyle(fontSize: 16, color: Colors.black87),
                     ),
@@ -138,7 +138,7 @@ class CarAdditionalInfoCard extends StatelessWidget {
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          'Registration Expiration: ${DateFormat('dd.MM.yyyy').format(automobileAd.registrationExpirationDate!)}',
+                          'Registracija ističe: ${DateFormat('dd.MM.yyyy').format(automobileAd.registrationExpirationDate!)}',
                           style: const TextStyle(
                               fontSize: 16, color: Colors.black87),
                         ),
@@ -155,7 +155,7 @@ class CarAdditionalInfoCard extends StatelessWidget {
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          'Last Small Service: ${DateFormat('dd.MM.yyyy').format(automobileAd.lastSmallService!)}',
+                          'Zadnji Mali servis: ${DateFormat('dd.MM.yyyy').format(automobileAd.lastSmallService!)}',
                           style: const TextStyle(
                               fontSize: 16, color: Colors.black87),
                         ),
@@ -172,7 +172,7 @@ class CarAdditionalInfoCard extends StatelessWidget {
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          'Last Big Service: ${DateFormat('dd.MM.yyyy').format(automobileAd.lastBigService!)}',
+                          'Zadnji veliki servis: ${DateFormat('dd.MM.yyyy').format(automobileAd.lastBigService!)}',
                           style: const TextStyle(
                               fontSize: 16, color: Colors.black87),
                         ),

@@ -25,7 +25,7 @@ class CarOwnerInfoCard extends StatelessWidget {
             children: [
               // Header Section to indicate owner profile
               const Text(
-                'Owner Profile',
+                'Vlasnik',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -85,7 +85,7 @@ class CarOwnerInfoCard extends StatelessWidget {
 
                         // Oznaka da je ovo kontakt vlasnika
                         const Text(
-                          'Contact Owner',
+                          'Kontakt broj',
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w500,

@@ -19,7 +19,7 @@ class CarDetailsCard extends StatelessWidget {
        
         const SizedBox(height: 8),
         Text(
-          'Price: ${automobileAd.price.toStringAsFixed(2)} KM',
+          'Cijena: ${automobileAd.price.toStringAsFixed(2)} KM',
           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue),
         ),
         const SizedBox(height: 16),

@@ -85,7 +85,7 @@ class AutomobileCard extends StatelessWidget {
                             ),
                             const SizedBox(width: 4),
                             Text(
-                              'Highlighted',
+                              'Izdvojeno',
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
