@@ -119,7 +119,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 },
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 0),
             // Content with padding applied here
             Padding(
               padding: const EdgeInsets.all(16),

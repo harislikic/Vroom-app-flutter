@@ -23,7 +23,7 @@ class ProfileHeader extends StatelessWidget {
           decoration: BoxDecoration(
             image: DecorationImage(
               image: NetworkImage(
-                "https://img.freepik.com/free-vector/colorful-gradient-background-modern-design_361591-4093.jpg?t=st=1734703571~exp=1734707171~hmac=576932a3aa54197a728d2abc658730781b594380a3f3f9a1d2e75a35b7dacdd9&w=360",
+                "https://img.freepik.com/free-vector/green-neon-lined-pattern-dark-social-story-background-vector_53876-173385.jpg?t=st=1734779472~exp=1734783072~hmac=553f18be68bda9963fe60f566c45ab52207e84f69a6dfde84d4bffb276ae7a71&w=740",
               ),
               fit: BoxFit.cover,
             ),
@@ -73,7 +73,7 @@ class ProfileHeader extends StatelessWidget {
                 child: const Text(
                   "Uredi profil",
                   style: TextStyle(
-                    color: Colors.black, // Black text color
+                    color: Colors.lightBlueAccent, // Black text color
                     fontSize: 14,
                   ),
                 ),

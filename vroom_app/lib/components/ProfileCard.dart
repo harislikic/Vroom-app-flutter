@@ -10,53 +10,53 @@ class ProfileCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      margin: const EdgeInsets.symmetric(vertical: 10), // Card spacing
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12), // Rounded corners
       ),
-      elevation: 2,
+      elevation: 3, // Soft shadow for card elevation
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10), // Padding inside the card
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // Label with border
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.grey[300]!,  // Light gray border color
-                  width: 1,  // Thin border
+            // Label for the profile detail
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey[700],
+                  ),
                 ),
-                borderRadius: BorderRadius.circular(8), // Rounded corners
-              ),
-              child: Text(
-                label,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black87,
+                const SizedBox(height: 4), // Small space between label and value
+                // Value
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.blueGrey[50], // Subtle background color
+                    borderRadius: BorderRadius.circular(8), // Rounded corners
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12, // Light shadow
+                        offset: Offset(0, 2),
+                        blurRadius: 4,
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    value,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.blueGrey[800],
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            // Value with border
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.blueGrey[400]!,  // Light gray border color
-                  width: 1,  // Thin border
-                ),
-                borderRadius: BorderRadius.circular(8), // Rounded corners
-              ),
-              child: Text(
-                value,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.black54,
-                ),
-              ),
+              ],
             ),
           ],
         ),
