@@ -4,43 +4,33 @@ import '../models/automobileAd.dart';
 import 'ApiConfig.dart';
 
 class AutomobileAdService {
-  Future<List<AutomobileAd>> fetchAutomobileAds({
-    String searchTerm = '',
-    int page = 0,
-    int pageSize = 25,
-    String minPrice = '',
-    String maxPrice = '',
-    String minMileage = '',
-    String maxMileage = '',
-    String yearOfManufacture = '',
-    bool registered = false,
-  }) async {
+  Future<List<AutomobileAd>> fetchAutomobileAds(
+      {String searchTerm = '',
+      int page = 0,
+      int pageSize = 25,
+      String minPrice = '',
+      String maxPrice = '',
+      String minMileage = '',
+      String maxMileage = '',
+      String yearOfManufacture = '',
+      bool registered = false,
+      String carBrandId = '',
+      String carCategoryId = '',
+      String carModelId = ''}) async {
     final queryParams = {
       'Page': page.toString(),
       'PageSize': pageSize.toString(),
+      if (searchTerm.isNotEmpty) 'Title': searchTerm,
+      if (minPrice.isNotEmpty) 'MinPrice': minPrice,
+      if (maxPrice.isNotEmpty) 'MaxPrice': maxPrice,
+      if (minMileage.isNotEmpty) 'MinMileage': minMileage,
+      if (maxMileage.isNotEmpty) 'MaxMileage': maxMileage,
+      if (yearOfManufacture.isNotEmpty) 'YearOfManufacture': yearOfManufacture,
+      if (registered) 'Registered': registered.toString(),
+      if (carBrandId.isNotEmpty) 'CarBrandId': carBrandId,
+      if (carCategoryId.isNotEmpty) 'CarCategoryId': carCategoryId,
+      if (carModelId.isNotEmpty) 'CarModelId': carModelId
     };
-
-    if (searchTerm.isNotEmpty) {
-      queryParams['Title'] = searchTerm;
-    }
-    if (minPrice.isNotEmpty) {
-      queryParams['MinPrice'] = minPrice;
-    }
-    if (maxPrice.isNotEmpty) {
-      queryParams['MaxPrice'] = maxPrice;
-    }
-    if (minMileage.isNotEmpty) {
-      queryParams['MinMileage'] = minMileage;
-    }
-    if (maxMileage.isNotEmpty) {
-      queryParams['MaxMileage'] = maxMileage;
-    }
-    if (yearOfManufacture.isNotEmpty) {
-      queryParams['YearOfManufacture'] = yearOfManufacture;
-    }
-    if (registered) {
-      queryParams['Registered'] = registered.toString();
-    }
 
     final uri = Uri.parse('${ApiConfig.baseUrl}/AutomobileAd')
         .replace(queryParameters: queryParams);

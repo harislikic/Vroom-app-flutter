@@ -33,6 +33,9 @@ class _AutomobileListScreenState extends State<AutomobileListScreen> {
   String _maxMileage = '';
   String _yearOfManufacture = '';
   bool _registered = false;
+  String _carBrandId = '';
+  String _carCategoryId = '';
+  String _carModelId = '';
 
   @override
   void initState() {
@@ -57,6 +60,9 @@ class _AutomobileListScreenState extends State<AutomobileListScreen> {
         maxMileage: _maxMileage,
         yearOfManufacture: _yearOfManufacture,
         registered: _registered,
+        carBrandId: _carBrandId,
+        carCategoryId: _carCategoryId,
+        carModelId: _carModelId,
       );
 
       final isLastPage = newAds.length < _pageSize;
@@ -78,8 +84,16 @@ class _AutomobileListScreenState extends State<AutomobileListScreen> {
     });
   }
 
-  void _applyFilters(String minPrice, String maxPrice, String minMileage,
-      String maxMileage, String yearOfManufacture, bool registered) {
+  void _applyFilters(
+      String minPrice,
+      String maxPrice,
+      String minMileage,
+      String maxMileage,
+      String yearOfManufacture,
+      bool registered,
+      String carBrandId,
+      String carCategoryId,
+      String carModelId) {
     setState(() {
       _minPrice = minPrice;
       _maxPrice = maxPrice;
@@ -87,8 +101,11 @@ class _AutomobileListScreenState extends State<AutomobileListScreen> {
       _maxMileage = maxMileage;
       _yearOfManufacture = yearOfManufacture;
       _registered = registered;
-      _pagingController.refresh(); // Refresh data based on filters
       _isFilterVisible = false;
+      _carBrandId = carBrandId;
+      _carCategoryId = carCategoryId;
+      _carModelId = carModelId;
+      _pagingController.refresh(); // Refresh data based on filters
     });
   }
 
@@ -100,6 +117,9 @@ class _AutomobileListScreenState extends State<AutomobileListScreen> {
       _maxMileage = '';
       _yearOfManufacture = '';
       _registered = false;
+      _carBrandId = '';
+      _carCategoryId = '';
+      _carModelId = '';
       _pagingController.refresh(); // Refresh data after clearing filters
     });
   }
@@ -207,22 +227,23 @@ class _AutomobileListScreenState extends State<AutomobileListScreen> {
               child: _isGridView
                   ? PagedGridView<int, AutomobileAd>(
                       pagingController: _pagingController,
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         crossAxisSpacing: 10,
                         mainAxisSpacing: 10,
                         childAspectRatio: 4 / 6,
                       ),
                       builderDelegate: PagedChildBuilderDelegate<AutomobileAd>(
-                        itemBuilder: (context, item, index) =>
-                            AutomobileCard(automobileAd: item, isGridView: true),
+                        itemBuilder: (context, item, index) => AutomobileCard(
+                            automobileAd: item, isGridView: true),
                         firstPageProgressIndicatorBuilder: (context) =>
                             const Center(child: CircularProgressIndicator()),
                         newPageProgressIndicatorBuilder: (context) =>
                             const Padding(
-                              padding: EdgeInsets.all(12.0),
-                              child: Center(child: CircularProgressIndicator()),
-                            ),
+                          padding: EdgeInsets.all(12.0),
+                          child: Center(child: CircularProgressIndicator()),
+                        ),
                         noItemsFoundIndicatorBuilder: (context) =>
                             const Center(child: Text('Nema dostupnih oglasa.')),
                       ),
@@ -230,15 +251,15 @@ class _AutomobileListScreenState extends State<AutomobileListScreen> {
                   : PagedListView<int, AutomobileAd>(
                       pagingController: _pagingController,
                       builderDelegate: PagedChildBuilderDelegate<AutomobileAd>(
-                        itemBuilder: (context, item, index) =>
-                            AutomobileCard(automobileAd: item, isGridView: false),
+                        itemBuilder: (context, item, index) => AutomobileCard(
+                            automobileAd: item, isGridView: false),
                         firstPageProgressIndicatorBuilder: (context) =>
                             const Center(child: CircularProgressIndicator()),
                         newPageProgressIndicatorBuilder: (context) =>
                             const Padding(
-                              padding: EdgeInsets.all(12.0),
-                              child: Center(child: CircularProgressIndicator()),
-                            ),
+                          padding: EdgeInsets.all(12.0),
+                          child: Center(child: CircularProgressIndicator()),
+                        ),
                         noItemsFoundIndicatorBuilder: (context) =>
                             const Center(child: Text('Nema dostupnih oglasa.')),
                       ),
