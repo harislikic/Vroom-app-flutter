@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // Dodajemo za formatiranje datuma
 import '../models/automobileAd.dart';
 import '../screens/automobileDetailsScreen.dart';
 
 class AutomobileCard extends StatelessWidget {
   final AutomobileAd automobileAd;
+  final bool isGridView;
 
-  const AutomobileCard({Key? key, required this.automobileAd})
+  const AutomobileCard(
+      {Key? key, required this.automobileAd, required this.isGridView})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // Formatiramo datum u "dd.MM.yyyy" format
-    String formattedDate =
-        DateFormat('dd.MM.yyyy').format(automobileAd.dateOfAdd);
-
     // Provjera da li je automobil izdvojen na osnovu highlightExpiryDate
     bool isHighlighted = automobileAd.highlightExpiryDate != null &&
         automobileAd.highlightExpiryDate!.isAfter(DateTime.now());
@@ -37,232 +34,226 @@ class AutomobileCard extends StatelessWidget {
         ),
         elevation: 4, // Sjenka
         clipBehavior: Clip.antiAlias,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Prikaz slike
-            if (automobileAd.images.isNotEmpty)
-              Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  Image.network(
-                    'http://localhost:5194${automobileAd.images.first.imageUrl}',
-                    height: 140,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
-                  // Provjera da li je oglas izabran i dodavanje oznake
-                  if (isHighlighted)
+        // Dodajemo glow efekat oko kartice ako je označen kao "highlighted"
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: isHighlighted ? Colors.amber : Colors.transparent,
+              width: 1,
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Slika – Različita veličina zavisno od prikaza
+              if (automobileAd.images.isNotEmpty)
+                Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Image.network(
+                      'http://localhost:5194${automobileAd.images.first.imageUrl}',
+                      height: isGridView ? 140 : 200, // Duža slika u ListView
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
+                    // Provjera da li je oglas izabran i dodavanje oznake
+                    if (isHighlighted)
+                      Positioned(
+                        top: 4,
+                        right: 2,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8.0, vertical: 4.0),
+                          decoration: BoxDecoration(
+                            color: Colors.amber.withOpacity(0.5),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: Colors.amber,
+                              width: 1.2,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 10,
+                                spreadRadius: 5,
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.star,
+                                size: 16,
+                                color: Colors.black,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                'Izdvojeno',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black.withOpacity(0.8),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                    // View count ikonica u gornji lijevi ugao
                     Positioned(
-                      top: 4,
-                      right: 2,
+                      bottom: -8,
+                      right: 8,
                       child: Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 8.0, vertical: 4.0),
                         decoration: BoxDecoration(
-                          color: Colors.amber.withOpacity(
-                              0.5), // Lagano žuta pozadina sa prozirnošću za blur efekt
+                          color: Colors.black.withOpacity(0.6),
                           borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: Colors.amber, // Žuti border oko oznake
-                            width: 1.2,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(
-                                  0.1), // Blagi shadow za efekt zamućenja
-                              blurRadius: 10,
-                              spreadRadius: 5,
-                            ),
-                          ],
                         ),
                         child: Row(
                           children: [
                             const Icon(
-                              Icons.star,
+                              Icons.visibility,
                               size: 16,
-                              color: Colors.black,
+                              color: Colors.white,
                             ),
                             const SizedBox(width: 4),
                             Text(
-                              'Izdvojeno',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black.withOpacity(
-                                    0.8), // Blaga prozirnost da ne bude previše upadljivo
+                              '${automobileAd.viewsCount}',
+                              style: const TextStyle(
+                                fontSize: 10,
+                                color: Colors.white,
                               ),
                             ),
                           ],
                         ),
                       ),
                     ),
-
-                  // Avatar korisnika
-                  Positioned(
-                    bottom: -15, // Avatar preklapa sadržaj ispod
-                    right: 8, // Pomeranje desno
-                    child: Stack(
-                      alignment:
-                          Alignment.center, // Centriramo avatar unutar okvira
-                      children: [
-                        // Bela pozadina oko avatara
-                        Container(
-                          width: 40, // Širina spoljnog kruga
-                          height: 40, // Visina spoljnog kruga
-                          decoration: const BoxDecoration(
-                            color: Colors.white, // Bela boja za okvir
-                            shape: BoxShape.circle, // Zaobljeni okvir
-                          ),
-                        ),
-                        // Avatar korisnika
-                        CircleAvatar(
-                          radius: 18, // Veličina avatara
-                          backgroundImage: NetworkImage(
-                            'http://localhost:5194${automobileAd.user.profilePicture}',
-                          ), // Slika korisnika
-                          backgroundColor: Colors
-                              .grey.shade300, // Rezervna boja ako nema slike
-                        ),
-                      ],
-                    ),
+                  ],
+                )
+              else
+                Container(
+                  height: isGridView
+                      ? 140
+                      : 200, // Različita visina kada je ListView
+                  color: Colors.grey.shade200,
+                  child: const Center(
+                    child: Icon(Icons.directions_car,
+                        size: 40, color: Colors.grey),
                   ),
-                  // View count ikonica u gornji lijevi ugao
-                  Positioned(
-                    bottom: -10,
-                    left: 8,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8.0, vertical: 4.0),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.6),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.visibility,
-                            size: 16,
-                            color: Colors.white,
+                ),
+              // Sadržaj kartice
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 5.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Naslov oglasa – Veći font u ListView
+                    SizedBox(
+                      height: isGridView ? 40 : 60, // Različita visina naslova
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          automobileAd.title,
+                          style: TextStyle(
+                            fontSize:
+                                isGridView ? 14 : 18, // Veći font u ListView
+                            fontWeight: FontWeight.bold,
                           ),
-                          const SizedBox(width: 4),
-                          Text(
-                            '${automobileAd.viewsCount}',
-                            style: const TextStyle(
-                              fontSize: 10,
-                              color: Colors.white,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    // Ikonice i tekstovi ispod njih
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white70,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      padding: const EdgeInsets.only(
+                          top: 8, left: 8, right: 8, bottom: 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            children: [
+                              Icon(Icons.local_gas_station,
+                                  size: isGridView ? 20 : 24,
+                                  color: Colors.grey),
+                              const SizedBox(height: 2),
+                              Text(
+                                automobileAd.fuelType?.name ?? '-',
+                                style: TextStyle(
+                                    fontSize: isGridView ? 10 : 12,
+                                    color: Colors.black),
+                              ),
+                            ],
+                          ),
+                          Column(
+                            children: [
+                              Icon(Icons.speed,
+                                  size: isGridView ? 20 : 24,
+                                  color: Colors.grey),
+                              const SizedBox(height: 2),
+                              Text(
+                                '${automobileAd.mileage} km',
+                                style: TextStyle(
+                                    fontSize: isGridView ? 10 : 12,
+                                    color: Colors.black),
+                              ),
+                            ],
+                          ),
+                          if (!isGridView)
+                            Column(
+                              children: [
+                                Icon(Icons.branding_watermark_outlined,
+                                    size: isGridView ? 20 : 24,
+                                    color: Colors.grey),
+                                const SizedBox(height: 2),
+                                Text(
+                                  '${automobileAd.carBrand?.name}',
+                                  style: TextStyle(
+                                      fontSize: isGridView ? 10 : 12,
+                                      color: Colors.black),
+                                ),
+                              ],
                             ),
+                          Column(
+                            children: [
+                              Icon(Icons.calendar_today,
+                                  size: isGridView ? 20 : 24,
+                                  color: Colors.grey),
+                              const SizedBox(height: 2),
+                              Text(
+                                '${automobileAd.yearOfManufacture}',
+                                style: TextStyle(
+                                    fontSize: isGridView ? 10 : 12,
+                                    color: Colors.black),
+                              ),
+                            ],
                           ),
                         ],
                       ),
                     ),
-                  ),
-                ],
-              )
-            else
-              Container(
-                height: 140,
-                color: Colors.grey.shade200,
-                child: const Center(
-                  child:
-                      Icon(Icons.directions_car, size: 40, color: Colors.grey),
-                ),
-              ),
-            // Sadržaj kartice
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 5.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Naslov oglasa
-                  SizedBox(
-                    height:
-                        40, // Fiksna visina za naslov, osigurava konzistentnost
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        automobileAd.title,
-                        style: const TextStyle(
-                          fontSize: 14, // Veličina fonta
-                          fontWeight: FontWeight.bold,
-                        ),
-                        maxLines: 2, // Maksimalno 2 reda
-                        overflow: TextOverflow.ellipsis, // Dodaje ellipsis
+                    const SizedBox(height: 4),
+                    // Cijena
+                    Text(
+                      '${automobileAd.price.toStringAsFixed(2)} KM',
+                      style: TextStyle(
+                        fontSize: isGridView ? 14 : 18, // Veći font u ListView
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ),
-
-                  const SizedBox(height: 2), // Manji razmak
-                  // Ikonice i tekstovi ispod njih
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white70, // Pozadinska boja
-                      borderRadius: BorderRadius.circular(
-                          10), // Zaobljeni uglovi od 10 piksela
-                    ),
-                    padding: const EdgeInsets.only(
-                        top: 8, left: 8, right: 8, bottom: 8),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // Ikonica i tekst za gorivo
-                        Column(
-                          children: [
-                            const Icon(Icons.local_gas_station,
-                                size: 20, color: Colors.grey),
-                            const SizedBox(height: 2),
-                            Text(
-                              automobileAd.fuelType?.name ?? '-',
-                              style: const TextStyle(
-                                  fontSize: 10, color: Colors.black),
-                            ),
-                          ],
-                        ),
-                        // Ikonica i tekst za kilometražu
-                        Column(
-                          children: [
-                            const Icon(Icons.speed,
-                                size: 20, color: Colors.grey),
-                            const SizedBox(height: 2),
-                            Text(
-                              '${automobileAd.mileage} km',
-                              style: const TextStyle(
-                                  fontSize: 10, color: Colors.black),
-                            ),
-                          ],
-                        ),
-                        // Ikonica i tekst za godinu proizvodnje
-                        Column(
-                          children: [
-                            const Icon(Icons.calendar_today,
-                                size: 20, color: Colors.grey),
-                            const SizedBox(height: 2),
-                            Text(
-                              '${automobileAd.yearOfManufacture}',
-                              style: const TextStyle(
-                                  fontSize: 10, color: Colors.black),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 4), // Manji razmak
-
-                  // Cijena
-                  Text(
-                    '${automobileAd.price.toStringAsFixed(2)} KM',
-                    style: const TextStyle(
-                      fontSize: 14, // Smanjen font cene
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
