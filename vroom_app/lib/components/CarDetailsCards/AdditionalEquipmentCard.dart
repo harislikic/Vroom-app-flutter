@@ -24,7 +24,7 @@ class CarAdditionalEquipmentCard extends StatelessWidget {
           children: [
             // Naslov kartice
             const Text(
-              'Additional Equipment:',
+              'Dodatna oprema:',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -41,7 +41,6 @@ class CarAdditionalEquipmentCard extends StatelessWidget {
                 return Container(
                   padding: const EdgeInsets.all(8.0), // Dodaj padding za bolji izgled
                   decoration: BoxDecoration(
-                    color: Colors.lightBlue.shade50, // Dodaj blagu pozadinsku boju
                     borderRadius: BorderRadius.circular(8), // Zaobljeni rubovi za svaki element
                   ),
                   child: Row(

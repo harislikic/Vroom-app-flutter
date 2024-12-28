@@ -36,6 +36,7 @@ class _AutomobileListScreenState extends State<AutomobileListScreen> {
   String _carBrandId = '';
   String _carCategoryId = '';
   String _carModelId = '';
+  String _cityId = '';
 
   @override
   void initState() {
@@ -63,6 +64,7 @@ class _AutomobileListScreenState extends State<AutomobileListScreen> {
         carBrandId: _carBrandId,
         carCategoryId: _carCategoryId,
         carModelId: _carModelId,
+        cityId: _cityId,
       );
 
       final isLastPage = newAds.length < _pageSize;
@@ -93,7 +95,8 @@ class _AutomobileListScreenState extends State<AutomobileListScreen> {
       bool registered,
       String carBrandId,
       String carCategoryId,
-      String carModelId) {
+      String carModelId,
+      String cityId) {
     setState(() {
       _minPrice = minPrice;
       _maxPrice = maxPrice;
@@ -105,6 +108,7 @@ class _AutomobileListScreenState extends State<AutomobileListScreen> {
       _carBrandId = carBrandId;
       _carCategoryId = carCategoryId;
       _carModelId = carModelId;
+      _cityId = cityId;
       _pagingController.refresh(); // Refresh data based on filters
     });
   }
@@ -120,6 +124,7 @@ class _AutomobileListScreenState extends State<AutomobileListScreen> {
       _carBrandId = '';
       _carCategoryId = '';
       _carModelId = '';
+      _cityId = '';
       _pagingController.refresh(); // Refresh data after clearing filters
     });
   }

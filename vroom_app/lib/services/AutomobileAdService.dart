@@ -16,7 +16,8 @@ class AutomobileAdService {
       bool registered = false,
       String carBrandId = '',
       String carCategoryId = '',
-      String carModelId = ''}) async {
+      String carModelId = '',
+      String cityId = ''}) async {
     final queryParams = {
       'Page': page.toString(),
       'PageSize': pageSize.toString(),
@@ -29,7 +30,8 @@ class AutomobileAdService {
       if (registered) 'Registered': registered.toString(),
       if (carBrandId.isNotEmpty) 'CarBrandId': carBrandId,
       if (carCategoryId.isNotEmpty) 'CarCategoryId': carCategoryId,
-      if (carModelId.isNotEmpty) 'CarModelId': carModelId
+      if (carModelId.isNotEmpty) 'CarModelId': carModelId,
+      if (cityId.isNotEmpty) 'CityId': cityId,
     };
 
     final uri = Uri.parse('${ApiConfig.baseUrl}/AutomobileAd')

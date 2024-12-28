@@ -14,174 +14,210 @@ class CarAdditionalInfoCard extends StatelessWidget {
         DateFormat('dd.MM.yyyy').format(automobileAd.dateOfAdd);
 
     return Card(
-      elevation: 2,
+      elevation: 4,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(15),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // General Info Row (Date Added, Views)
+            // Title Section
+            Text(
+              'Dodatne informacije o vozilu',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.blueGrey.shade700,
+              ),
+            ),
+            const Divider(
+              color: Colors.blueGrey,
+              thickness: 1.0,
+              height: 20,
+            ),
+
+            // Datum i pregledi
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.calendar_today,
-                      size: 20,
-                      color: Colors.blueGrey,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Datum dodavanja: $formattedDate',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: Colors.black87,
-                      ),
-                    ),
-                  ],
+                _infoTile(
+                  icon: Icons.calendar_today,
+                  label: 'Datum dodavanja',
+                  value: formattedDate,
                 ),
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.visibility,
-                      size: 20,
-                      color: Colors.blueGrey,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      '${automobileAd.viewsCount}',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: Colors.black87,
-                      ),
-                    ),
-                  ],
+                _infoTile(
+                  icon: Icons.visibility,
+                  label: 'Pregledi',
+                  value: '${automobileAd.viewsCount}',
                 ),
               ],
             ),
             const SizedBox(height: 16),
 
-            // Registered Status
+            // Registrovan i stanje vozila
             Row(
-              mainAxisAlignment: MainAxisAlignment
-                  .spaceBetween, // Aligns them properly in a row
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Registered Status
-                Row(
-                  children: [
-                    const Icon(
-                      Icons
-                          .car_repair, // Better representation of vehicle registration
-                      size: 20,
-                      color: Colors.blueGrey,
-                    ),
-                    const SizedBox(width: 8),
-                    const Text(
-                      'Registrovan:',
-                      style: TextStyle(fontSize: 16, color: Colors.black87),
-                    ),
-                    const SizedBox(width: 8),
-                    if (automobileAd.registered)
-                      const Icon(
-                        Icons.check_circle,
-                        color: Colors.green,
-                        size: 20,
-                      )
-                    else
-                      const Icon(
-                        Icons.cancel, // Red "X" icon to indicate not registered
-                        color: Colors.red,
-                        size: 20,
-                      ),
-                  ],
+                _infoTileWithIcon(
+                  icon: Icons.car_repair,
+                  label: 'Registrovan',
+                  value: automobileAd.registered
+                      ? 'Da'
+                      : 'Ne',
+                  iconColor: automobileAd.registered
+                      ? Colors.green
+                      : Colors.red,
                 ),
-                // Condition Information
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.car_rental, // Better icon for vehicle condition
-                      size: 20,
-                      color: Colors.blueGrey,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Stanje: ${automobileAd.vehicleCondition?.name ?? '-'}',
-                      style:
-                          const TextStyle(fontSize: 16, color: Colors.black87),
-                    ),
-                  ],
+                _infoTile(
+                  icon: Icons.car_rental,
+                  label: 'Stanje',
+                  value: automobileAd.vehicleCondition?.name ?? '-',
                 ),
               ],
             ),
-
             const SizedBox(height: 16),
 
-            // Other Date Related Info (Grouped)
+            // Ostale informacije vezane za datume
             if (automobileAd.registrationExpirationDate != null ||
-                automobileAd.featuredExpiryDate != null ||
                 automobileAd.lastSmallService != null ||
                 automobileAd.lastBigService != null)
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (automobileAd.registrationExpirationDate != null)
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.calendar_today_outlined,
-                          size: 20,
-                          color: Colors.blueGrey,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Registracija ističe: ${DateFormat('dd.MM.yyyy').format(automobileAd.registrationExpirationDate!)}',
-                          style: const TextStyle(
-                              fontSize: 16, color: Colors.black87),
-                        ),
-                      ],
+                    _infoRow(
+                      icon: Icons.calendar_today_outlined,
+                      label: 'Registracija ističe',
+                      value: DateFormat('dd.MM.yyyy')
+                          .format(automobileAd.registrationExpirationDate!),
                     ),
-                  const SizedBox(height: 8),
                   if (automobileAd.lastSmallService != null)
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.build_circle_outlined,
-                          size: 20,
-                          color: Colors.blueGrey,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Zadnji Mali servis: ${DateFormat('dd.MM.yyyy').format(automobileAd.lastSmallService!)}',
-                          style: const TextStyle(
-                              fontSize: 16, color: Colors.black87),
-                        ),
-                      ],
+                    _infoRow(
+                      icon: Icons.build_circle_outlined,
+                      label: 'Zadnji mali servis',
+                      value: DateFormat('dd.MM.yyyy')
+                          .format(automobileAd.lastSmallService!),
                     ),
-                  const SizedBox(height: 8),
                   if (automobileAd.lastBigService != null)
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.build,
-                          size: 20,
-                          color: Colors.blueGrey,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Zadnji veliki servis: ${DateFormat('dd.MM.yyyy').format(automobileAd.lastBigService!)}',
-                          style: const TextStyle(
-                              fontSize: 16, color: Colors.black87),
-                        ),
-                      ],
+                    _infoRow(
+                      icon: Icons.build,
+                      label: 'Zadnji veliki servis',
+                      value: DateFormat('dd.MM.yyyy')
+                          .format(automobileAd.lastBigService!),
                     ),
                 ],
               ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _infoTile({
+    required IconData icon,
+    required String label,
+    required String value,
+  }) {
+    return Column(
+      children: [
+        Icon(
+          icon,
+          size: 28,
+          color: Colors.blueGrey,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 14,
+            color: Colors.black54,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          value,
+          style: const TextStyle(
+            fontSize: 16,
+            color: Colors.black87,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _infoTileWithIcon({
+    required IconData icon,
+    required String label,
+    required String value,
+    required Color iconColor,
+  }) {
+    return Column(
+      children: [
+        Icon(
+          icon,
+          size: 28,
+          color: iconColor,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 14,
+            color: Colors.black54,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          value,
+          style: const TextStyle(
+            fontSize: 16,
+            color: Colors.black87,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _infoRow({
+    required IconData icon,
+    required String label,
+    required String value,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        children: [
+          Icon(
+            icon,
+            size: 20,
+            color: Colors.blueGrey,
+          ),
+          const SizedBox(width: 8),
+          Text(
+            '$label:',
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              value,
+              style: const TextStyle(
+                fontSize: 16,
+                color: Colors.black54,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

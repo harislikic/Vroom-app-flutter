@@ -1,3 +1,5 @@
+import 'package:vroom_app/models/city.dart';
+
 class User {
   final int id;
   final String userName;
@@ -11,6 +13,7 @@ class User {
   final DateTime dateOfBirth;
   final String? profilePicture;
   final int cityId;
+  final City city;
 
   User({
     required this.id,
@@ -25,6 +28,7 @@ class User {
     required this.dateOfBirth,
     this.profilePicture,
     required this.cityId,
+    required this.city,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -35,12 +39,13 @@ class User {
       lastName: json['lastName'],
       email: json['email'],
       phoneNumber: json['phoneNumber'],
-      address: json['adress'],
+      address: json['adress'], // Note: "adress" in JSON
       gender: json['gender'],
       isAdmin: json['isAdmin'],
       dateOfBirth: DateTime.parse(json['dateOfBirth']),
       profilePicture: json['profilePicture'],
       cityId: json['cityId'],
+      city: City.fromJson(json['city']),
     );
   }
 }
