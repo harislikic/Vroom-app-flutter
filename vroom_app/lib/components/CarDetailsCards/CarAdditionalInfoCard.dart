@@ -2,16 +2,24 @@ import 'package:flutter/material.dart';
 import '../../models/automobileAd.dart';
 import 'package:intl/intl.dart';
 
-class CarAdditionalInfoCard extends StatelessWidget {
+class CarAdditionalInfoCard extends StatefulWidget {
   final AutomobileAd automobileAd;
 
   const CarAdditionalInfoCard({Key? key, required this.automobileAd})
       : super(key: key);
 
   @override
+  _CarAdditionalInfoCardState createState() => _CarAdditionalInfoCardState();
+}
+
+class _CarAdditionalInfoCardState extends State<CarAdditionalInfoCard>
+    with SingleTickerProviderStateMixin {
+  bool _isExpanded = false;
+
+  @override
   Widget build(BuildContext context) {
     String formattedDate =
-        DateFormat('dd.MM.yyyy').format(automobileAd.dateOfAdd);
+        DateFormat('dd.MM.yyyy').format(widget.automobileAd.dateOfAdd);
 
     return Card(
       elevation: 4,
@@ -23,14 +31,33 @@ class CarAdditionalInfoCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Title Section
-            Text(
-              'Dodatne informacije o vozilu',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.blueGrey.shade700,
-              ),
+            // Title Row with Expand Arrow
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Dodatne informacije o vozilu',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueGrey.shade700,
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _isExpanded = !_isExpanded;
+                    });
+                  },
+                  child: Icon(
+                    _isExpanded
+                        ? Icons.keyboard_arrow_up
+                        : Icons.keyboard_arrow_down,
+                    size: 28,
+                    color: Colors.blueGrey,
+                  ),
+                ),
+              ],
             ),
             const Divider(
               color: Colors.blueGrey,
@@ -38,149 +65,135 @@ class CarAdditionalInfoCard extends StatelessWidget {
               height: 20,
             ),
 
-            // Datum i pregledi
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _infoTile(
-                  icon: Icons.calendar_today,
-                  label: 'Datum dodavanja',
-                  value: formattedDate,
-                ),
-                _infoTile(
-                  icon: Icons.visibility,
-                  label: 'Pregledi',
-                  value: '${automobileAd.viewsCount}',
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
+            // Main Content Section with Animation
+            AnimatedSize(
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeInOut,
+              child: _isExpanded
+                  ? Column(
+                      children: [
+                        // Datum i Pregledi
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            _iconWithText(
+                              icon: Icons.calendar_today,
+                              label: 'Datum dodavanja',
+                              value: formattedDate,
+                            ),
+                            _iconWithText(
+                              icon: Icons.visibility,
+                              label: 'Pregledi',
+                              value: '${widget.automobileAd.viewsCount}',
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
 
-            // Registrovan i stanje vozila
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _infoTileWithIcon(
-                  icon: Icons.car_repair,
-                  label: 'Registrovan',
-                  value: automobileAd.registered
-                      ? 'Da'
-                      : 'Ne',
-                  iconColor: automobileAd.registered
-                      ? Colors.green
-                      : Colors.red,
-                ),
-                _infoTile(
-                  icon: Icons.car_rental,
-                  label: 'Stanje',
-                  value: automobileAd.vehicleCondition?.name ?? '-',
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
+                        // Registrovan i Stanje
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            _iconWithText(
+                              icon: Icons.car_repair,
+                              label: 'Registrovan',
+                              value: widget.automobileAd.registered ? 'Da' : 'Ne',
+                              iconColor: widget.automobileAd.registered
+                                  ? Colors.green
+                                  : Colors.red,
+                            ),
+                            _iconWithText(
+                              icon: Icons.car_rental,
+                              label: 'Stanje',
+                              value: widget.automobileAd.vehicleCondition?.name ??
+                                  '-',
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
 
-            // Ostale informacije vezane za datume
-            if (automobileAd.registrationExpirationDate != null ||
-                automobileAd.lastSmallService != null ||
-                automobileAd.lastBigService != null)
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (automobileAd.registrationExpirationDate != null)
-                    _infoRow(
-                      icon: Icons.calendar_today_outlined,
-                      label: 'Registracija ističe',
-                      value: DateFormat('dd.MM.yyyy')
-                          .format(automobileAd.registrationExpirationDate!),
-                    ),
-                  if (automobileAd.lastSmallService != null)
-                    _infoRow(
-                      icon: Icons.build_circle_outlined,
-                      label: 'Zadnji mali servis',
-                      value: DateFormat('dd.MM.yyyy')
-                          .format(automobileAd.lastSmallService!),
-                    ),
-                  if (automobileAd.lastBigService != null)
-                    _infoRow(
-                      icon: Icons.build,
-                      label: 'Zadnji veliki servis',
-                      value: DateFormat('dd.MM.yyyy')
-                          .format(automobileAd.lastBigService!),
-                    ),
-                ],
-              ),
+                        // Ostale Informacije
+                        if (widget.automobileAd.registrationExpirationDate !=
+                                null ||
+                            widget.automobileAd.lastSmallService != null ||
+                            widget.automobileAd.lastBigService != null)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (widget.automobileAd.registrationExpirationDate !=
+                                  null)
+                                _infoRow(
+                                  icon: Icons.calendar_today_outlined,
+                                  label: 'Registracija ističe',
+                                  value: DateFormat('dd.MM.yyyy').format(widget
+                                      .automobileAd.registrationExpirationDate!),
+                                ),
+                              if (widget.automobileAd.lastSmallService != null)
+                                _infoRow(
+                                  icon: Icons.build_circle_outlined,
+                                  label: 'Zadnji mali servis',
+                                  value: DateFormat('dd.MM.yyyy').format(
+                                      widget.automobileAd.lastSmallService!),
+                                ),
+                              if (widget.automobileAd.lastBigService != null)
+                                _infoRow(
+                                  icon: Icons.build,
+                                  label: 'Zadnji veliki servis',
+                                  value: DateFormat('dd.MM.yyyy').format(
+                                      widget.automobileAd.lastBigService!),
+                                ),
+                            ],
+                          ),
+                      ],
+                    )
+                  : const SizedBox.shrink(), // Kad je zatvoreno, zauzima minimalni prostor
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _infoTile({
+  Widget _iconWithText({
     required IconData icon,
     required String label,
     required String value,
+    Color iconColor = Colors.blueGrey,
   }) {
-    return Column(
-      children: [
-        Icon(
-          icon,
-          size: 28,
-          color: Colors.blueGrey,
-        ),
-        const SizedBox(height: 8),
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 14,
-            color: Colors.black54,
-            fontWeight: FontWeight.w600,
+    return Expanded(
+      child: Row(
+        children: [
+          Icon(
+            icon,
+            size: 32,
+            color: iconColor,
           ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: const TextStyle(
-            fontSize: 16,
-            color: Colors.black87,
-            fontWeight: FontWeight.bold,
+          const SizedBox(width: 12),
+          Flexible(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.black54,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                Text(
+                  value,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.black87,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-      ],
-    );
-  }
-
-  Widget _infoTileWithIcon({
-    required IconData icon,
-    required String label,
-    required String value,
-    required Color iconColor,
-  }) {
-    return Column(
-      children: [
-        Icon(
-          icon,
-          size: 28,
-          color: iconColor,
-        ),
-        const SizedBox(height: 8),
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 14,
-            color: Colors.black54,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: const TextStyle(
-            fontSize: 16,
-            color: Colors.black87,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -195,7 +208,7 @@ class CarAdditionalInfoCard extends StatelessWidget {
         children: [
           Icon(
             icon,
-            size: 20,
+            size: 24,
             color: Colors.blueGrey,
           ),
           const SizedBox(width: 8),
