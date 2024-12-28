@@ -14,7 +14,7 @@ class CarAdditionalInfoCard extends StatefulWidget {
 
 class _CarAdditionalInfoCardState extends State<CarAdditionalInfoCard>
     with SingleTickerProviderStateMixin {
-  bool _isExpanded = false;
+  bool _isExpanded = true;
 
   @override
   Widget build(BuildContext context) {

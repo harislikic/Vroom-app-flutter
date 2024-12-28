@@ -51,23 +51,34 @@ class _AutomobileDetailsScreenState extends State<AutomobileDetailsScreen> {
             final automobileAd = snapshot.data!;
 
             return SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // CarImageCarousel without padding
                   CarImageCarousel(images: automobileAd.images),
-                  const SizedBox(height: 16),
-                  CarDetailsCard(automobileAd: automobileAd),
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 16.0),
-                    child: CarSpecificationsCard(automobileAd: automobileAd),
+                  
+                  // Rest of the content with padding
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 16),
+                        CarDetailsCard(automobileAd: automobileAd),
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 16.0),
+                          child: CarSpecificationsCard(
+                              automobileAd: automobileAd),
+                        ),
+                        CarAdditionalInfoCard(automobileAd: automobileAd),
+                        CarAdditionalEquipmentCard(
+                            automobileAdEquipments:
+                                automobileAd.automobileAdEquipments),
+                        CarDescriptionCard(description: automobileAd.description),
+                        CarOwnerInfoCard(automobileAd: automobileAd),
+                      ],
+                    ),
                   ),
-                  CarAdditionalInfoCard(automobileAd: automobileAd),
-                  CarAdditionalEquipmentCard(
-                      automobileAdEquipments:
-                          automobileAd.automobileAdEquipments),
-                  CarDescriptionCard(description: automobileAd.description),
-                  CarOwnerInfoCard(automobileAd: automobileAd),
                 ],
               ),
             );
