@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../models/automobileAd.dart';
 import '../../services/FavoritesService.dart';
@@ -155,7 +156,6 @@ class _CarDetailsCardState extends State<CarDetailsCard> {
                 }
                 // Re-check after action
                 await _checkIfFavorite();
-                
               },
               child: Container(
                 decoration: BoxDecoration(
@@ -179,7 +179,7 @@ class _CarDetailsCardState extends State<CarDetailsCard> {
         ),
         const SizedBox(height: 8),
         Text(
-          'Cijena: ${widget.automobileAd.price.toStringAsFixed(2)} KM',
+          '${NumberFormat('#,##0').format(widget.automobileAd.price)} KM',
           style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
