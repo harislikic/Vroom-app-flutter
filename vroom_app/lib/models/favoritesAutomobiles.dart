@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:vroom_app/models/image.dart'; // Assuming Image is in the 'image.dart' file
 
 class FavoritesAutomobiles {

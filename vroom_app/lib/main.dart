@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:vroom_app/screens/%20automobileListScreen.dart';
-
 import 'package:vroom_app/screens/AdAutomobileScreen.dart';
 import 'package:vroom_app/screens/FavoritesScreen.dart';
 import 'package:vroom_app/screens/LoginScreen.dart';
 import 'package:vroom_app/screens/MyAutomobileAdsScreen.dart';
 import 'package:vroom_app/screens/ProfileScreen.dart';
 import 'components/CustomNavigationBar.dart';
+
+final RouteObserver<ModalRoute> routeObserver = RouteObserver<ModalRoute>();
 
 void main() {
   runApp(const MyApp());
@@ -23,9 +24,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.red,
         appBarTheme: AppBarTheme(
-          backgroundColor: Colors.blueGrey[900], // Koristi nullable boju
-          elevation: 2, // Smanjena visina zaglavlja
-          toolbarHeight: 50, // Visina zaglavlja
+          backgroundColor: Colors.blueGrey[900],
+          elevation: 2,
+          toolbarHeight: 50,
           titleTextStyle: const TextStyle(
             color: Colors.white,
             fontSize: 18,
@@ -33,6 +34,10 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
+
+      // 2. Dodajemo routeObserver u navigatorObservers
+      navigatorObservers: [routeObserver],
+
       initialRoute: '/',
       routes: {
         '/': (context) => const MainScreen(),

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:vroom_app/components/FavoritesAutomobileCard.dart'; // Import the new FavoritesAutomobileCard
+import 'package:vroom_app/components/FavoritesAutomobileCard.dart'; 
 import 'package:vroom_app/components/LoginButton.dart';
-import 'package:vroom_app/models/favoritesAutomobiles.dart'; // Import the model for FavoritesAutomobiles
-import 'package:vroom_app/services/FavoritesService.dart'; // Import the FavoritesService
-import 'package:vroom_app/services/AuthService.dart'; // Import AuthService
+import 'package:vroom_app/models/favoritesAutomobiles.dart'; 
+import 'package:vroom_app/services/FavoritesService.dart';
+import 'package:vroom_app/services/AuthService.dart';
+
+
+import 'package:vroom_app/main.dart' show routeObserver; 
 
 class FavoritesScreen extends StatefulWidget {
   const FavoritesScreen({Key? key}) : super(key: key);
@@ -12,39 +15,60 @@ class FavoritesScreen extends StatefulWidget {
   _FavoritesScreenState createState() => _FavoritesScreenState();
 }
 
-class _FavoritesScreenState extends State<FavoritesScreen> {
+class _FavoritesScreenState extends State<FavoritesScreen> with RouteAware {
   final FavoritesService _favoritesService = FavoritesService();
   late Future<List<FavoritesAutomobiles>> _favoriteAds;
 
   @override
   void initState() {
     super.initState();
-    _favoriteAds = _favoritesService.fetchFavorites(); // Fetch favorites
+    _favoriteAds = _favoritesService.fetchFavorites(); // Initial fetch
   }
 
-  // Function to remove favorite
-  void _removeFavorite(int favoriteId) async {
-    final userId = await AuthService.getUserId();
-    await _favoritesService.removeFavorite(userId!, favoriteId);
-
+  // Pomoćna metoda za refetch
+  void _refreshFavorites() {
     setState(() {
-      // Refresh the favorites list after removing the favorite
       _favoriteAds = _favoritesService.fetchFavorites();
     });
   }
 
   @override
+  void didPopNext() {
+    super.didPopNext();
+    _refreshFavorites();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final modalRoute = ModalRoute.of(context);
+    if (modalRoute != null) {
+      routeObserver.subscribe(this, modalRoute);
+    }
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  void _removeFavorite(int favoriteId) async {
+    final userId = await AuthService.getUserId();
+    await _favoritesService.removeFavorite(userId!, favoriteId);
+    _refreshFavorites(); 
+  }
+
+  @override
   Widget build(BuildContext context) {
     return FutureBuilder<String?>(
-      future: AuthService.getUsername(), // Check if the user is logged in
+      future: AuthService.getUsername(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-              child: CircularProgressIndicator()); // Loading indicator
+          return const Center(child: CircularProgressIndicator());
         }
 
         if (!snapshot.hasData || snapshot.data == null) {
-          // User is not logged in
           return Scaffold(
             appBar: AppBar(
               title: const Text('Omiljeni Oglasi'),
@@ -74,7 +98,6 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
           );
         }
 
-        // If user is logged in, display the content
         return Scaffold(
           appBar: AppBar(
             title: const Text('Omiljeni Oglasi'),
@@ -84,41 +107,39 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
             future: _favoriteAds,
             builder: (context, snapshot) {
               if (snapshot.hasError) {
-                print(
-                    'Error: ${snapshot.error}'); // Print the error for debugging purposes
+                print('Error: ${snapshot.error}');
                 return Center(
-                    child: Text(
-                        'Greška: ${snapshot.error?.toString() ?? 'Nepoznata greška'}'));
+                  child: Text(
+                    'Greška: ${snapshot.error?.toString() ?? 'Nepoznata greška'}',
+                  ),
+                );
               }
 
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return Center(child: Text('Greška: ${snapshot.error}'));
               } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                 return const Center(child: Text('Nemate omiljene oglase.'));
-              } else {
-                final ads = snapshot.data!;
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: GridView.builder(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2, // Display 2 cards per row
-                      crossAxisSpacing: 10, // Horizontal spacing
-                      mainAxisSpacing: 10, // Vertical spacing
-                      childAspectRatio: 4 / 6, // Aspect ratio for cards
-                    ),
-                    itemCount: ads.length,
-                    itemBuilder: (context, index) {
-                      return FavoritesAutomobileCard(
-                        favoritesAutomobile: ads[index],
-                        onRemoveFavorite: _removeFavorite,
-                      );
-                    },
-                  ),
-                );
               }
+
+              final ads = snapshot.data!;
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                    childAspectRatio: 4 / 6,
+                  ),
+                  itemCount: ads.length,
+                  itemBuilder: (context, index) {
+                    return FavoritesAutomobileCard(
+                      favoritesAutomobile: ads[index],
+                      onRemoveFavorite: _removeFavorite,
+                    );
+                  },
+                ),
+              );
             },
           ),
         );

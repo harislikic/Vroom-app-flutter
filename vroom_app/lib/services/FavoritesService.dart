@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:vroom_app/models/favoritesAutomobiles.dart';
 import 'package:vroom_app/services/AuthService.dart';
-
 import 'ApiConfig.dart';
 
 class FavoritesService {
@@ -14,7 +13,7 @@ class FavoritesService {
       Uri.parse(
           '${ApiConfig.baseUrl}/Favorite/$userId?page=$page&pageSize=$pageSize'),
     );
-
+    
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
 
@@ -31,6 +30,18 @@ class FavoritesService {
     }
   }
 
+  // Add a favorite
+  Future<void> addFavorite(int userId, int automobileId) async {
+    final response = await http.post(
+      Uri.parse(
+          '${ApiConfig.baseUrl}/Favorite?userId=$userId&automobilId=$automobileId'),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to add favorite');
+    }
+  }
+
   // Remove a favorite
   Future<void> removeFavorite(int userId, int automobileId) async {
     final response = await http.delete(
@@ -40,6 +51,25 @@ class FavoritesService {
 
     if (response.statusCode != 200) {
       throw Exception('Failed to remove favorite');
+    }
+  }
+
+  Future<bool> isFavorite(int userId, int automobileId) async {
+    final response = await http.get(
+      Uri.parse('${ApiConfig.baseUrl}/Favorite/$userId?page=1&pageSize=100'),
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+
+      if (data['data'] != null && data['data'] is List) {
+        final List<dynamic> items = data['data'];
+        return items.any((item) => item['automobilId'] == automobileId);
+      } else {
+        return false;
+      }
+    } else {
+      throw Exception('Failed to check if favorite');
     }
   }
 }
