@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:vroom_app/screens/%20automobileListScreen.dart';
+import 'package:vroom_app/screens/AutomobileListScreen.dart';
 import 'package:vroom_app/screens/AdAutomobileScreen.dart';
 import 'package:vroom_app/screens/FavoritesScreen.dart';
 import 'package:vroom_app/screens/LoginScreen.dart';
 import 'package:vroom_app/screens/MyAutomobileAdsScreen.dart';
 import 'package:vroom_app/screens/ProfileScreen.dart';
+import 'package:vroom_app/screens/RegisterScreen.dart';
 import 'components/CustomNavigationBar.dart';
 
 final RouteObserver<ModalRoute> routeObserver = RouteObserver<ModalRoute>();
@@ -46,6 +47,7 @@ class MyApp extends StatelessWidget {
         '/profile': (context) => const MainScreen(initialIndex: 3),
         '/add-ad': (context) => const AddAutomobileScreen(),
         '/login': (context) => const LoginScreen(),
+        '/register': (context) => const RegisterScreen()
       },
     );
   }
