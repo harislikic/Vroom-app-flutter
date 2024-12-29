@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart'; // Dodaj Fluttertoast import
 import 'package:vroom_app/services/AuthService.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -15,15 +16,30 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isPasswordVisible = false; // State za prikaz lozinke
 
   void handleLogin() async {
-    String username = usernameController.text;
+    String username = usernameController.text.trim();
     String password = passwordController.text;
+
+    if (username.isEmpty || password.isEmpty) {
+      Fluttertoast.showToast(
+        msg: "Molimo vas da unesete korisničko ime i lozinku.",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.redAccent,
+        textColor: Colors.white,
+      );
+      return;
+    }
 
     final success = await AuthService.login(username, password);
     if (success) {
       Navigator.pushReplacementNamed(context, '/'); // Navigacija na Home ekran
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Neuspešna prijava. Proverite podatke.')),
+      Fluttertoast.showToast(
+        msg: "Korisničko ime ili email nisu ispravni.",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.redAccent,
+        textColor: Colors.white,
       );
     }
   }

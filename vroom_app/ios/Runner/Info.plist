@@ -45,5 +45,12 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Potreban nam je pristup Vašoj galeriji radi dodavanja fotografija.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Potrebna nam je dozvola da bismo otvorili galeriju.</string>
+
+
 </dict>
 </plist>

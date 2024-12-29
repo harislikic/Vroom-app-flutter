@@ -15,7 +15,6 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  // Forma
   final _formKey = GlobalKey<FormState>();
 
   // Kontroleri za polja
@@ -29,22 +28,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _passwordConfController = TextEditingController();
 
-  DateTime? _selectedDate;  
+  DateTime? _selectedDate;
+  bool _isAdmin = false;
   int? _selectedCityId;
   File? _pickedImage;
-  bool _isLoadingCities = false;
 
   List<City> _cities = [];
+  bool _isLoadingCities = false;
 
   @override
   void initState() {
     super.initState();
-    _fetchCities(); 
+    _fetchCities();
   }
 
-
   Future<void> _fetchCities() async {
-    setState(() => _isLoadingCities = true);
+    setState(() {
+      _isLoadingCities = true;
+    });
     try {
       final cityService = CityService();
       final fetched = await cityService.fetchCities();
@@ -52,19 +53,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _cities = fetched;
       });
     } catch (e) {
-      debugPrint('Greška pri dohvatu gradova: $e');
-      // Možeš i ovde da prikažeš toast
+      print('Greška pri dohvatu gradova: $e');
       Fluttertoast.showToast(
         msg: 'Greška pri dohvatu gradova.',
         backgroundColor: Colors.red,
         textColor: Colors.white,
       );
     } finally {
-      setState(() => _isLoadingCities = false);
+      setState(() {
+        _isLoadingCities = false;
+      });
     }
   }
 
-  String? validateEmail(String? value) {
+  // Validacije
+  String? _validateEmail(String? value) {
     if (value == null || value.isEmpty) {
       return 'Email je obavezan.';
     }
@@ -75,7 +78,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return null;
   }
 
-  String? validatePhone(String? value) {
+  String? _validatePhone(String? value) {
     if (value == null || value.isEmpty) {
       return 'Broj telefona je obavezan.';
     }
@@ -86,7 +89,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return null;
   }
 
-  String? validatePassword(String? value) {
+  String? _validatePassword(String? value) {
     if (value == null || value.isEmpty) {
       return 'Lozinka je obavezna.';
     }
@@ -96,7 +99,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return null;
   }
 
-  Future<void> pickImage() async {
+  // Odabir slike
+  Future<void> _pickImage() async {
     final pickedFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
@@ -106,7 +110,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
-  Future<void> pickDate() async {
+  // Uklanjanje slike
+  void _removePickedImage() {
+    setState(() {
+      _pickedImage = null;
+    });
+  }
+
+  // Odabir datuma
+  Future<void> _pickDate() async {
     final now = DateTime.now();
     final initial = DateTime(now.year - 18);
     final newDate = await showDatePicker(
@@ -122,9 +134,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
-  Future<void> registerUser() async {
-    // 5.1) Validacija forme
-    if (!_formKey.currentState!.validate()) return;
+  // Registracija korisnika
+  Future<void> _registerUser() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
 
     if (_passwordController.text != _passwordConfController.text) {
       Fluttertoast.showToast(
@@ -134,6 +148,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       );
       return;
     }
+
     if (_selectedDate == null) {
       Fluttertoast.showToast(
         msg: 'Morate izabrati datum rođenja!',
@@ -142,6 +157,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       );
       return;
     }
+
     if (_selectedCityId == null) {
       Fluttertoast.showToast(
         msg: 'Morate izabrati grad!',
@@ -166,24 +182,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
       request.fields['gender'] = _genderController.text;
       request.fields['password'] = _passwordController.text;
       request.fields['passwordConfirmation'] = _passwordConfController.text;
+      request.fields['isAdmin'] = _isAdmin.toString();
       request.fields['dateOfBirth'] = _selectedDate!.toIso8601String();
       request.fields['cityId'] = _selectedCityId.toString();
 
       // Ako ima upload slike
       if (_pickedImage != null) {
         final fileBytes = await _pickedImage!.readAsBytes();
+        final fileName = _pickedImage!.path.split('/').last;
         final multiPart = http.MultipartFile.fromBytes(
           'profilePicture',
           fileBytes,
-          filename: 'profile.jpg',
+          filename: fileName, // Koristi originalni naziv fajla
         );
         request.files.add(multiPart);
       }
 
-
       final responseStream = await request.send();
       final response = await http.Response.fromStream(responseStream);
-
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         Fluttertoast.showToast(
@@ -193,7 +209,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         );
         Navigator.pushReplacementNamed(context, '/login');
       } else {
-        debugPrint('Odgovor servera: ${response.body}');
+        print('Odgovor servera: ${response.body}');
         Fluttertoast.showToast(
           msg: 'Greška: ${response.statusCode}',
           backgroundColor: Colors.red,
@@ -201,7 +217,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         );
       }
     } catch (e) {
-      debugPrint('Greška: $e');
+      print('Greška: $e');
       Fluttertoast.showToast(
         msg: 'Greška: $e',
         backgroundColor: Colors.red,
@@ -210,20 +226,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Registracija"),
         backgroundColor: Colors.blueGrey[900],
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: RegistrationForm(
           formKey: _formKey,
-
-          // Kontroleri
           userNameController: _userNameController,
           firstNameController: _firstNameController,
           lastNameController: _lastNameController,
@@ -233,30 +249,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
           genderController: _genderController,
           passwordController: _passwordController,
           passwordConfController: _passwordConfController,
-
-          // Date
           selectedDate: _selectedDate,
-          onPickDate: pickDate,
-
-          // City
+          onPickDate: _pickDate,
           cities: _cities,
           selectedCityId: _selectedCityId,
           isLoadingCities: _isLoadingCities,
           onCityChanged: (val) {
-            setState(() => _selectedCityId = val);
+            setState(() {
+              _selectedCityId = val;
+            });
           },
-
-          // Slika
           pickedImage: _pickedImage,
-          onPickImage: pickImage,
-
-          // Callback za registraciju
-          onRegister: registerUser,
-
-          // Validacije
-          validateEmail: validateEmail,
-          validatePhone: validatePhone,
-          validatePassword: validatePassword,
+          onPickImage: _pickImage,
+          onRegister: _registerUser,
+          validateEmail: _validateEmail,
+          validatePhone: _validatePhone,
+          validatePassword: _validatePassword,
+          onRemoveImage: _removePickedImage, // Implementiraj callback za uklanjanje slike
         ),
       ),
     );

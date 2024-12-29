@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:vroom_app/models/city.dart';
 
 class RegistrationForm extends StatefulWidget {
@@ -39,10 +40,12 @@ class RegistrationForm extends StatefulWidget {
   final String? Function(String?)? validatePhone;
   final String? Function(String?)? validatePassword;
 
+  // Dodato: Callback za uklanjanje slike
+  final VoidCallback? onRemoveImage;
+
   const RegistrationForm({
     Key? key,
     required this.formKey,
-
     required this.userNameController,
     required this.firstNameController,
     required this.lastNameController,
@@ -52,23 +55,19 @@ class RegistrationForm extends StatefulWidget {
     required this.genderController,
     required this.passwordController,
     required this.passwordConfController,
-
     required this.selectedDate,
     required this.onPickDate,
-
     required this.cities,
     required this.selectedCityId,
     required this.isLoadingCities,
     required this.onCityChanged,
-
     required this.pickedImage,
     required this.onPickImage,
-
     required this.onRegister,
-
     this.validateEmail,
     this.validatePhone,
     this.validatePassword,
+    this.onRemoveImage, // Dodato: Callback za uklanjanje slike
   }) : super(key: key);
 
   @override
@@ -85,7 +84,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
     return Form(
       key: widget.formKey, // Važno za validaciju
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // Username
           TextFormField(
@@ -209,6 +208,8 @@ class _RegistrationFormState extends State<RegistrationForm> {
                 ),
 
           const SizedBox(height: 10),
+
+          // Slika sa X dugmetom
           Row(
             children: [
               ElevatedButton(
@@ -216,14 +217,84 @@ class _RegistrationFormState extends State<RegistrationForm> {
                 child: const Text("Odaberi sliku"),
               ),
               const SizedBox(width: 10),
-              widget.pickedImage != null
-                  ? SizedBox(
-                      width: 50,
-                      height: 50,
-                      child: Image.file(widget.pickedImage!,
-                          fit: BoxFit.cover),
-                    )
-                  : const Text("Nema slike"),
+              if (widget.pickedImage != null)
+                SizedBox(
+                  width: 120,
+                  height: 120,
+                  child: Stack(
+                    children: [
+                      // GestureDetector za prikaz slika u modalu
+                      GestureDetector(
+                        onTap: () {
+                          // Otvorimo dijalog za prikaz pune slike
+                          showDialog(
+                            context: context,
+                            builder: (ctx) {
+                              return Dialog(
+                                child: PhotoView(
+                                  imageProvider: FileImage(widget.pickedImage!),
+                                  backgroundDecoration:
+                                      const BoxDecoration(color: Colors.black),
+                                  minScale: PhotoViewComputedScale.contained,
+                                  maxScale: PhotoViewComputedScale.covered * 3,
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        child: Container(
+                          width: 120,
+                          height: 120,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black26,
+                                blurRadius: 4,
+                                spreadRadius: 2,
+                                offset: const Offset(2, 2),
+                              ),
+                            ],
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.file(
+                              widget.pickedImage!,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      // X (close) dugme u gornjem desnom uglu
+                      Positioned(
+                        top: 2,
+                        right: 2,
+                        child: GestureDetector(
+                          onTap: () {
+                            // Pozovi callback za uklanjanje slike
+                            if (widget.onRemoveImage != null) {
+                              widget.onRemoveImage!();
+                            }
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.5),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.close,
+                              color: Colors.red,
+                              size: 20,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              else
+                const Text("Nema slike"),
             ],
           ),
 
