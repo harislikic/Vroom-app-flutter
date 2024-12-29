@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:vroom_app/components/LoginButton.dart';
+// Ubaci svoj .dart fajl za ProfileCard (prilagodi putanju):
 import 'package:vroom_app/components/ProfileCard.dart';
 import 'package:vroom_app/components/ProfileHeader.dart';
 import 'package:vroom_app/services/AuthService.dart';
@@ -94,6 +95,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
     }
 
+    // Ekstrakcija polja
+    final String ime =  userProfile!["firstName"] ?? '';
+    final String prezime =  userProfile!["lastName"] ?? '';
+    final String userName = userProfile!["userName"] ?? "N/A";
+    final String email = userProfile!["email"] ?? "N/A";
+    final String phone = userProfile!["phoneNumber"] ?? "N/A";
+    final String address = userProfile!["adress"] ?? "N/A";
+    final String dob = formatDate(userProfile!["dateOfBirth"]);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Profil"),
@@ -101,9 +111,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       body: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Profile Header without padding
+            // Header sa slikom, Edit i Logout dugmad
             Center(
               child: ProfileHeader(
                 profileImageUrl: userProfile!["profilePicture"] != null
@@ -113,45 +122,45 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Navigator.pushNamed(context, '/edit-profile');
                 },
                 onLogout: () async {
-                  await AuthService.logout(); // Perform logout action
-                  Navigator.pushReplacementNamed(
-                      context, '/login'); // Redirect to login screen
+                  await AuthService.logout();
+                  Navigator.pushReplacementNamed(context, '/login');
                 },
               ),
             ),
-            const SizedBox(height: 0),
-            // Content with padding applied here
+
+            // Kartice sa profilnim podacima
             Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ProfileCard(
-                    label: "Ime i prezime",
-                    value:
-                        "${userProfile!["firstName"]} ${userProfile!["lastName"]}",
+                    label: "Ime",
+                    value: ime,
+                  ),
+                  ProfileCard(
+                    label: "Prezime",
+                    value: prezime,
                   ),
                   ProfileCard(
                     label: "Korisničko ime",
-                    value: userProfile!["userName"] ?? "N/A",
+                    value: userName,
                   ),
                   ProfileCard(
                     label: "Email",
-                    value: userProfile!["email"] ?? "N/A",
+                    value: email,
                   ),
                   ProfileCard(
                     label: "Telefon",
-                    value: userProfile!["phoneNumber"] ?? "N/A",
+                    value: phone,
                   ),
                   ProfileCard(
                     label: "Adresa",
-                    value: userProfile!["adress"] ?? "N/A",
+                    value: address,
                   ),
                   ProfileCard(
                     label: "Datum rođenja",
-                    value: formatDate(userProfile!["dateOfBirth"]),
+                    value: dob,
                   ),
-                  const SizedBox(height: 20),
                 ],
               ),
             ),

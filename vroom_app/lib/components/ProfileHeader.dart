@@ -16,26 +16,26 @@ class ProfileHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        // Background container with image
+        // Background container sa Flutter gradientom (umesto network image)
         Container(
           width: double.infinity,
-          height: 200, // Height for the background section
+          height: 200,
           decoration: BoxDecoration(
-            image: DecorationImage(
-              image: NetworkImage(
-                "https://img.freepik.com/free-vector/green-neon-lined-pattern-dark-social-story-background-vector_53876-173385.jpg?t=st=1734779472~exp=1734783072~hmac=553f18be68bda9963fe60f566c45ab52207e84f69a6dfde84d4bffb276ae7a71&w=740",
-              ),
-              fit: BoxFit.cover,
+            // Primer linearnog gradijenta sa nijansama teals
+            gradient: LinearGradient(
+              colors: [Colors.teal.shade800, Colors.teal.shade300],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Circle avatar with border
+              // Avatar sa belim obrubom
               Container(
-                padding: const EdgeInsets.all(4), // Border width
-                decoration: BoxDecoration(
-                  color: Colors.white, // Border color
+                padding: const EdgeInsets.all(4),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
                   shape: BoxShape.circle,
                 ),
                 child: CircleAvatar(
@@ -54,26 +54,25 @@ class ProfileHeader extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8),
-              // Edit profile button
               ElevatedButton(
                 onPressed: onEdit,
                 style: ElevatedButton.styleFrom(
                   side: BorderSide(
-                    color: Colors.blueGrey[400]!, // Blue 900 border color
+                    color: Colors.teal.shade200, // linija oko dugmeta
                     width: 2,
                   ),
-                  backgroundColor: Colors.transparent, // Transparent background
+                  backgroundColor: Colors.transparent,
                   padding:
                       const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  elevation: 0, // Remove elevation to keep it flat
+                  elevation: 0,
                 ),
                 child: const Text(
                   "Uredi profil",
                   style: TextStyle(
-                    color: Colors.lightBlueAccent, // Black text color
+                    color: Colors.white, 
                     fontSize: 14,
                   ),
                 ),
@@ -81,7 +80,7 @@ class ProfileHeader extends StatelessWidget {
             ],
           ),
         ),
-        // Logout button in the top right corner
+        // Logout dugme (ikona + tekst) u gornjem desnom uglu
         Positioned(
           top: 16,
           right: 16,
@@ -91,17 +90,17 @@ class ProfileHeader extends StatelessWidget {
               IconButton(
                 icon: const Icon(
                   Icons.logout,
-                  color: Colors.blueGrey, // Logout icon color
-                  size: 30, // Size of the icon
+                  color: Colors.white,
+                  size: 30,
                 ),
-                onPressed: onLogout, // Logout action
+                onPressed: onLogout,
               ),
               const Text(
                 'Odjava',
                 style: TextStyle(
-                  color: Colors.blueGrey, // Text color
-                  fontSize: 16, // Text size
-                  fontWeight: FontWeight.w600, // Text weight
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ],
