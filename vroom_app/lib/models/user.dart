@@ -2,50 +2,52 @@ import 'package:vroom_app/models/city.dart';
 
 class User {
   final int id;
-  final String userName;
-  final String firstName;
-  final String lastName;
-  final String email;
-  final String phoneNumber;
-  final String address;
-  final String gender;
-  final bool isAdmin;
-  final DateTime dateOfBirth;
+  final String? userName;
+  final String? firstName;
+  final String? lastName;
+  final String? email;
+  final String? phoneNumber;
+  final String? address;
+  final String? gender;
+  final bool? isAdmin;
+  final DateTime? dateOfBirth;
   final String? profilePicture;
-  final int cityId;
-  final City city;
+  final int? cityId;
+  final City? city;
 
   User({
     required this.id,
-    required this.userName,
-    required this.firstName,
-    required this.lastName,
-    required this.email,
-    required this.phoneNumber,
-    required this.address,
-    required this.gender,
+    this.userName,
+    this.firstName,
+    this.lastName,
+    this.email,
+    this.phoneNumber,
+    this.address,
+    this.gender,
     required this.isAdmin,
     required this.dateOfBirth,
     this.profilePicture,
-    required this.cityId,
-    required this.city,
+    this.cityId,
+    this.city,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['id'],
-      userName: json['userName'],
-      firstName: json['firstName'],
-      lastName: json['lastName'],
-      email: json['email'],
-      phoneNumber: json['phoneNumber'],
-      address: json['adress'], // Note: "adress" in JSON
-      gender: json['gender'],
-      isAdmin: json['isAdmin'],
+      id: json['id'] ?? 0,
+      userName: json['userName'] as String?,
+      firstName: json['firstName'] as String?,
+      lastName: json['lastName'] as String?,
+      email: json['email'] as String?,
+      phoneNumber: json['phoneNumber'] as String?,
+      address: json['adress'] as String?,
+      gender: json['gender'] as String?,
+      isAdmin: json['isAdmin'] ?? false,
       dateOfBirth: DateTime.parse(json['dateOfBirth']),
-      profilePicture: json['profilePicture'],
-      cityId: json['cityId'],
-      city: City.fromJson(json['city']),
+      profilePicture: json['profilePicture'] as String?,
+      cityId: json['cityId'] as int?,
+      city: json['city'] == null
+          ? null
+          : City.fromJson(json['city']),
     );
   }
 }
