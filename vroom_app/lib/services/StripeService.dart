@@ -13,9 +13,17 @@ class StripeService {
     required int automobileAdId,
   }) async {
     try {
-      final clientSecret = await _createPaymentIntent(amount, "eur");
-      if (clientSecret == null) {
-        print("No client secret");
+      // 1. Kreiraj PaymentIntent i dobavi clientSecret i paymentIntentId
+      final result = await _createPaymentIntent(amount, "eur");
+      if (result == null) {
+        return;
+      }
+
+      final clientSecret = result["clientSecret"];
+      final paymentIntentId = result["paymentIntentId"];
+
+      if (clientSecret == null || paymentIntentId == null) {
+        print("clientSecret ili paymentIntentId su null");
         return;
       }
 
@@ -27,14 +35,22 @@ class StripeService {
       );
       await Stripe.instance.presentPaymentSheet();
 
-      await savePaymentToDatabase(automobileAdId, amount, highlightDays);
+      // 3. Ako je sve prošlo dobro, upiši transakciju u bazu
+      await savePaymentToDatabase(
+        automobileAdId: automobileAdId,
+        amount: amount,
+        highlightDays: highlightDays,
+        paymentId: paymentIntentId,  // prosledimo ID PaymentIntent-a
+      );
     } catch (e) {
       print("Greška pri plaćanju: $e");
       rethrow;
     }
   }
 
-  Future<String?> _createPaymentIntent(double amount, String currency) async {
+  /// Kreira PaymentIntent i vraća `clientSecret` i `id` (paymentIntentId)
+  Future<Map<String, String>?> _createPaymentIntent(
+      double amount, String currency) async {
     try {
       final dio = Dio();
       final data = {
@@ -58,31 +74,47 @@ class StripeService {
         ),
       );
 
-      if (response.data != null && response.data["client_secret"] != null) {
-        return response.data["client_secret"] as String;
-      } else {
-        print("Nevalidan odgovor: ${response.data}");
+      if (response.data == null) {
+        print("Empty response data");
         return null;
       }
+
+      final clientSecret = response.data["client_secret"];
+      final paymentIntentId = response.data["id"];
+
+      if (clientSecret == null || paymentIntentId == null) {
+        print("Nedostaju clientSecret ili paymentIntentId u odgovoru: ${response.data}");
+        return null;
+      }
+
+      // Vraćamo obe vrednosti u map-i
+      return {
+        "clientSecret": clientSecret,
+        "paymentIntentId": paymentIntentId,
+      };
     } catch (e) {
       print("Greska prilikom kreiranja PaymentIntent: $e");
       return null;
     }
   }
 
-  Future<void> savePaymentToDatabase(
-      int automobileAdId, double amount, int highlightDays) async {
+  /// Čuva podatke u bazi (inkluzivno i Stripe PaymentId)
+  Future<void> savePaymentToDatabase({
+    required int automobileAdId,
+    required double amount,
+    required int highlightDays,
+    required String paymentId,
+  }) async {
     try {
       final response = await http.post(
-        Uri.parse(
-            '$backendUrl/AutomobileAd/api/highlight-ad?id=$automobileAdId'),
+        Uri.parse('$backendUrl/AutomobileAd/api/highlight-ad?id=$automobileAdId'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'highlightDays': highlightDays,
           'amount': amount,
+          'paymentId': paymentId, // prosledimo ID PaymentIntent-a
         }),
       );
-
 
       if (response.statusCode != 200) {
         throw Exception('Failed to save payment to database: ${response.body}');

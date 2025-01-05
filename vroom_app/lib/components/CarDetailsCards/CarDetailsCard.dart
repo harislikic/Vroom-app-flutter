@@ -145,11 +145,25 @@ class _CarDetailsCardState extends State<CarDetailsCard> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      builder: (context) {
+      // Ovde dodajemo shape i backgroundColor
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: const BorderSide(
+          color: Colors.grey, // sivi border
+          width: 2,
+        ),
+      ),
+      backgroundColor: Colors.white, // bela pozadina
+      builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setModalState) {
             return SingleChildScrollView(
-              child: Padding(
+              // Povećavamo visinu modala:
+              child: Container(
+                // Minimalna visina (npr. polovinu ekrana)
+                constraints: BoxConstraints(
+                  minHeight: MediaQuery.of(context).size.height * 0.5,
+                ),
                 padding: EdgeInsets.only(
                   bottom: MediaQuery.of(context).viewInsets.bottom,
                   left: 16,
@@ -162,20 +176,31 @@ class _CarDetailsCardState extends State<CarDetailsCard> {
                   children: [
                     const Text(
                       'Izdvoji oglas',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black, // crni tekst
+                      ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 20),
+
+                    // BROJ DANA
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('Broj dana:'),
+                        const Text(
+                          'Broj dana:',
+                          style: TextStyle(color: Colors.black),
+                        ),
                         DropdownButton<int>(
                           value: highlightDays,
                           items: prices.keys.map((days) {
                             return DropdownMenuItem(
                               value: days,
-                              child: Text('$days dana'),
+                              child: Text(
+                                '$days dana',
+                                style: const TextStyle(color: Colors.black),
+                              ),
                             );
                           }).toList(),
                           onChanged: (value) {
@@ -188,44 +213,76 @@ class _CarDetailsCardState extends State<CarDetailsCard> {
                       ],
                     ),
                     const SizedBox(height: 16),
+
+                    // UKUPNA CIJENA
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('Ukupna cijena:'),
-                        Text('$amount USD'),
+                        const Text(
+                          'Ukupna cijena:',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        Text(
+                          '$amount USD',
+                          style: const TextStyle(color: Colors.black),
+                        ),
                       ],
                     ),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () async {
-                        Navigator.pop(context);
+                    const SizedBox(height: 24),
 
-                        try {
-                          await _stripeService.makePayment(
-                            amount: amount,
-                            highlightDays: highlightDays,
-                            automobileAdId: widget.automobileAd.id,
-                          );
+                    // Dugme na sredini
+                    Center(
+                      child: ElevatedButton.icon(
+                        onPressed: () async {
+                          Navigator.pop(context); // Zatvori modal
 
-                          Fluttertoast.showToast(
-                            msg: 'Plaćanje uspešno!',
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.CENTER,
-                            backgroundColor: Colors.green,
-                            textColor: Colors.white,
-                          );
-                        } catch (e) {
-                          Fluttertoast.showToast(
-                            msg: 'Greška prilikom plaćanja: $e',
-                            toastLength: Toast.LENGTH_LONG,
-                            gravity: ToastGravity.CENTER,
-                            backgroundColor: Colors.red,
-                            textColor: Colors.white,
-                          );
-                        }
-                      },
-                      child: const Text('Plati i izdvoji'),
+                          try {
+                            await _stripeService.makePayment(
+                              amount: amount,
+                              highlightDays: highlightDays,
+                              automobileAdId: widget.automobileAd.id,
+                            );
+
+                            Fluttertoast.showToast(
+                              msg: 'Plaćanje uspešno!',
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.CENTER,
+                              backgroundColor: Colors.green,
+                              textColor: Colors.white,
+                            );
+                          } catch (e) {
+                            Fluttertoast.showToast(
+                              msg: 'Greška prilikom plaćanja: $e',
+                              toastLength: Toast.LENGTH_LONG,
+                              gravity: ToastGravity.CENTER,
+                              backgroundColor: Colors.red,
+                              textColor: Colors.white,
+                            );
+                          }
+                        },
+                        icon: const Icon(
+                          Icons.payment, // ikonica za plaćanje
+                          color: Colors.black,
+                        ),
+                        label: const Text(
+                          'Plati',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.transparent, // transparent
+                          elevation: 0,
+                          side: const BorderSide(color: Colors.grey, width: 1),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 12,
+                          ),
+                        ),
+                      ),
                     ),
+                    const SizedBox(height: 20),
                   ],
                 ),
               ),
@@ -312,14 +369,14 @@ class _CarDetailsCardState extends State<CarDetailsCard> {
                 if (userId != null &&
                     widget.automobileAd.user != null &&
                     userId == widget.automobileAd.user.id)
-
+                    
                   ElevatedButton.icon(
                     onPressed: _showHighlightModal,
                     icon: const Icon(Icons.star_border, size: 16),
                     label: const Text(
                       'Izdvoji',
                       style: TextStyle(
-                        color: Colors.black, 
+                        color: Colors.black,
                       ),
                     ),
                     style: ElevatedButton.styleFrom(
@@ -327,7 +384,7 @@ class _CarDetailsCardState extends State<CarDetailsCard> {
                       backgroundColor: Colors.transparent,
                       // Siva bordura
                       side: const BorderSide(
-                        color: Colors.grey, 
+                        color: Colors.grey,
                         width: 1,
                       ),
                       shape: RoundedRectangleBorder(
