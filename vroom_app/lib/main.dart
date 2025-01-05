@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:vroom_app/screens/AutomobileListScreen.dart';
 import 'package:vroom_app/screens/AdAutomobileScreen.dart';
 import 'package:vroom_app/screens/FavoritesScreen.dart';
@@ -11,6 +12,9 @@ import 'components/CustomNavigationBar.dart';
 final RouteObserver<ModalRoute> routeObserver = RouteObserver<ModalRoute>();
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  Stripe.publishableKey = 'pk_test_51Qdx6BGPnCogdWxTC0rhLNNINPghDj714zrQhwqXTiRd1C2az0tavNIfAgfG80ZCdB7jtybsn2UfMRuy7Td05Hqj00JssKUcVj';
+
   runApp(const MyApp());
 }
 
