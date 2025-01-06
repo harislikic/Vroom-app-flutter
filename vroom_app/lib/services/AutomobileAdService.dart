@@ -68,8 +68,6 @@ class AutomobileAdService {
 
   Future<bool> createAutomobileAd(
       Map<String, dynamic> adData, authHeaders, List<XFile> imageFiles) async {
-    print('data:::: ${adData}');
-
     try {
       // Set content type to multipart/form-data
       authHeaders['Content-Type'] = 'multipart/form-data';
@@ -82,32 +80,21 @@ class AutomobileAdService {
       // Adding fields to the multipart request
       adData.forEach((key, value) {
         if (value != null) {
-          // Ensure values are correctly serialized to string
           request.fields[key] = value.toString();
         }
       });
 
-      // Add image files if they exist
       if (imageFiles.isNotEmpty) {
         for (var imageFile in imageFiles) {
-          print("Image path: ${imageFile.path}");
-          // Add image file as 'Images' field
           request.files
               .add(await http.MultipartFile.fromPath('Images', imageFile.path));
         }
       }
 
-      // Send the request and get the response
       var response = await request.send();
-
-      print('response:::: ${response.statusCode}');
-
-      // Handle the response
       if (response.statusCode == 200) {
         return true;
       } else {
-        print('Error: ${response.statusCode}');
-        print('Response body: ${await response.stream.bytesToString()}');
         return false;
       }
     } catch (e) {

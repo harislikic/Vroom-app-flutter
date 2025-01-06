@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../../models/automobileAd.dart';
 
 class CarSpecificationsCard extends StatelessWidget {
@@ -8,12 +9,17 @@ class CarSpecificationsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+      final formatter = NumberFormat.decimalPattern('de');
     return Wrap(
       spacing: 16,
       runSpacing: 16,
       children: [
         InfoColumn(icon: Icons.calendar_today, label: 'Godina', value: '${automobileAd.yearOfManufacture}'),
-        InfoColumn(icon: Icons.speed, label: 'Kilometraža', value: '${automobileAd.mileage} km'),
+  InfoColumn(
+          icon: Icons.speed,
+          label: 'Kilometraža',
+          value: '${formatter.format(automobileAd.mileage)} km',
+        ),
         InfoColumn(icon: Icons.local_gas_station, label: 'Gorivo', value: automobileAd.fuelType?.name ?? '-'),
         InfoColumn(icon: Icons.directions_car, label: 'Transmisija', value: automobileAd.transmissionType?.name ?? '-'),
         InfoColumn(icon: Icons.color_lens, label: 'Boja', value: automobileAd.color ?? '-'),

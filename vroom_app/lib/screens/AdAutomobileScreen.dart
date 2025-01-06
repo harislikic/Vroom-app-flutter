@@ -201,7 +201,7 @@ class _AddAutomobileScreenState extends State<AddAutomobileScreen> {
         'Title': _title,
         'Description': _description,
         'Price': _price,
-        'Mileage': _mileage,
+        'Milage': _mileage,
         'YearOfManufacture': _yearOfManufacture,
         'Registered': _isRegistered,
         'RegistrationExpirationDate':
@@ -279,7 +279,7 @@ class _AddAutomobileScreenState extends State<AddAutomobileScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Select Equipment'),
+          title: Text('Odaberi opremu'),
           content: StatefulBuilder(
             builder: (context, setState) {
               return SingleChildScrollView(
@@ -309,7 +309,7 @@ class _AddAutomobileScreenState extends State<AddAutomobileScreen> {
                 Navigator.of(context)
                     .pop(_equipmentIds); // Return selected equipment
               },
-              child: Text('Done'),
+              child: Text('Završi'),
             ),
           ],
         );
@@ -422,10 +422,7 @@ class _AddAutomobileScreenState extends State<AddAutomobileScreen> {
               TextFormField(
                 decoration: InputDecoration(labelText: 'Boja'),
                 onSaved: (value) =>
-                    _color = value, // Directly save the color as a String
-                validator: (value) => value?.isEmpty ?? true
-                    ? 'Unesi boju'
-                    : null, // Validation for empty input
+                    _color = value, // Directly save the color as a StringR
                 keyboardType: TextInputType.text, // Use text input for strings
               ),
 
@@ -495,8 +492,13 @@ class _AddAutomobileScreenState extends State<AddAutomobileScreen> {
                   decoration: InputDecoration(labelText: 'Brend'),
                   isExpanded:
                       true, // Ensures that the dropdown takes up the full width
-                  menuMaxHeight:
-                      300, // Limits the max height of the dropdown list
+                  menuMaxHeight: 300,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Obavezno polje'; // Poruka greške ako nije odabrano
+                    }
+                    return null; // Ako je validno, vraća null
+                  },
                 ),
               ),
 
@@ -513,8 +515,13 @@ class _AddAutomobileScreenState extends State<AddAutomobileScreen> {
                   decoration: InputDecoration(labelText: 'Model'),
                   isExpanded:
                       true, // Ensures that the dropdown takes up the full width
-                  menuMaxHeight:
-                      300, // Limits the max height of the dropdown list
+                  menuMaxHeight: 300,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Obavezno polje'; // Poruka greške ako nije odabrano
+                    }
+                    return null; // Ako je validno, vraća null
+                  },
                 ),
               ),
 
@@ -532,8 +539,13 @@ class _AddAutomobileScreenState extends State<AddAutomobileScreen> {
                   decoration: InputDecoration(labelText: 'Kateegorija'),
                   isExpanded:
                       true, // Ensures that the dropdown takes up the full width
-                  menuMaxHeight:
-                      300, // Limits the max height of the dropdown list
+                  menuMaxHeight: 300,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Obavezno polje'; // Poruka greške ako nije odabrano
+                    }
+                    return null; // Ako je validno, vraća null
+                  },
                 ),
               ),
 
@@ -551,8 +563,13 @@ class _AddAutomobileScreenState extends State<AddAutomobileScreen> {
                   decoration: InputDecoration(labelText: 'Tip goriva'),
                   isExpanded:
                       true, // Ensures that the dropdown takes up the full width
-                  menuMaxHeight:
-                      300, // Limits the max height of the dropdown list
+                  menuMaxHeight: 300,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Obavezno polje'; // Poruka greške ako nije odabrano
+                    }
+                    return null; // Ako je validno, vraća null
+                  },
                 ),
               ),
 
@@ -577,8 +594,13 @@ class _AddAutomobileScreenState extends State<AddAutomobileScreen> {
                   decoration: InputDecoration(labelText: 'Tip transimisije'),
                   isExpanded:
                       true, // Ensures that the dropdown takes up the full width
-                  menuMaxHeight:
-                      300, // Limits the max height of the dropdown list
+                  menuMaxHeight: 300,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Obavezno polje'; // Poruka greške ako nije odabrano
+                    }
+                    return null; // Ako je validno, vraća null
+                  },
                 ),
               ),
 
@@ -597,8 +619,13 @@ class _AddAutomobileScreenState extends State<AddAutomobileScreen> {
                   decoration: InputDecoration(labelText: 'Stanje'),
                   isExpanded:
                       true, // Ensures that the dropdown takes up the full width
-                  menuMaxHeight:
-                      300, // Limits the max height of the dropdown list
+                  menuMaxHeight: 300,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Obavezno polje'; // Poruka greške ako nije odabrano
+                    }
+                    return null; // Ako je validno, vraća null
+                  },
                 ),
               ),
 
@@ -627,7 +654,7 @@ class _AddAutomobileScreenState extends State<AddAutomobileScreen> {
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.black,
                     backgroundColor: Colors.white, // Text color
-                    side: BorderSide(
+                    side: const BorderSide(
                       color: Color(
                           0xFF263238), // Blue Gray 900 color for the border
                       width: 2, // Border width
@@ -658,7 +685,7 @@ class _AddAutomobileScreenState extends State<AddAutomobileScreen> {
                                   ),
                                 ),
                                 SizedBox(width: 4),
-                                Icon(
+                                const Icon(
                                   Icons.check, // Checkmark icon
                                   color: Colors.black,
                                   size: 18,
@@ -667,7 +694,7 @@ class _AddAutomobileScreenState extends State<AddAutomobileScreen> {
                             ),
                             backgroundColor:
                                 Colors.white, // Background color for the chip
-                            shape: StadiumBorder(
+                            shape: const StadiumBorder(
                               side: BorderSide(
                                 color: Color(
                                     0xFF263238), // Blue Gray 900 border color
@@ -679,7 +706,7 @@ class _AddAutomobileScreenState extends State<AddAutomobileScreen> {
                       ),
               ),
 
-              SizedBox(
+              const SizedBox(
                 height: 16.0, // You can adjust the height as needed for spacing
               ),
 
@@ -691,22 +718,42 @@ class _AddAutomobileScreenState extends State<AddAutomobileScreen> {
                 },
               ),
 
-              SizedBox(
-                height: 16.0, // You can adjust the height as needed for spacing
+              const SizedBox(
+                height: 16.0,
               ),
 
-              // Submit Button
               ElevatedButton(
                 onPressed: _isLoading
                     ? null
                     : _submitForm, // Onemogućeno dok traje poziv
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.black,
+                  backgroundColor: Colors.white, // Pozadina dugmeta
+                  side: BorderSide(
+                    color: Color(0xFF263238), // Blue Gray 900 border
+                    width: 2, // Debljina okvira
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(8), // Zaobljeni uglovi dugmeta
+                  ),
+                  elevation: 0, // Nema senke za dugme
+                ),
                 child: _isLoading
-                    ? CircularProgressIndicator(
-                        color:
-                            Colors.white, // Možeš prilagoditi boju indikatora
+                    ? SizedBox(
+                        width: 20, // Manja veličina indikatora
+                        height: 20,
+                        child: const CircularProgressIndicator(
+                          color: Colors.blueGrey, // Plava boja indikatora
+                          strokeWidth: 2, // Manja debljina indikatora
+                        ),
                       )
-                    : Text('Objavi'),
-              ),
+                    : const Text(
+                        'Objavi',
+                        style: TextStyle(
+                            color: Colors.black), // Crni tekst dugmeta
+                      ),
+              )
             ],
           ),
         ),
