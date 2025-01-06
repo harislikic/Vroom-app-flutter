@@ -1,11 +1,14 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:http/http.dart' as http;
 import 'package:vroom_app/services/ApiConfig.dart';
 
 class StripeService {
   final String backendUrl = ApiConfig.baseUrl;
+  //final String stripeSecretKey = ApiConfig.stripeSecretKey;
+  String stripeSecretKey = dotenv.env['STRIPE_SECRET_KEY'] ?? '';
 
   Future<void> makePayment({
     required double amount,
@@ -13,7 +16,6 @@ class StripeService {
     required int automobileAdId,
   }) async {
     try {
-      // 1. Kreiraj PaymentIntent i dobavi clientSecret i paymentIntentId
       final result = await _createPaymentIntent(amount, "eur");
       if (result == null) {
         return;
@@ -23,7 +25,7 @@ class StripeService {
       final paymentIntentId = result["paymentIntentId"];
 
       if (clientSecret == null || paymentIntentId == null) {
-        print("clientSecret ili paymentIntentId su null");
+        print("clientSecret ili paymentIntentId are null");
         return;
       }
 
@@ -35,12 +37,11 @@ class StripeService {
       );
       await Stripe.instance.presentPaymentSheet();
 
-      // 3. Ako je sve prošlo dobro, upiši transakciju u bazu
       await savePaymentToDatabase(
         automobileAdId: automobileAdId,
         amount: amount,
         highlightDays: highlightDays,
-        paymentId: paymentIntentId,  // prosledimo ID PaymentIntent-a
+        paymentId: paymentIntentId,
       );
     } catch (e) {
       print("Greška pri plaćanju: $e");
@@ -48,7 +49,6 @@ class StripeService {
     }
   }
 
-  /// Kreira PaymentIntent i vraća `clientSecret` i `id` (paymentIntentId)
   Future<Map<String, String>?> _createPaymentIntent(
       double amount, String currency) async {
     try {
@@ -58,9 +58,6 @@ class StripeService {
         "currency": currency,
         "payment_method_types[]": "card",
       };
-
-      const String stripeSecretKey =
-          "sk_test_51Qdx6BGPnCogdWxTtz9vVVF8h1Aa0ZPvKw2RCn2GXEVCiWhFrojWlMRGqEFRa1kgzqxYSkZU6KBHIUhmENKi4ILB00Ry22lyTU";
 
       final response = await dio.post(
         "https://api.stripe.com/v1/payment_intents",
@@ -83,11 +80,9 @@ class StripeService {
       final paymentIntentId = response.data["id"];
 
       if (clientSecret == null || paymentIntentId == null) {
-        print("Nedostaju clientSecret ili paymentIntentId u odgovoru: ${response.data}");
         return null;
       }
 
-      // Vraćamo obe vrednosti u map-i
       return {
         "clientSecret": clientSecret,
         "paymentIntentId": paymentIntentId,
@@ -98,7 +93,6 @@ class StripeService {
     }
   }
 
-  /// Čuva podatke u bazi (inkluzivno i Stripe PaymentId)
   Future<void> savePaymentToDatabase({
     required int automobileAdId,
     required double amount,
@@ -107,12 +101,13 @@ class StripeService {
   }) async {
     try {
       final response = await http.post(
-        Uri.parse('$backendUrl/AutomobileAd/api/highlight-ad?id=$automobileAdId'),
+        Uri.parse(
+            '${ApiConfig.baseUrl}/AutomobileAd/api/highlight-ad?id=$automobileAdId'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'highlightDays': highlightDays,
           'amount': amount,
-          'paymentId': paymentId, // prosledimo ID PaymentIntent-a
+          'paymentId': paymentId,
         }),
       );
 

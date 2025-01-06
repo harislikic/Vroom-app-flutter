@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:vroom_app/screens/AutomobileListScreen.dart';
 import 'package:vroom_app/screens/AdAutomobileScreen.dart';
@@ -7,14 +8,18 @@ import 'package:vroom_app/screens/LoginScreen.dart';
 import 'package:vroom_app/screens/MyAutomobileAdsScreen.dart';
 import 'package:vroom_app/screens/ProfileScreen.dart';
 import 'package:vroom_app/screens/RegisterScreen.dart';
+import 'package:vroom_app/services/ApiConfig.dart';
 import 'components/CustomNavigationBar.dart';
 
 final RouteObserver<ModalRoute> routeObserver = RouteObserver<ModalRoute>();
 
-void main() {
+void main() async{
   WidgetsFlutterBinding.ensureInitialized();
-  Stripe.publishableKey = 'pk_test_51Qdx6BGPnCogdWxTC0rhLNNINPghDj714zrQhwqXTiRd1C2az0tavNIfAgfG80ZCdB7jtybsn2UfMRuy7Td05Hqj00JssKUcVj';
-
+    await dotenv.load(fileName: ".env");
+    
+  String stripePublishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY'] ?? '';
+  Stripe.publishableKey = stripePublishableKey;
+  //Stripe.publishableKey = ApiConfig.publishableKey;
   runApp(const MyApp());
 }
 

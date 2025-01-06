@@ -7,6 +7,8 @@ import 'package:vroom_app/components/RegistrationForm.dart';
 import 'package:vroom_app/models/city.dart';
 import 'package:vroom_app/services/CityService.dart';
 
+import '../services/ApiConfig.dart';
+
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
 
@@ -168,7 +170,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
 
     try {
-      final url = Uri.parse('http://localhost:5194/User');
+      final url = Uri.parse('${ApiConfig.baseUrl}/User');
       final request = http.MultipartRequest('POST', url);
       request.headers['Content-Type'] = 'multipart/form-data';
 
