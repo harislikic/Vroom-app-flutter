@@ -319,33 +319,36 @@ class _CarDetailsCardState extends State<CarDetailsCard> {
                   ),
                 ),
                 const SizedBox(width: 8),
-                GestureDetector(
-                  onTap: () async {
-                    if (_isFavorite) {
-                      await _removeFromFavorites();
-                    } else {
-                      await _addToFavorites();
-                    }
-                    await _checkIfFavorite();
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: _isFavorite
-                          ? Colors.blue.shade50
-                          : Colors.blueGrey.shade100,
-                      borderRadius: BorderRadius.circular(20),
-                      border: _isFavorite
-                          ? Border.all(color: Colors.blue, width: 1.5)
-                          : null,
-                    ),
-                    padding: const EdgeInsets.all(6),
-                    child: Icon(
-                      Icons.favorite,
-                      color: _isFavorite ? Colors.blue : Colors.blueGrey,
-                      size: 20,
+                if (userId != null &&
+                    widget.automobileAd.user != null &&
+                    userId != widget.automobileAd.user.id)
+                  GestureDetector(
+                    onTap: () async {
+                      if (_isFavorite) {
+                        await _removeFromFavorites();
+                      } else {
+                        await _addToFavorites();
+                      }
+                      await _checkIfFavorite();
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: _isFavorite
+                            ? Colors.blue.shade50
+                            : Colors.blueGrey.shade100,
+                        borderRadius: BorderRadius.circular(20),
+                        border: _isFavorite
+                            ? Border.all(color: Colors.blue, width: 1.5)
+                            : null,
+                      ),
+                      padding: const EdgeInsets.all(6),
+                      child: Icon(
+                        Icons.favorite,
+                        color: _isFavorite ? Colors.blue : Colors.blueGrey,
+                        size: 20,
+                      ),
                     ),
                   ),
-                ),
               ],
             ),
 
@@ -369,7 +372,6 @@ class _CarDetailsCardState extends State<CarDetailsCard> {
                 if (userId != null &&
                     widget.automobileAd.user != null &&
                     userId == widget.automobileAd.user.id)
-                    
                   ElevatedButton.icon(
                     onPressed: _showHighlightModal,
                     icon: const Icon(Icons.star_border, size: 16),
