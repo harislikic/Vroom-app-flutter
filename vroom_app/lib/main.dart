@@ -8,7 +8,6 @@ import 'package:vroom_app/screens/LoginScreen.dart';
 import 'package:vroom_app/screens/MyAutomobileAdsScreen.dart';
 import 'package:vroom_app/screens/ProfileScreen.dart';
 import 'package:vroom_app/screens/RegisterScreen.dart';
-import 'package:vroom_app/services/ApiConfig.dart';
 import 'components/CustomNavigationBar.dart';
 
 final RouteObserver<ModalRoute> routeObserver = RouteObserver<ModalRoute>();

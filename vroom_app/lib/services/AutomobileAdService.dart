@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
@@ -100,6 +101,53 @@ class AutomobileAdService {
     } catch (e) {
       print('Error while creating automobile ad: $e');
       return false;
+    }
+  }
+
+  Future<List<AutomobileAd>> fetchLoggedUserAutomobiles({
+    required String userId,
+    int page = 0,
+    int pageSize = 25,
+  }) async {
+    final Map<String, String> queryParams = {
+      'page': page.toString(),
+      'pageSize': pageSize.toString(),
+    };
+
+    final uri = Uri.parse('${ApiConfig.baseUrl}/AutomobileAd/user-ads/$userId')
+        .replace(queryParameters: queryParams);
+
+    try {
+      final response = await http.get(uri);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
+
+        if (data['data'] != null && data['data'] is List) {
+          final List<dynamic> items = data['data'];
+          return items.map((json) => AutomobileAd.fromJson(json)).toList();
+        } else {
+          return [];
+        }
+      } else {
+        throw Exception('Failed to load automobile ads');
+      }
+    } catch (e) {
+      throw Exception('Error fetching user automobile ads: $e');
+    }
+  }
+
+  Future<void> removeAutomobile(
+      int automobileId, Map<String, String> authHeaders) async {
+    authHeaders['accept'] = 'text/plain';
+
+    final response = await http.delete(
+      Uri.parse('${ApiConfig.baseUrl}/AutomobileAd/$automobileId'),
+      headers: authHeaders,
+    );
+    
+    if (response.statusCode != 200) {
+      throw Exception('Failed to remove automobile');
     }
   }
 }
