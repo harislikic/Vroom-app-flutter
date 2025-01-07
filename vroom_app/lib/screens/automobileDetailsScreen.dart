@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vroom_app/components/CarDetailsCards/CarDescriptionCard.dart';
 import '../components/CarDetailsCards/AdditionalEquipmentCard.dart';
+import '../components/UserAdsCarousel.dart';
 import '../models/automobileAd.dart';
 import '../services/AutomobileAdService.dart';
 import '../components/CarDetailsCards/CarDetailsCard.dart';
@@ -35,7 +36,7 @@ class _AutomobileDetailsScreenState extends State<AutomobileDetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Automobile Details'),
+        title: const Text('Detalji oglasa'),
         iconTheme: IconThemeData(
           color: Colors.blue, // Set the back icon color to blue
         ),
@@ -56,7 +57,7 @@ class _AutomobileDetailsScreenState extends State<AutomobileDetailsScreen> {
                 children: [
                   // CarImageCarousel without padding
                   CarImageCarousel(images: automobileAd.images),
-                  
+
                   // Rest of the content with padding
                   Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -67,16 +68,26 @@ class _AutomobileDetailsScreenState extends State<AutomobileDetailsScreen> {
                         CarDetailsCard(automobileAd: automobileAd),
                         Container(
                           margin: const EdgeInsets.only(bottom: 16.0),
-                          child: CarSpecificationsCard(
-                              automobileAd: automobileAd),
+                          child:
+                              CarSpecificationsCard(automobileAd: automobileAd),
                         ),
                         CarAdditionalInfoCard(automobileAd: automobileAd),
                         CarAdditionalEquipmentCard(
                             automobileAdEquipments:
                                 automobileAd.automobileAdEquipments),
-                        CarDescriptionCard(description: automobileAd.description),
+                        CarDescriptionCard(
+                            description: automobileAd.description),
                         CarOwnerInfoCard(automobileAd: automobileAd),
                       ],
+                    ),
+                  ),
+
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    child: UserAdsCarousel(
+                      currentAdId: automobileAd.id,
+                      userId:
+                          automobileAd.user.id, // Prosljeđujemo ID korisnika
                     ),
                   ),
                 ],
