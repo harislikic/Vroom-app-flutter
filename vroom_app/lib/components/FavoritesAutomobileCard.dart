@@ -192,7 +192,7 @@ class FavoritesAutomobileCard extends StatelessWidget {
                   ),
                   child: const Icon(
                     Icons.delete_outlined,
-                    color: Colors.blueAccent, // White trash can icon
+                    color: Colors.redAccent, // White trash can icon
                     size: 20,
                   ),
                 ),

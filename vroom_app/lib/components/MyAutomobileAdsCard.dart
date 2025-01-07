@@ -189,16 +189,31 @@ class MyAutomobileAdsCard extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Ikona za brisanje
-                IconButton(
-                  icon: const Icon(
-                    Icons.delete_outline_outlined,
-                    color: Colors.red,
-                    size: 28,
+                // Ikona za brisanje sa senkom
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade200, // Pozadina za ikonu
+                    shape: BoxShape.circle, // Zaokruženi oblik
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1), // Boja senke
+                        blurRadius: 6, // Zamagljivanje senke
+                        spreadRadius: 3, // Širenje senke
+                        offset: const Offset(
+                            0, 3), // Pomeraj senke (horizontalno, vertikalno)
+                      ),
+                    ],
                   ),
-                  onPressed: () => _showConfirmationDialog(context),
+                  child: IconButton(
+                    icon: const Icon(
+                      Icons.delete_outline_outlined,
+                      color: Colors.redAccent,
+                      size: 28,
+                    ),
+                    onPressed: () => _showConfirmationDialog(context),
+                  ),
                 ),
-                // Dugme "Poseti oglas"
+                // Dugme "Posjeti oglas"
                 ElevatedButton.icon(
                   onPressed: () {
                     Navigator.push(
@@ -216,7 +231,7 @@ class MyAutomobileAdsCard extends StatelessWidget {
                     color: Colors.white,
                   ),
                   label: const Text(
-                    "Posjti oglas",
+                    "Posjeti oglas",
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
