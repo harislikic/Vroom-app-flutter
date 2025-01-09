@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../models/automobileAd.dart';
 import '../../services/FavoritesService.dart';
 import '../../services/StripeService.dart';
+import '../../utils/helpers.dart';
 
 class CarDetailsCard extends StatefulWidget {
   final AutomobileAd automobileAd;
@@ -352,18 +353,56 @@ class _CarDetailsCardState extends State<CarDetailsCard> {
               ],
             ),
 
-            const SizedBox(height: 8),
+            const SizedBox(height: 4),
+
+            // Prikaz preostalog vremena ako je oglas izdvojen
+            if (userId != null &&
+                widget.automobileAd.user != null &&
+                userId == widget.automobileAd.user?.id &&
+                widget.automobileAd.isHighlighted &&
+                widget.automobileAd.highlightExpiryDate != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.access_time,
+                      size: 14,
+                      color: Colors.green,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      FormatRemainingTime(
+                          widget.automobileAd.highlightExpiryDate!),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontStyle: FontStyle.normal,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
 
             // PRIKAZ CIJENE i (eventualno) DUGME "Izdvoji" U ISTOM REDU
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  '${NumberFormat('#,##0').format(widget.automobileAd.price)} KM',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue,
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.indigo, width: 1.5),
+                    borderRadius: BorderRadius.circular(8), // Zaobljeni uglovi
+                    color: Colors.indigo.shade50, // Svetlija pozadina
+                  ),
+                  child: Text(
+                    '${NumberFormat('#,##0').format(widget.automobileAd.price)} KM',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
                   ),
                 ),
 
@@ -374,7 +413,11 @@ class _CarDetailsCardState extends State<CarDetailsCard> {
                     userId == widget.automobileAd.user?.id)
                   ElevatedButton.icon(
                     onPressed: _showHighlightModal,
-                    icon: const Icon(Icons.star_border, size: 16),
+                    icon: const Icon(
+                      Icons.star_border,
+                      size: 16,
+                      color: Colors.amber,
+                    ),
                     label: const Text(
                       'Izdvoji',
                       style: TextStyle(

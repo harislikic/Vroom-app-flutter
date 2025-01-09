@@ -77,7 +77,7 @@ class _AutomobileDetailsScreenState extends State<AutomobileDetailsScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 0),
                         CarDetailsCard(automobileAd: automobileAd),
                         Container(
                           margin: const EdgeInsets.only(bottom: 16.0),

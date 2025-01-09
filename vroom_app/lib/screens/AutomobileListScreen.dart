@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:vroom_app/components/RecommendedCarousel.dart';
+import 'package:vroom_app/main.dart';
 import 'package:vroom_app/services/AuthService.dart';
 import '../models/automobileAd.dart';
 import '../services/AutomobileAdService.dart';
@@ -15,7 +16,8 @@ class AutomobileListScreen extends StatefulWidget {
   _AutomobileListScreenState createState() => _AutomobileListScreenState();
 }
 
-class _AutomobileListScreenState extends State<AutomobileListScreen> {
+class _AutomobileListScreenState extends State<AutomobileListScreen>
+    with RouteAware {
   final AutomobileAdService _automobileAdService = AutomobileAdService();
 
   static const _pageSize = 25;
@@ -48,6 +50,25 @@ class _AutomobileListScreenState extends State<AutomobileListScreen> {
       _fetchPage(pageKey);
     });
     _checkLoginStatus();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(
+        this, ModalRoute.of(context)!); // Prijava na RouteObserver
+  }
+
+  @override
+  void dispose() {
+    _pagingController.dispose();
+    routeObserver.unsubscribe(this); // Odjava sa RouteObserver
+    super.dispose();
+  }
+
+  @override
+  void didPopNext() {
+    _pagingController.refresh();
   }
 
   Future<void> _checkLoginStatus() async {
@@ -156,12 +177,6 @@ class _AutomobileListScreenState extends State<AutomobileListScreen> {
   }
 
   @override
-  void dispose() {
-    _pagingController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -258,7 +273,8 @@ class _AutomobileListScreenState extends State<AutomobileListScreen> {
               child: CustomScrollView(
                 slivers: [
                   // Prikazati Recommended Carousel samo ako Search ili Filter nisu aktivni
-                  if (_isLoggedIn && !_isSearchVisible &&
+                  if (_isLoggedIn &&
+                      !_isSearchVisible &&
                       !_isFilterVisible &&
                       !_hasActiveFilters())
                     const SliverToBoxAdapter(
@@ -271,7 +287,8 @@ class _AutomobileListScreenState extends State<AutomobileListScreen> {
                     ),
 
                   // Dodajte razmak ispod carousel-a samo ako je carousel prikazan
-                  if (_isLoggedIn && !_isSearchVisible &&
+                  if (_isLoggedIn &&
+                      !_isSearchVisible &&
                       !_isFilterVisible &&
                       !_hasActiveFilters())
                     const SliverToBoxAdapter(
@@ -279,7 +296,8 @@ class _AutomobileListScreenState extends State<AutomobileListScreen> {
                     ),
 
                   // Prikazati "Ostali oglasi" samo ako Search ili Filter nisu aktivni
-                  if (_isLoggedIn && !_isSearchVisible &&
+                  if (_isLoggedIn &&
+                      !_isSearchVisible &&
                       !_isFilterVisible &&
                       !_hasActiveFilters())
                     const SliverToBoxAdapter(
