@@ -27,11 +27,22 @@ class _AutomobileDetailsScreenState extends State<AutomobileDetailsScreen> {
   late Future<AutomobileAd> futureAutomobileAd;
   final AutomobileAdService automobileAdService = AutomobileAdService();
 
+  bool _isLoggedIn = false;
+
   @override
   void initState() {
     super.initState();
     futureAutomobileAd =
         automobileAdService.getAutomobileById(widget.automobileAdId);
+    _checkLoginStatus();
+  }
+
+  Future<void> _checkLoginStatus() async {
+    final userId = await AuthService.getUserId(); // Pozivanje getUserId
+    setState(() {
+      _isLoggedIn =
+          userId != null; // Ako je userId null, korisnik nije prijavljen
+    });
   }
 
   @override
@@ -93,10 +104,11 @@ class _AutomobileDetailsScreenState extends State<AutomobileDetailsScreen> {
                     ),
                   ),
 
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 16.0),
-                    child: RecommendedCarousel(),
-                  ),
+                  if (_isLoggedIn)
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 16.0),
+                      child: RecommendedCarousel(),
+                    ),
                 ],
               ),
             );

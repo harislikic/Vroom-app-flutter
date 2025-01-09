@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:vroom_app/components/RecommendedCarousel.dart';
+import 'package:vroom_app/services/AuthService.dart';
 import '../models/automobileAd.dart';
 import '../services/AutomobileAdService.dart';
 import '../components/automobileCard.dart';
@@ -26,6 +27,7 @@ class _AutomobileListScreenState extends State<AutomobileListScreen> {
   bool _isSearchVisible = false; // To toggle search visibility
   bool _isFilterVisible = false; // To toggle filter visibility
   bool _isGridView = true; // To toggle between GridView and ListView
+  bool _isLoggedIn = false;
 
   // Filter parameters
   String _minPrice = '';
@@ -45,6 +47,15 @@ class _AutomobileListScreenState extends State<AutomobileListScreen> {
     _pagingController.addPageRequestListener((pageKey) {
       _fetchPage(pageKey);
     });
+    _checkLoginStatus();
+  }
+
+  Future<void> _checkLoginStatus() async {
+    final userId = await AuthService.getUserId(); // Pozivanje getUserId
+    setState(() {
+      _isLoggedIn =
+          userId != null; // Ako je userId null, korisnik nije prijavljen
+    });
   }
 
   bool _hasActiveFilters() {
@@ -57,7 +68,8 @@ class _AutomobileListScreenState extends State<AutomobileListScreen> {
         _carBrandId.isNotEmpty ||
         _carCategoryId.isNotEmpty ||
         _carModelId.isNotEmpty ||
-        _cityId.isNotEmpty || _searchTerm.isNotEmpty;
+        _cityId.isNotEmpty ||
+        _searchTerm.isNotEmpty;
   }
 
   Future<void> _fetchPage(int pageKey) async {
@@ -246,7 +258,9 @@ class _AutomobileListScreenState extends State<AutomobileListScreen> {
               child: CustomScrollView(
                 slivers: [
                   // Prikazati Recommended Carousel samo ako Search ili Filter nisu aktivni
-                  if (!_isSearchVisible && !_isFilterVisible && !_hasActiveFilters())
+                  if (_isLoggedIn && !_isSearchVisible &&
+                      !_isFilterVisible &&
+                      !_hasActiveFilters())
                     const SliverToBoxAdapter(
                       child: Padding(
                         padding: EdgeInsets.symmetric(vertical: 0.0),
@@ -257,13 +271,17 @@ class _AutomobileListScreenState extends State<AutomobileListScreen> {
                     ),
 
                   // Dodajte razmak ispod carousel-a samo ako je carousel prikazan
-                  if (!_isSearchVisible && !_isFilterVisible && !_hasActiveFilters())
+                  if (_isLoggedIn && !_isSearchVisible &&
+                      !_isFilterVisible &&
+                      !_hasActiveFilters())
                     const SliverToBoxAdapter(
                       child: SizedBox(height: 16.0),
                     ),
 
                   // Prikazati "Ostali oglasi" samo ako Search ili Filter nisu aktivni
-                  if (!_isSearchVisible && !_isFilterVisible && !_hasActiveFilters())
+                  if (_isLoggedIn && !_isSearchVisible &&
+                      !_isFilterVisible &&
+                      !_hasActiveFilters())
                     const SliverToBoxAdapter(
                       child: Padding(
                         padding: EdgeInsets.symmetric(

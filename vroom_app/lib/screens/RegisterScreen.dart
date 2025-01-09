@@ -211,17 +211,41 @@ class _RegisterScreenState extends State<RegisterScreen> {
         );
         Navigator.pushReplacementNamed(context, '/login');
       } else {
-        print('Odgovor servera: ${response.body}');
+        final responseBody = response.body;
+
+        // Definišite poruku greške
+        String errorMessage = 'Došlo je do greške. Pokušajte ponovo.';
+
+        // Ako odgovor sadrži specifičan tekst, prilagodite poruku greške
+        if (responseBody.contains(
+            'A user with the same username or email already exists')) {
+          errorMessage =
+              'Korisnik sa istim korisničkim imenom ili emailom već postoji.';
+        } else if (responseBody.contains('Internal Server Error')) {
+          errorMessage = 'Greška na serveru. Pokušajte ponovo kasnije.';
+        }
+
+        // Prikazivanje poruke greške kao Toast
         Fluttertoast.showToast(
-          msg: 'Greška: ${response.statusCode}',
+          msg: errorMessage,
           backgroundColor: Colors.red,
           textColor: Colors.white,
+          toastLength: Toast.LENGTH_LONG,
         );
       }
     } catch (e) {
       print('Greška: $e');
+      String errorMessage = 'Došlo je do greške. Pokušajte ponovo.';
+
+      if (e
+          .toString()
+          .contains('A user with the same username or email already exists')) {
+        errorMessage =
+            'Korisnik sa istim korisničkim imenom ili emailom već postoji.';
+      }
+
       Fluttertoast.showToast(
-        msg: 'Greška: $e',
+        msg: errorMessage,
         backgroundColor: Colors.red,
         textColor: Colors.white,
       );
@@ -267,7 +291,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
           validateEmail: _validateEmail,
           validatePhone: _validatePhone,
           validatePassword: _validatePassword,
-          onRemoveImage: _removePickedImage, // Implementiraj callback za uklanjanje slike
+          onRemoveImage:
+              _removePickedImage, // Implementiraj callback za uklanjanje slike
         ),
       ),
     );
