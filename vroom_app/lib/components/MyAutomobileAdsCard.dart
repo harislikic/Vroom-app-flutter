@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:vroom_app/components/ConfirmationDialog.dart';
 import '../models/automobileAd.dart';
 import '../screens/automobileDetailsScreen.dart';
 
@@ -17,51 +18,17 @@ class MyAutomobileAdsCard extends StatelessWidget {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Potvrda brisanja"),
-          content:
-              const Text("Da li ste sigurni da želite da uklonite ovaj oglas?"),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text("Otkaži"),
-            ),
-            ElevatedButton.icon(
-              onPressed: () async {
-                Navigator.of(context).pop(); // Zatvara dijalog
-                await onRemove(automobileAd.id); // Poziva funkciju za brisanje
-              },
-              label: const Text(
-                "Potvrdi",
-                style: TextStyle(
-                  color: Colors.black, // Crni tekst
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              icon: const Icon(
-                Icons.delete_outline_outlined, // Ikona za brisanje
-                color: Colors.red, // Crvena boja ikone
-                size: 20,
-              ),
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.black,
-                backgroundColor:
-                    Colors.white, // Boja teksta i ikone pri interakciji
-                side: const BorderSide(
-                  color: Colors.blueGrey, // Boja okvira
-                  width: 2, // Debljina okvira
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8), // Zaobljeni uglovi
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0, // Horizontalno unutrašnje rastojanje
-                  vertical: 12.0, // Vertikalno unutrašnje rastojanje
-                ),
-                elevation: 2, // Lagano izdizanje dugmeta
-              ),
-            ),
-          ],
+        return ConfirmationDialog(
+          title: "Potvrda brisanja",
+          content: "Da li ste sigurni da želite da uklonite ovaj oglas?",
+          successMessage: "Oglas je uspešno uklonjen.",
+          onConfirm: () async {
+            // Pozivanje funkcije za brisanje
+            await onRemove(automobileAd.id);
+          },
+          onCancel: () {
+            // Ovde nije potrebno ništa ako samo zatvara dijalog
+          },
         );
       },
     );

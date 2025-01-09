@@ -49,6 +49,23 @@ class ConfirmationDialog extends StatelessWidget {
             );
           },
           child: const Text("Potvrdi"),
+          style: ElevatedButton.styleFrom(
+            foregroundColor: Colors.black,
+            backgroundColor:
+                Colors.white, // Boja teksta i ikone pri interakciji
+            side: const BorderSide(
+              color: Colors.blueGrey, // Boja okvira
+              width: 2, // Debljina okvira
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8), // Zaobljeni uglovi
+            ),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16.0, // Horizontalno unutrašnje rastojanje
+              vertical: 12.0, // Vertikalno unutrašnje rastojanje
+            ),
+            elevation: 2, // Lagano izdizanje dugmeta
+          ),
         ),
       ],
     );
