@@ -67,7 +67,7 @@ class _CarOwnerInfoCardState extends State<CarOwnerInfoCard>
                       CircleAvatar(
                         radius: 30,
                         backgroundImage: NetworkImage(
-                          'http://localhost:5194${widget.automobileAd.user.profilePicture}',
+                          'http://localhost:5194${widget.automobileAd.user?.profilePicture}',
                         ), // Slika korisnika
                         backgroundColor: Colors.grey.shade300,
                       ),
@@ -80,7 +80,7 @@ class _CarOwnerInfoCardState extends State<CarOwnerInfoCard>
                           children: [
                             // Ime i prezime korisnika
                             Text(
-                              '${widget.automobileAd.user.firstName} ${widget.automobileAd.user.lastName}',
+                              '${widget.automobileAd.user?.firstName} ${widget.automobileAd.user?.lastName}',
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
@@ -99,7 +99,7 @@ class _CarOwnerInfoCardState extends State<CarOwnerInfoCard>
                                 ),
                                 const SizedBox(width: 8),
                                 Text(
-                                  widget.automobileAd.user.phoneNumber ?? '',
+                                  widget.automobileAd.user?.phoneNumber ?? '',
                                   style: const TextStyle(
                                     fontSize: 14,
                                     color: Colors.black87,
@@ -141,7 +141,7 @@ class _CarOwnerInfoCardState extends State<CarOwnerInfoCard>
                           children: [
                             // Grad vlasnika
                             Text(
-                              'Grad: ${widget.automobileAd.user.city?.title}',
+                              'Grad: ${widget.automobileAd.user?.city?.title}',
                               style: const TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
@@ -152,7 +152,7 @@ class _CarOwnerInfoCardState extends State<CarOwnerInfoCard>
 
                             // Kanton vlasnika
                             Text(
-                              'Kanton: ${widget.automobileAd.user.city?.canton.title}',
+                              'Kanton: ${widget.automobileAd.user?.city?.canton.title}',
                               style: const TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,

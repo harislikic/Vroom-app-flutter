@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:vroom_app/components/RecommendedCarousel.dart';
 import '../models/automobileAd.dart';
 import '../services/AutomobileAdService.dart';
 import '../components/automobileCard.dart';
@@ -44,6 +45,19 @@ class _AutomobileListScreenState extends State<AutomobileListScreen> {
     _pagingController.addPageRequestListener((pageKey) {
       _fetchPage(pageKey);
     });
+  }
+
+  bool _hasActiveFilters() {
+    return _minPrice.isNotEmpty ||
+        _maxPrice.isNotEmpty ||
+        _minMileage.isNotEmpty ||
+        _maxMileage.isNotEmpty ||
+        _yearOfManufacture.isNotEmpty ||
+        _registered ||
+        _carBrandId.isNotEmpty ||
+        _carCategoryId.isNotEmpty ||
+        _carModelId.isNotEmpty ||
+        _cityId.isNotEmpty || _searchTerm.isNotEmpty;
   }
 
   Future<void> _fetchPage(int pageKey) async {
@@ -229,8 +243,45 @@ class _AutomobileListScreenState extends State<AutomobileListScreen> {
               ),
             ),
             Expanded(
-              child: _isGridView
-                  ? PagedGridView<int, AutomobileAd>(
+              child: CustomScrollView(
+                slivers: [
+                  // Prikazati Recommended Carousel samo ako Search ili Filter nisu aktivni
+                  if (!_isSearchVisible && !_isFilterVisible && !_hasActiveFilters())
+                    const SliverToBoxAdapter(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 0.0),
+                        child: SizedBox(
+                          child: RecommendedCarousel(),
+                        ),
+                      ),
+                    ),
+
+                  // Dodajte razmak ispod carousel-a samo ako je carousel prikazan
+                  if (!_isSearchVisible && !_isFilterVisible && !_hasActiveFilters())
+                    const SliverToBoxAdapter(
+                      child: SizedBox(height: 16.0),
+                    ),
+
+                  // Prikazati "Ostali oglasi" samo ako Search ili Filter nisu aktivni
+                  if (!_isSearchVisible && !_isFilterVisible && !_hasActiveFilters())
+                    const SliverToBoxAdapter(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 16.0, vertical: 8.0),
+                        child: Text(
+                          'Ostali oglasi',
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.start,
+                        ),
+                      ),
+                    ),
+
+                  // Either a grid view or a list view based on _isGridView
+                  if (_isGridView)
+                    PagedSliverGrid<int, AutomobileAd>(
                       pagingController: _pagingController,
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
@@ -241,7 +292,9 @@ class _AutomobileListScreenState extends State<AutomobileListScreen> {
                       ),
                       builderDelegate: PagedChildBuilderDelegate<AutomobileAd>(
                         itemBuilder: (context, item, index) => AutomobileCard(
-                            automobileAd: item, isGridView: true),
+                          automobileAd: item,
+                          isGridView: true,
+                        ),
                         firstPageProgressIndicatorBuilder: (context) =>
                             const Center(child: CircularProgressIndicator()),
                         newPageProgressIndicatorBuilder: (context) =>
@@ -253,11 +306,14 @@ class _AutomobileListScreenState extends State<AutomobileListScreen> {
                             const Center(child: Text('Nema dostupnih oglasa.')),
                       ),
                     )
-                  : PagedListView<int, AutomobileAd>(
+                  else
+                    PagedSliverList<int, AutomobileAd>(
                       pagingController: _pagingController,
                       builderDelegate: PagedChildBuilderDelegate<AutomobileAd>(
                         itemBuilder: (context, item, index) => AutomobileCard(
-                            automobileAd: item, isGridView: false),
+                          automobileAd: item,
+                          isGridView: false,
+                        ),
                         firstPageProgressIndicatorBuilder: (context) =>
                             const Center(child: CircularProgressIndicator()),
                         newPageProgressIndicatorBuilder: (context) =>
@@ -269,6 +325,8 @@ class _AutomobileListScreenState extends State<AutomobileListScreen> {
                             const Center(child: Text('Nema dostupnih oglasa.')),
                       ),
                     ),
+                ],
+              ),
             ),
           ],
         ),

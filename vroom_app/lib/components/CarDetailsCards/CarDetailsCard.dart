@@ -321,7 +321,7 @@ class _CarDetailsCardState extends State<CarDetailsCard> {
                 const SizedBox(width: 8),
                 if (userId != null &&
                     widget.automobileAd.user != null &&
-                    userId != widget.automobileAd.user.id)
+                    userId != widget.automobileAd.user?.id)
                   GestureDetector(
                     onTap: () async {
                       if (_isFavorite) {
@@ -371,7 +371,7 @@ class _CarDetailsCardState extends State<CarDetailsCard> {
                 // Pretpostavka: widget.automobileAd.user.id je ID vlasnika
                 if (userId != null &&
                     widget.automobileAd.user != null &&
-                    userId == widget.automobileAd.user.id)
+                    userId == widget.automobileAd.user?.id)
                   ElevatedButton.icon(
                     onPressed: _showHighlightModal,
                     icon: const Icon(Icons.star_border, size: 16),

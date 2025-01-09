@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:vroom_app/services/AuthService.dart';
 import '../models/automobileAd.dart';
 import 'ApiConfig.dart';
 
@@ -129,6 +130,8 @@ class AutomobileAdService {
         } else {
           return [];
         }
+      } else if (response.statusCode == 404) {
+        return [];
       } else {
         throw Exception('Failed to load automobile ads');
       }
@@ -145,9 +148,32 @@ class AutomobileAdService {
       Uri.parse('${ApiConfig.baseUrl}/AutomobileAd/$automobileId'),
       headers: authHeaders,
     );
-    
+
     if (response.statusCode != 200) {
       throw Exception('Failed to remove automobile');
+    }
+  }
+
+  Future<List<AutomobileAd>> fetchRecommendAutomobiles() async {
+    final userId = await AuthService.getUserId();
+    if (userId == null) {
+      throw Exception('User ID is not available');
+    }
+
+    final uri =
+        Uri.parse('${ApiConfig.baseUrl}/AutomobileAd/$userId/recommend');
+
+    try {
+      final response = await http.get(uri);
+
+      if (response.statusCode == 200) {
+        final List<dynamic> items = json.decode(response.body);
+        return items.map((json) => AutomobileAd.fromJson(json)).toList();
+      } else {
+        throw Exception('Failed to load recommended automobile ads');
+      }
+    } catch (e) {
+      throw Exception('Error fetching recommended automobile ads: $e');
     }
   }
 }

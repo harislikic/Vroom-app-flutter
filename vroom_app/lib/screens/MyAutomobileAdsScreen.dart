@@ -6,7 +6,7 @@ import 'package:vroom_app/services/AuthService.dart';
 import '../components/MyAutomobileAdsCard.dart';
 import '../models/automobileAd.dart';
 import '../services/AutomobileAdService.dart';
-import '../components/automobileCard.dart';
+import 'package:vroom_app/main.dart' show routeObserver;
 
 class MyAutomobileAdsScreen extends StatefulWidget {
   const MyAutomobileAdsScreen({Key? key}) : super(key: key);
@@ -15,7 +15,8 @@ class MyAutomobileAdsScreen extends StatefulWidget {
   _MyAutomobileAdsScreenState createState() => _MyAutomobileAdsScreenState();
 }
 
-class _MyAutomobileAdsScreenState extends State<MyAutomobileAdsScreen> {
+class _MyAutomobileAdsScreenState extends State<MyAutomobileAdsScreen>
+    with RouteAware {
   final AutomobileAdService _automobileAdService = AutomobileAdService();
   static const _pageSize = 25;
 
@@ -32,25 +33,25 @@ class _MyAutomobileAdsScreenState extends State<MyAutomobileAdsScreen> {
 
   Future<bool> _checkIfLoggedIn() async {
     final userId = await AuthService.getUserId();
-    return userId != null; // Provera da li postoji sačuvan ID korisnika
+    return userId != null; // Check if user ID exists
   }
 
   Future<void> _fetchPage(int pageKey) async {
     final userId = await AuthService.getUserId();
     try {
-      final myAutmobileAds =
+      final myAutomobileAds =
           await _automobileAdService.fetchLoggedUserAutomobiles(
         userId: userId.toString(),
         page: pageKey,
         pageSize: _pageSize,
       );
 
-      final isLastPage = myAutmobileAds.length < _pageSize;
+      final isLastPage = myAutomobileAds.length < _pageSize;
       if (isLastPage) {
-        _pagingController.appendLastPage(myAutmobileAds);
+        _pagingController.appendLastPage(myAutomobileAds);
       } else {
         final nextPageKey = pageKey + 1;
-        _pagingController.appendPage(myAutmobileAds, nextPageKey);
+        _pagingController.appendPage(myAutomobileAds, nextPageKey);
       }
     } catch (error) {
       print("Fetch Page Error: $error");
@@ -85,8 +86,25 @@ class _MyAutomobileAdsScreenState extends State<MyAutomobileAdsScreen> {
     }
   }
 
+  // RouteAware: Refresh data when the screen is revisited
+  @override
+  void didPopNext() {
+    super.didPopNext();
+    _pagingController.refresh(); // Refresh data
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final modalRoute = ModalRoute.of(context);
+    if (modalRoute != null) {
+      routeObserver.subscribe(this, modalRoute);
+    }
+  }
+
   @override
   void dispose() {
+    routeObserver.unsubscribe(this);
     _pagingController.dispose();
     super.dispose();
   }
@@ -107,7 +125,7 @@ class _MyAutomobileAdsScreenState extends State<MyAutomobileAdsScreen> {
           }
 
           if (snapshot.hasData && !snapshot.data!) {
-            // Ako korisnik NIJE prijavljen
+            // If the user is NOT logged in
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -132,7 +150,7 @@ class _MyAutomobileAdsScreenState extends State<MyAutomobileAdsScreen> {
             );
           }
 
-          // Ako je korisnik prijavljen
+          // If the user is logged in
           return Padding(
             padding: const EdgeInsets.all(8.0),
             child: PagedListView<int, AutomobileAd>(
@@ -153,7 +171,7 @@ class _MyAutomobileAdsScreenState extends State<MyAutomobileAdsScreen> {
                   child: Center(child: CircularProgressIndicator()),
                 ),
                 noItemsFoundIndicatorBuilder: (context) => const Center(
-                  child: Text('Nema dostupnih oglasa.'),
+                  child: Text('Nemate nijedan oglasa.'),
                 ),
               ),
             ),
