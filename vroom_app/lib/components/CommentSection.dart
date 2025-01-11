@@ -109,6 +109,8 @@ class CommentsSection extends StatelessWidget {
 
   void _showCommentsModal(BuildContext context, List<Comment> comments) async {
     final loggedInUserId = await AuthService.getUserId();
+    final isLoggedIn =
+        loggedInUserId != null; // Provera da li je korisnik prijavljen
 
     showModalBottomSheet(
       context: context,
@@ -153,21 +155,10 @@ class CommentsSection extends StatelessWidget {
 
                 try {
                   final userId = await AuthService.getUserId();
-                  if (userId == null) {
-                    Fluttertoast.showToast(
-                      msg: "Morate biti prijavljeni da biste dodali komentar.",
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.BOTTOM,
-                      backgroundColor: Colors.red,
-                      textColor: Colors.white,
-                    );
-                    return;
-                  }
-
                   final CommentService commentService = CommentService();
                   await commentService.addComment(
                     content: _commentController.text,
-                    userId: userId,
+                    userId: userId!,
                     automobileAdId: automobileAdId,
                   );
 
@@ -327,24 +318,33 @@ class CommentsSection extends StatelessWidget {
                   const Divider(height: 1, color: Colors.grey),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 50.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: _commentController,
-                            decoration: const InputDecoration(
-                              hintText: "Dodajte komentar...",
-                              border: OutlineInputBorder(),
+                    child: isLoggedIn
+                        ? Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  controller: _commentController,
+                                  decoration: const InputDecoration(
+                                    hintText: "Dodajte komentar...",
+                                    border: OutlineInputBorder(),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              ElevatedButton(
+                                onPressed: _addComment,
+                                child: const Text("Pošalji"),
+                              ),
+                            ],
+                          )
+                        : const Text(
+                            "Morate biti prijavljeni da biste postavili komentar.",
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey,
                             ),
+                            textAlign: TextAlign.center,
                           ),
-                        ),
-                        const SizedBox(width: 8),
-                        ElevatedButton(
-                          onPressed: _addComment,
-                          child: const Text("Pošalji"),
-                        ),
-                      ],
-                    ),
                   ),
                 ],
               );
@@ -362,10 +362,10 @@ class CommentsSection extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasData) {
-          final comments = snapshot.data!;
+        } else {
+          final comments = snapshot.data ?? [];
           return GestureDetector(
-            onTap: () {
+            onTap: () async {
               _showCommentsModal(context, comments);
             },
             child: Padding(
@@ -395,36 +395,6 @@ class CommentsSection extends StatelessWidget {
                     ),
                   ],
                 ),
-              ),
-            ),
-          );
-        } else {
-          return Padding(
-            padding: const EdgeInsets.all(0),
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade900),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              padding: const EdgeInsets.all(12),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  const Icon(
-                    Icons.question_answer_outlined,
-                    color: Colors.grey,
-                    size: 24,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    'PITANJA I ODGOVORI (0)',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey.shade700,
-                    ),
-                  ),
-                ],
               ),
             ),
           );
