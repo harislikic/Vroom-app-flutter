@@ -1,42 +1,44 @@
 import 'package:flutter/material.dart';
-import 'user.dart'; // Ovo pretpostavlja da imate `User` model u vašem projektu.
-import 'automobileAd.dart'; // Ovo pretpostavlja da imate `AutomobileAd` model u vašem projektu.
+import 'user.dart';
 
 class Comment {
-  final int id;
+  final int commentId;
   final String content;
   final DateTime createdAt;
   final DateTime? updatedAt;
-  final int userId;
   final User user;
-  final int? automobileAdId;
-  final AutomobileAd? automobileAd;
 
   Comment({
-    required this.id,
+    required this.commentId,
     required this.content,
     required this.createdAt,
     this.updatedAt,
-    required this.userId,
     required this.user,
-    this.automobileAdId,
-    this.automobileAd,
   });
 
   factory Comment.fromJson(Map<String, dynamic> json) {
     return Comment(
-      id: json['id'],
+      commentId: json['commentId'],
       content: json['content'],
       createdAt: DateTime.parse(json['createdAt']),
-      updatedAt:
-          json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
-      userId: json['userId'],
-      user: User.fromJson(
-          json['user']),
-      automobileAdId: json['automobileAdId'],
-      automobileAd: json['automobileAd'] != null
-          ? AutomobileAd.fromJson(json['automobileAd'])
+      updatedAt: json['updateAt'] != null
+          ? DateTime.parse(json['updateAt'])
           : null,
+      user: User(
+        id: json['user']['id'],
+        userName: json['user']['username'],
+        profilePicture: json['user']['profilePicture'],
+        firstName: null,
+        lastName: null,
+        email: null,
+        phoneNumber: null,
+        address: null,
+        gender: null,
+        isAdmin: false,
+        dateOfBirth: null,
+        cityId: null,
+        city: null,
+      ),
     );
   }
 }

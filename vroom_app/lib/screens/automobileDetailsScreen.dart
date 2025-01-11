@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vroom_app/components/CarDetailsCards/CarDescriptionCard.dart';
+import 'package:vroom_app/components/CommentSection.dart';
 import 'package:vroom_app/components/RecommendedCarousel.dart';
 import 'package:vroom_app/services/AuthService.dart';
 import '../components/CarDetailsCards/AdditionalEquipmentCard.dart';
@@ -91,6 +92,8 @@ class _AutomobileDetailsScreenState extends State<AutomobileDetailsScreen> {
                         CarDescriptionCard(
                             description: automobileAd.description),
                         CarOwnerInfoCard(automobileAd: automobileAd),
+                        const SizedBox(height: 16),
+                        CommentsSection(automobileAd.id)
                       ],
                     ),
                   ),
