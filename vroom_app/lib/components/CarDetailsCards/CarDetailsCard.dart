@@ -294,160 +294,165 @@ class _CarDetailsCardState extends State<CarDetailsCard> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<int?>(
-      // Dohvatimo userId asinhrono
-      future: _getUserId(),
-      builder: (context, snapshot) {
-        final userId = snapshot.data; // Trenutno logovani korisnik ID
+@override
+Widget build(BuildContext context) {
+  return FutureBuilder<int?>(
+    future: _getUserId(),
+    builder: (context, snapshot) {
+      final userId = snapshot.data;
+      final isDone = widget.automobileAd.status == "Done";
 
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // PRVI RED - Naziv i ikonica za favorite
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Flexible(
-                  child: Text(
-                    widget.automobileAd.title,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                if (userId != null &&
-                    widget.automobileAd.user != null &&
-                    userId != widget.automobileAd.user?.id)
-                  GestureDetector(
-                    onTap: () async {
-                      if (_isFavorite) {
-                        await _removeFromFavorites();
-                      } else {
-                        await _addToFavorites();
-                      }
-                      await _checkIfFavorite();
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: _isFavorite
-                            ? Colors.blue.shade50
-                            : Colors.blueGrey.shade100,
-                        borderRadius: BorderRadius.circular(20),
-                        border: _isFavorite
-                            ? Border.all(color: Colors.blue, width: 1.5)
-                            : null,
-                      ),
-                      padding: const EdgeInsets.all(6),
-                      child: Icon(
-                        Icons.favorite,
-                        color: _isFavorite ? Colors.blue : Colors.blueGrey,
-                        size: 20,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-
-            const SizedBox(height: 4),
-
-            // Prikaz preostalog vremena ako je oglas izdvojen
-            if (userId != null &&
-                widget.automobileAd.user != null &&
-                userId == widget.automobileAd.user?.id &&
-                widget.automobileAd.isHighlighted &&
-                widget.automobileAd.highlightExpiryDate != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.access_time,
-                      size: 14,
-                      color: Colors.green,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      FormatRemainingTime(
-                          widget.automobileAd.highlightExpiryDate!),
+      return Stack(
+        children: [
+          // Main content
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Title and Favorite Icon Row
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(
+                    child: Text(
+                      widget.automobileAd.title,
                       style: const TextStyle(
-                        fontSize: 12,
-                        fontStyle: FontStyle.normal,
-                        color: Colors.black87,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(width: 8),
+                  if (userId != null &&
+                      widget.automobileAd.user != null &&
+                      userId != widget.automobileAd.user?.id &&
+                      !isDone) // Disable favorites for "Done" ads
+                    GestureDetector(
+                      onTap: () async {
+                        if (_isFavorite) {
+                          await _removeFromFavorites();
+                        } else {
+                          await _addToFavorites();
+                        }
+                        await _checkIfFavorite();
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: _isFavorite
+                              ? Colors.red.shade50
+                              : Colors.red.shade100,
+                          borderRadius: BorderRadius.circular(20),
+                          border: _isFavorite
+                              ? Border.all(color: Colors.red, width: 1.5)
+                              : null,
+                        ),
+                        padding: const EdgeInsets.all(6),
+                        child: Icon(
+                          Icons.favorite,
+                          color: _isFavorite ? Colors.red : Colors.red.shade300,
+                          size: 20,
+                        ),
+                      ),
+                    ),
+                ],
               ),
 
-            // PRIKAZ CIJENE i (eventualno) DUGME "Izdvoji" U ISTOM REDU
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.indigo, width: 1.5),
-                    borderRadius: BorderRadius.circular(8), // Zaobljeni uglovi
-                    color: Colors.indigo.shade50, // Svetlija pozadina
-                  ),
-                  child: Text(
-                    '${NumberFormat('#,##0').format(widget.automobileAd.price)} KM',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
+              const SizedBox(height: 4),
 
-                // Prikaži dugme samo ako je userId == user oglasa
-                // Pretpostavka: widget.automobileAd.user.id je ID vlasnika
-                if (userId != null &&
-                    widget.automobileAd.user != null &&
-                    userId == widget.automobileAd.user?.id)
-                  ElevatedButton.icon(
-                    onPressed: _showHighlightModal,
-                    icon: const Icon(
-                      Icons.star_border,
-                      size: 16,
-                      color: Colors.amber,
+              // Price and Highlight Button Row
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.indigo, width: 1.5),
+                      borderRadius: BorderRadius.circular(8),
+                      color: Colors.indigo.shade50,
                     ),
-                    label: const Text(
-                      'Izdvoji',
-                      style: TextStyle(
+                    child: Text(
+                      '${NumberFormat('#,##0').format(widget.automobileAd.price)} KM',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
                         color: Colors.black,
                       ),
                     ),
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.black,
-                      backgroundColor: Colors.transparent,
-                      // Siva bordura
-                      side: const BorderSide(
-                        color: Colors.grey,
-                        width: 1,
+                  ),
+                  if (userId != null &&
+                      widget.automobileAd.user != null &&
+                      userId == widget.automobileAd.user?.id)
+                    ElevatedButton.icon(
+                      onPressed: isDone
+                          ? null // Disable the button for "Done" ads
+                          : _showHighlightModal,
+                      icon: Icon(
+                        isDone ? Icons.close : Icons.star_border,
+                        size: 16,
+                        color: isDone ? Colors.red : Colors.amber,
                       ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                      label: Text(
+                        isDone ? 'Završeno' : 'Izdvoji',
+                        style: TextStyle(
+                          color: isDone ? Colors.red : Colors.black,
+                          fontWeight: FontWeight.bold,
+                          decoration:
+                              isDone ? TextDecoration.lineThrough : null,
+                        ),
                       ),
-                      elevation: 0, // ravan izgled
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 8,
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.black,
+                        backgroundColor:
+                            isDone ? Colors.red.shade50 : Colors.transparent,
+                        side: BorderSide(
+                          color: isDone ? Colors.red : Colors.grey,
+                          width: 1,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 8,
+                        ),
                       ),
                     ),
+                ],
+              ),
+              const SizedBox(height: 16),
+            ],
+          ),
+
+          // Red Overlay for "Done" ads
+          if (isDone)
+            Positioned.fill(
+              child: Container(
+                color: Colors.red.withOpacity(0.2),
+                child: const Center(
+                  child: Text(
+                    'Oglas završen',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20 ,
+                      fontWeight: FontWeight.bold,
+                      shadows: [
+                        Shadow(
+                          blurRadius: 8,
+                          color: Colors.black,
+                          offset: Offset(2, 2),
+                        ),
+                      ],
+                    ),
                   ),
-              ],
+                ),
+              ),
             ),
-            const SizedBox(height: 16),
-          ],
-        );
-      },
-    );
-  }
+        ],
+      );
+    },
+  );
+}
+
 }

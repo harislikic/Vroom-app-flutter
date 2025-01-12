@@ -109,11 +109,22 @@ class AutomobileAdService {
     required String userId,
     int page = 0,
     int pageSize = 25,
+    String? status,
+    bool? IsHighlighted
   }) async {
     final Map<String, String> queryParams = {
       'page': page.toString(),
       'pageSize': pageSize.toString(),
     };
+
+    // Add `status` to query parameters if it's not null or empty
+    if (status != null && status.isNotEmpty) {
+      queryParams['status'] = status;
+    }
+
+    if (IsHighlighted != null) {
+      queryParams['IsHighlighted'] = IsHighlighted.toString();
+    }
 
     final uri = Uri.parse('${ApiConfig.baseUrl}/AutomobileAd/user-ads/$userId')
         .replace(queryParameters: queryParams);

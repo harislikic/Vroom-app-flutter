@@ -23,6 +23,8 @@ class _MyAutomobileAdsScreenState extends State<MyAutomobileAdsScreen>
   final PagingController<int, AutomobileAd> _pagingController =
       PagingController(firstPageKey: 0);
 
+  String _selectedTab = 'active';
+
   @override
   void initState() {
     super.initState();
@@ -41,10 +43,11 @@ class _MyAutomobileAdsScreenState extends State<MyAutomobileAdsScreen>
     try {
       final myAutomobileAds =
           await _automobileAdService.fetchLoggedUserAutomobiles(
-        userId: userId.toString(),
-        page: pageKey,
-        pageSize: _pageSize,
-      );
+              userId: userId.toString(),
+              page: pageKey,
+              pageSize: _pageSize,
+              status: _selectedTab == 'highlighted' ? null : _selectedTab,
+              IsHighlighted: _selectedTab == 'highlighted');
 
       final isLastPage = myAutomobileAds.length < _pageSize;
       if (isLastPage) {
@@ -109,6 +112,13 @@ class _MyAutomobileAdsScreenState extends State<MyAutomobileAdsScreen>
     super.dispose();
   }
 
+  void _onTabSelected(String tab) {
+    setState(() {
+      _selectedTab = tab;
+      _pagingController.refresh();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -151,32 +161,77 @@ class _MyAutomobileAdsScreenState extends State<MyAutomobileAdsScreen>
           }
 
           // If the user is logged in
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: PagedListView<int, AutomobileAd>(
-              pagingController: _pagingController,
-              builderDelegate: PagedChildBuilderDelegate<AutomobileAd>(
-                itemBuilder: (context, item, index) {
-                  return MyAutomobileAdsCard(
-                    automobileAd: item,
-                    onRemove: (id) async {
-                      await _removeAutomobile(id);
-                    },
-                  );
-                },
-                firstPageProgressIndicatorBuilder: (context) =>
-                    const Center(child: CircularProgressIndicator()),
-                newPageProgressIndicatorBuilder: (context) => const Padding(
-                  padding: EdgeInsets.all(12.0),
-                  child: Center(child: CircularProgressIndicator()),
-                ),
-                noItemsFoundIndicatorBuilder: (context) => const Center(
-                  child: Text('Nemate nijedan oglasa.'),
+          return Column(
+            children: [
+              Container(
+                color: Colors.grey.shade800,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _buildTab("Aktivni", "active"),
+                    _buildTab("Završeni", "done"),
+                    _buildTab("Izdvojeni", "highlighted"),
+                  ],
                 ),
               ),
-            ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: PagedListView<int, AutomobileAd>(
+                    pagingController: _pagingController,
+                    builderDelegate: PagedChildBuilderDelegate<AutomobileAd>(
+                      itemBuilder: (context, item, index) {
+                        return MyAutomobileAdsCard(
+                          automobileAd: item,
+                          onRemove: (id) async {
+                            await _removeAutomobile(id);
+                          },
+                        );
+                      },
+                      firstPageProgressIndicatorBuilder: (context) =>
+                          const Center(child: CircularProgressIndicator()),
+                      newPageProgressIndicatorBuilder: (context) =>
+                          const Padding(
+                        padding: EdgeInsets.all(12.0),
+                        child: Center(child: CircularProgressIndicator()),
+                      ),
+                      noItemsFoundIndicatorBuilder: (context) => const Center(
+                        child: Text('Nemate nijedan oglasa.'),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildTab(String title, String tab) {
+    final isSelected = _selectedTab == tab;
+    return GestureDetector(
+      onTap: () => _onTabSelected(tab),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              title,
+              style: TextStyle(
+                color: isSelected ? Colors.white : Colors.grey.shade400,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+              ),
+            ),
+          ),
+          if (isSelected)
+            Container(
+              height: 2,
+              width: 80,
+              color: Colors.white,
+            ),
+        ],
       ),
     );
   }

@@ -64,6 +64,7 @@ class _AutomobileDetailsScreenState extends State<AutomobileDetailsScreen> {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (snapshot.hasData) {
             final automobileAd = snapshot.data!;
+            final isDone = automobileAd.status == "Done";
 
             return SingleChildScrollView(
               child: Column(
@@ -93,6 +94,7 @@ class _AutomobileDetailsScreenState extends State<AutomobileDetailsScreen> {
                             description: automobileAd.description),
                         CarOwnerInfoCard(automobileAd: automobileAd),
                         const SizedBox(height: 16),
+                        if(!isDone)
                         CommentsSection(automobileAd.id)
                       ],
                     ),
