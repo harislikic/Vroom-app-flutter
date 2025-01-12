@@ -26,7 +26,7 @@ class _UserAdsCarouselState extends State<UserAdsCarousel> {
   }
 
   Future<List<AutomobileAd>> _fetchUserAds() async {
-    final userAds = await _automobileAdService.fetchLoggedUserAutomobiles(
+    final userAds = await _automobileAdService.fetchUserAutomobiles(
       userId: widget.userId.toString(),
       page: 0,
       pageSize: 10,

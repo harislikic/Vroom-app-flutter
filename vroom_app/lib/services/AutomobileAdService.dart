@@ -105,13 +105,12 @@ class AutomobileAdService {
     }
   }
 
-  Future<List<AutomobileAd>> fetchLoggedUserAutomobiles({
-    required String userId,
-    int page = 0,
-    int pageSize = 25,
-    String? status,
-    bool? IsHighlighted
-  }) async {
+  Future<List<AutomobileAd>> fetchUserAutomobiles(
+      {required String userId,
+      int page = 0,
+      int pageSize = 25,
+      String? status,
+      bool? IsHighlighted}) async {
     final Map<String, String> queryParams = {
       'page': page.toString(),
       'pageSize': pageSize.toString(),
@@ -122,7 +121,7 @@ class AutomobileAdService {
       queryParams['status'] = status;
     }
 
-    if (IsHighlighted != null) {
+    if (IsHighlighted == true) {
       queryParams['IsHighlighted'] = IsHighlighted.toString();
     }
 

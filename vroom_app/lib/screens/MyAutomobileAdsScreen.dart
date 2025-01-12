@@ -42,7 +42,7 @@ class _MyAutomobileAdsScreenState extends State<MyAutomobileAdsScreen>
     final userId = await AuthService.getUserId();
     try {
       final myAutomobileAds =
-          await _automobileAdService.fetchLoggedUserAutomobiles(
+          await _automobileAdService.fetchUserAutomobiles(
               userId: userId.toString(),
               page: pageKey,
               pageSize: _pageSize,

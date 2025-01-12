@@ -26,3 +26,9 @@ String FormatRemainingTime(DateTime expiryDate) {
     return 'Izdvojen još $minutes ${minutes == 1 ? 'minut' : 'minuta'}.';
   }
 }
+
+String formatPrice(double? price) {
+  if (price == null) return 'Nema cijenu';
+  final NumberFormat formatter = NumberFormat("#,##0", "en_US");
+  return '${formatter.format(price)} KM';
+}
