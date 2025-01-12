@@ -1,24 +1,16 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 import 'package:vroom_app/components/ImagePicker.dart';
+import 'package:vroom_app/components/shared/DatePicker.dart';
+import 'package:vroom_app/services/AutmobileDropDownService.dart';
 import 'package:vroom_app/services/AutomobileAdService.dart';
-import 'package:vroom_app/services/EquipemntService.dart';
-import 'package:vroom_app/services/carBrandService.dart';
-import 'package:vroom_app/services/carCategoryService.dart';
-import 'package:vroom_app/services/carModelService.dart';
-
 import 'package:vroom_app/models/carBrand.dart';
 import 'package:vroom_app/models/carCategory.dart';
 import 'package:vroom_app/models/carModel.dart';
 import 'package:vroom_app/models/fuelType.dart';
 import 'package:vroom_app/models/transmissionType.dart';
 import 'package:vroom_app/models/vehicleCondition.dart';
-import 'package:vroom_app/services/fuelTypeService.dart';
-import 'package:vroom_app/services/transmissionTypeService.dart';
-import 'package:vroom_app/services/vehicleConditionService.dart';
 
 import '../models/equipment.dart';
 import '../services/AuthService.dart';
@@ -31,7 +23,7 @@ class AddAutomobileScreen extends StatefulWidget {
 }
 
 class _AddAutomobileScreenState extends State<AddAutomobileScreen> {
-  bool _isLoading = false; // Loading state
+  bool _isLoading = false;
   final _formKey = GlobalKey<FormState>();
 
   String? _title;
@@ -65,106 +57,37 @@ class _AddAutomobileScreenState extends State<AddAutomobileScreen> {
   List<TransmissionType> _transmissionTypes = [];
   List<VehicleCondition> _vehicleConditions = [];
   List<XFile> _imageFiles = [];
+  final AutomobileDropDownService _dropDownService =
+      AutomobileDropDownService();
 
-  final CarBrandService _carBrandService = CarBrandService();
-  final CarCategoryService _carCategoryService = CarCategoryService();
-  final CarModelService _carModelService = CarModelService();
-  final FuelTypeService _fuelTypeService = FuelTypeService();
-  final TransmissionTypeService _transmissionTypeService =
-      TransmissionTypeService();
-  final VehicleConditionService _vehicleConditionService =
-      VehicleConditionService();
-  final EquipmentService _equipmentService = EquipmentService();
+  Future<void> _fetchAutomobileDropDownData() async {
+    try {
+      final carBrands = await _dropDownService.fetchCarBrands();
+      final carCategories = await _dropDownService.fetchCarCategories();
+      final carModels = await _dropDownService.fetchCarModels();
+      final fuelTypes = await _dropDownService.fetchFuelTypes();
+      final transmissionTypes = await _dropDownService.fetchTransmissionTypes();
+      final vehicleConditions = await _dropDownService.fetchVehicleConditions();
+      final equipments = await _dropDownService.fetchEquipments();
+
+      setState(() {
+        _carBrands = carBrands;
+        _carCategories = carCategories;
+        _carModels = carModels;
+        _fuelTypes = fuelTypes;
+        _transmissionTypes = transmissionTypes;
+        _vehicleConditions = vehicleConditions;
+        _equipment = equipments;
+      });
+    } catch (e) {
+      print('Failed to fetch dropDowns data: $e');
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    _fetchCarBrands();
-    _fetchCarCategories();
-    _fetchCarModels();
-    _fetchFuelTypes();
-    _fetchTransmissionTypes();
-    _fetchVehicleConditions();
-    _fetchEquipments();
-  }
-
-  Future<void> _fetchCarBrands() async {
-    try {
-      final carBrands = await _carBrandService.fetchCarBrands();
-      setState(() {
-        _carBrands = carBrands;
-      });
-    } catch (e) {
-      print('Failed to fetch car brands: $e');
-    }
-  }
-
-  Future<void> _fetchCarCategories() async {
-    try {
-      final carCategories = await _carCategoryService.fetchCarCategories();
-      setState(() {
-        _carCategories = carCategories;
-      });
-    } catch (e) {
-      print('Failed to fetch car categories: $e');
-    }
-  }
-
-  Future<void> _fetchCarModels() async {
-    try {
-      final carModels = await _carModelService.fetchCarModels();
-      setState(() {
-        _carModels = carModels;
-      });
-    } catch (e) {
-      print('Failed to fetch car models: $e');
-    }
-  }
-
-  Future<void> _fetchFuelTypes() async {
-    try {
-      final fuelTypes = await _fuelTypeService.fetchFuelTypes();
-      setState(() {
-        _fuelTypes = fuelTypes;
-      });
-    } catch (e) {
-      print('Failed to fetch fuel types: $e');
-    }
-  }
-
-  Future<void> _fetchTransmissionTypes() async {
-    try {
-      final transmissionTypes =
-          await _transmissionTypeService.fetchTransmissionTypes();
-      setState(() {
-        _transmissionTypes = transmissionTypes;
-      });
-    } catch (e) {
-      print('Failed to fetch transmission types: $e');
-    }
-  }
-
-  Future<void> _fetchVehicleConditions() async {
-    try {
-      final vehicleConditions =
-          await _vehicleConditionService.fetchVehicleConditions();
-      setState(() {
-        _vehicleConditions = vehicleConditions;
-      });
-    } catch (e) {
-      print('Failed to fetch vehicle conditions: $e');
-    }
-  }
-
-  Future<void> _fetchEquipments() async {
-    try {
-      final equipmentList = await _equipmentService.fetchEquipments();
-      setState(() {
-        _equipment = equipmentList;
-      });
-    } catch (e) {
-      print('Failed to fetch equipment: $e');
-    }
+    _fetchAutomobileDropDownData();
   }
 
   Future<void> _selectDate(BuildContext context, DateTime? initialDate,
@@ -232,7 +155,6 @@ class _AddAutomobileScreenState extends State<AddAutomobileScreen> {
             .createAutomobileAd(adData, authHeaders, _imageFiles);
 
         if (success) {
-          print('success:::: ${success}');
           Fluttertoast.showToast(
             msg: 'Uspješno ste kreirali oglas',
             toastLength: Toast.LENGTH_SHORT,
@@ -267,7 +189,7 @@ class _AddAutomobileScreenState extends State<AddAutomobileScreen> {
         );
       } finally {
         setState(() {
-          _isLoading = false; // Vraćanje isLoading na false nakon završetka
+          _isLoading = false;
         });
       }
     }
@@ -426,56 +348,37 @@ class _AddAutomobileScreenState extends State<AddAutomobileScreen> {
                 keyboardType: TextInputType.text, // Use text input for strings
               ),
 
-              ////FIX
-              TextFormField(
-                decoration:
-                    InputDecoration(labelText: 'Datum isteka registracije'),
-                readOnly: true,
-                controller: TextEditingController(
-                  text: _registrationExpirationDate == null
-                      ? ''
-                      : '${_registrationExpirationDate!.toLocal()}'
-                          .split(' ')[0],
-                ),
-                onTap: () => _selectDate(context, _registrationExpirationDate,
-                    (pickedDate) {
-                  setState(() {
-                    _registrationExpirationDate = pickedDate;
-                  });
-                }),
-              ),
 
-              TextFormField(
-                decoration: InputDecoration(labelText: 'Datum malog servisa'),
-                readOnly: true,
-                controller: TextEditingController(
-                  text: _lastSmallService == null
-                      ? ''
-                      : '${_lastSmallService!.toLocal()}'.split(' ')[0],
-                ),
-                onTap: () =>
-                    _selectDate(context, _lastSmallService, (pickedDate) {
-                  setState(() {
-                    _lastSmallService = pickedDate;
-                  });
-                }),
-              ),
-
-              // Last Big Service Date Picker
-              TextFormField(
-                decoration: InputDecoration(labelText: 'Datum velikog servisa'),
-                readOnly: true,
-                controller: TextEditingController(
-                  text: _lastBigService == null
-                      ? ''
-                      : '${_lastBigService!.toLocal()}'.split(' ')[0],
-                ),
-                onTap: () =>
-                    _selectDate(context, _lastBigService, (pickedDate) {
-                  setState(() {
-                    _lastBigService = pickedDate;
-                  });
-                }),
+              Column(
+                children: [
+                  DatePicker(
+                    label: 'Datum isteka registracije',
+                    selectedDate: _registrationExpirationDate,
+                    onDatePicked: (pickedDate) {
+                      setState(() {
+                        _registrationExpirationDate = pickedDate;
+                      });
+                    },
+                  ),
+                  DatePicker(
+                    label: 'Datum malog servisa',
+                    selectedDate: _lastSmallService,
+                    onDatePicked: (pickedDate) {
+                      setState(() {
+                        _lastSmallService = pickedDate;
+                      });
+                    },
+                  ),
+                  DatePicker(
+                    label: 'Datum velikog servisa',
+                    selectedDate: _lastBigService,
+                    onDatePicked: (pickedDate) {
+                      setState(() {
+                        _lastBigService = pickedDate;
+                      });
+                    },
+                  ),
+                ],
               ),
 
               // Car Brand Dropdown with limited width and scroll
@@ -525,7 +428,6 @@ class _AddAutomobileScreenState extends State<AddAutomobileScreen> {
                 ),
               ),
 
-// Car Category Dropdown with limited width and scroll
               Container(
                 child: DropdownButtonFormField<String>(
                   value: _carCategoryId,
@@ -549,7 +451,6 @@ class _AddAutomobileScreenState extends State<AddAutomobileScreen> {
                 ),
               ),
 
-// Fuel Type Dropdown with limited width and scroll
               Container(
                 child: DropdownButtonFormField<String>(
                   value: _fuelTypeId,
