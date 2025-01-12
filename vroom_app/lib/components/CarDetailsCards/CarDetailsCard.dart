@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vroom_app/components/shared/ToastUtils.dart';
 import '../../models/automobileAd.dart';
 import '../../services/FavoritesService.dart';
 import '../../services/StripeService.dart';
@@ -39,13 +40,7 @@ class _CarDetailsCardState extends State<CarDetailsCard> {
         _isFavorite = favorites.any((fav) => fav.id == widget.automobileAd.id);
       });
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: 'Greška prilikom provjere favorita.',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-      );
+      ToastUtils.showErrorToast(message: "Greška prilikom provjere favorita.");
     }
   }
 
@@ -53,13 +48,8 @@ class _CarDetailsCardState extends State<CarDetailsCard> {
     try {
       final userId = await _getUserId();
       if (userId == null) {
-        Fluttertoast.showToast(
-          msg: 'Niste prijavljeni.',
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-        );
+        ToastUtils.showErrorToast(message: "Niste prijavljeni.");
+
         return;
       }
 
@@ -69,21 +59,9 @@ class _CarDetailsCardState extends State<CarDetailsCard> {
         _favoritesService.fetchFavorites(); // osvežavanje
       });
 
-      Fluttertoast.showToast(
-        msg: 'Dodano u favorite.',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.green,
-        textColor: Colors.white,
-      );
+      ToastUtils.showToast(message: 'Dodano u favorite.');
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: 'Došlo je do greške.',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-      );
+      ToastUtils.showErrorToast(message: "Došlo je do greške.");
     }
   }
 
@@ -91,13 +69,8 @@ class _CarDetailsCardState extends State<CarDetailsCard> {
     try {
       final userId = await _getUserId();
       if (userId == null) {
-        Fluttertoast.showToast(
-          msg: 'Niste prijavljeni.',
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-        );
+        ToastUtils.showErrorToast(message: "Niste prijavljeni.");
+
         return;
       }
 
@@ -107,21 +80,9 @@ class _CarDetailsCardState extends State<CarDetailsCard> {
         _favoritesService.fetchFavorites();
       });
 
-      Fluttertoast.showToast(
-        msg: 'Uklonjeno iz favorita.',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.green,
-        textColor: Colors.white,
-      );
+      ToastUtils.showToast(message: 'Uklonjeno iz favorita');
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: 'Došlo je do greške.',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-      );
+      ToastUtils.showErrorToast(message: "Došlo je do greške.");
     }
   }
 
@@ -244,21 +205,10 @@ class _CarDetailsCardState extends State<CarDetailsCard> {
                               automobileAdId: widget.automobileAd.id,
                             );
 
-                            Fluttertoast.showToast(
-                              msg: 'Plaćanje uspešno!',
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.CENTER,
-                              backgroundColor: Colors.green,
-                              textColor: Colors.white,
-                            );
+                            ToastUtils.showToast(message: "Plaćanje uspešno!");
                           } catch (e) {
-                            Fluttertoast.showToast(
-                              msg: 'Greška prilikom plaćanja: $e',
-                              toastLength: Toast.LENGTH_LONG,
-                              gravity: ToastGravity.CENTER,
-                              backgroundColor: Colors.red,
-                              textColor: Colors.white,
-                            );
+                            ToastUtils.showErrorToast(
+                                message: "'Greška prilikom plaćanja: $e");
                           }
                         },
                         icon: const Icon(
@@ -294,165 +244,165 @@ class _CarDetailsCardState extends State<CarDetailsCard> {
     );
   }
 
-@override
-Widget build(BuildContext context) {
-  return FutureBuilder<int?>(
-    future: _getUserId(),
-    builder: (context, snapshot) {
-      final userId = snapshot.data;
-      final isDone = widget.automobileAd.status == "Done";
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<int?>(
+      future: _getUserId(),
+      builder: (context, snapshot) {
+        final userId = snapshot.data;
+        final isDone = widget.automobileAd.status == "Done";
 
-      return Stack(
-        children: [
-          // Main content
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Title and Favorite Icon Row
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Flexible(
+        return Stack(
+          children: [
+            // Main content
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Title and Favorite Icon Row
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        widget.automobileAd.title,
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    if (userId != null &&
+                        widget.automobileAd.user != null &&
+                        userId != widget.automobileAd.user?.id &&
+                        !isDone) // Disable favorites for "Done" ads
+                      GestureDetector(
+                        onTap: () async {
+                          if (_isFavorite) {
+                            await _removeFromFavorites();
+                          } else {
+                            await _addToFavorites();
+                          }
+                          await _checkIfFavorite();
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: _isFavorite
+                                ? Colors.red.shade50
+                                : Colors.red.shade100,
+                            borderRadius: BorderRadius.circular(20),
+                            border: _isFavorite
+                                ? Border.all(color: Colors.red, width: 1.5)
+                                : null,
+                          ),
+                          padding: const EdgeInsets.all(6),
+                          child: Icon(
+                            Icons.favorite,
+                            color:
+                                _isFavorite ? Colors.red : Colors.red.shade300,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+
+                const SizedBox(height: 4),
+
+                // Price and Highlight Button Row
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.indigo, width: 1.5),
+                        borderRadius: BorderRadius.circular(8),
+                        color: Colors.indigo.shade50,
+                      ),
+                      child: Text(
+                        '${NumberFormat('#,##0').format(widget.automobileAd.price)} KM',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                    if (userId != null &&
+                        widget.automobileAd.user != null &&
+                        userId == widget.automobileAd.user?.id)
+                      ElevatedButton.icon(
+                        onPressed: isDone
+                            ? null // Disable the button for "Done" ads
+                            : _showHighlightModal,
+                        icon: Icon(
+                          isDone ? Icons.close : Icons.star_border,
+                          size: 16,
+                          color: isDone ? Colors.red : Colors.amber,
+                        ),
+                        label: Text(
+                          isDone ? 'Završeno' : 'Izdvoji',
+                          style: TextStyle(
+                            color: isDone ? Colors.red : Colors.black,
+                            fontWeight: FontWeight.bold,
+                            decoration:
+                                isDone ? TextDecoration.lineThrough : null,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.black,
+                          backgroundColor:
+                              isDone ? Colors.red.shade50 : Colors.transparent,
+                          side: BorderSide(
+                            color: isDone ? Colors.red : Colors.grey,
+                            width: 1,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          elevation: 0,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 8,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+              ],
+            ),
+
+            // Red Overlay for "Done" ads
+            if (isDone)
+              Positioned.fill(
+                child: Container(
+                  color: Colors.red.withOpacity(0.2),
+                  child: const Center(
                     child: Text(
-                      widget.automobileAd.title,
-                      style: const TextStyle(
+                      'Oglas završen',
+                      style: TextStyle(
+                        color: Colors.white,
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
+                        shadows: [
+                          Shadow(
+                            blurRadius: 8,
+                            color: Colors.black,
+                            offset: Offset(2, 2),
+                          ),
+                        ],
                       ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  if (userId != null &&
-                      widget.automobileAd.user != null &&
-                      userId != widget.automobileAd.user?.id &&
-                      !isDone) // Disable favorites for "Done" ads
-                    GestureDetector(
-                      onTap: () async {
-                        if (_isFavorite) {
-                          await _removeFromFavorites();
-                        } else {
-                          await _addToFavorites();
-                        }
-                        await _checkIfFavorite();
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: _isFavorite
-                              ? Colors.red.shade50
-                              : Colors.red.shade100,
-                          borderRadius: BorderRadius.circular(20),
-                          border: _isFavorite
-                              ? Border.all(color: Colors.red, width: 1.5)
-                              : null,
-                        ),
-                        padding: const EdgeInsets.all(6),
-                        child: Icon(
-                          Icons.favorite,
-                          color: _isFavorite ? Colors.red : Colors.red.shade300,
-                          size: 20,
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-
-              const SizedBox(height: 4),
-
-              // Price and Highlight Button Row
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.indigo, width: 1.5),
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.indigo.shade50,
-                    ),
-                    child: Text(
-                      '${NumberFormat('#,##0').format(widget.automobileAd.price)} KM',
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                  if (userId != null &&
-                      widget.automobileAd.user != null &&
-                      userId == widget.automobileAd.user?.id)
-                    ElevatedButton.icon(
-                      onPressed: isDone
-                          ? null // Disable the button for "Done" ads
-                          : _showHighlightModal,
-                      icon: Icon(
-                        isDone ? Icons.close : Icons.star_border,
-                        size: 16,
-                        color: isDone ? Colors.red : Colors.amber,
-                      ),
-                      label: Text(
-                        isDone ? 'Završeno' : 'Izdvoji',
-                        style: TextStyle(
-                          color: isDone ? Colors.red : Colors.black,
-                          fontWeight: FontWeight.bold,
-                          decoration:
-                              isDone ? TextDecoration.lineThrough : null,
-                        ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.black,
-                        backgroundColor:
-                            isDone ? Colors.red.shade50 : Colors.transparent,
-                        side: BorderSide(
-                          color: isDone ? Colors.red : Colors.grey,
-                          width: 1,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        elevation: 0,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 8,
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-              const SizedBox(height: 16),
-            ],
-          ),
-
-          // Red Overlay for "Done" ads
-          if (isDone)
-            Positioned.fill(
-              child: Container(
-                color: Colors.red.withOpacity(0.2),
-                child: const Center(
-                  child: Text(
-                    'Oglas završen',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20 ,
-                      fontWeight: FontWeight.bold,
-                      shadows: [
-                        Shadow(
-                          blurRadius: 8,
-                          color: Colors.black,
-                          offset: Offset(2, 2),
-                        ),
-                      ],
                     ),
                   ),
                 ),
               ),
-            ),
-        ],
-      );
-    },
-  );
-}
-
+          ],
+        );
+      },
+    );
+  }
 }

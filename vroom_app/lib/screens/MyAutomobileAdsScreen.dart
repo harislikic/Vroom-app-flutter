@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:vroom_app/components/LoginButton.dart';
+import 'package:vroom_app/components/shared/ToastUtils.dart';
 import 'package:vroom_app/services/AuthService.dart';
 import '../components/MyAutomobileAdsCard.dart';
 import '../models/automobileAd.dart';
@@ -41,13 +42,12 @@ class _MyAutomobileAdsScreenState extends State<MyAutomobileAdsScreen>
   Future<void> _fetchPage(int pageKey) async {
     final userId = await AuthService.getUserId();
     try {
-      final myAutomobileAds =
-          await _automobileAdService.fetchUserAutomobiles(
-              userId: userId.toString(),
-              page: pageKey,
-              pageSize: _pageSize,
-              status: _selectedTab == 'highlighted' ? null : _selectedTab,
-              IsHighlighted: _selectedTab == 'highlighted');
+      final myAutomobileAds = await _automobileAdService.fetchUserAutomobiles(
+          userId: userId.toString(),
+          page: pageKey,
+          pageSize: _pageSize,
+          status: _selectedTab == 'highlighted' ? null : _selectedTab,
+          IsHighlighted: _selectedTab == 'highlighted');
 
       final isLastPage = myAutomobileAds.length < _pageSize;
       if (isLastPage) {
@@ -69,23 +69,20 @@ class _MyAutomobileAdsScreenState extends State<MyAutomobileAdsScreen>
       await _automobileAdService.removeAutomobile(automobileId, headers);
       _pagingController.refresh();
 
-      Fluttertoast.showToast(
-        msg: "Oglas je uspešno obrisan.",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        backgroundColor: Colors.green,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
+      ToastUtils.showToast(message: "Oglas je uspešno obrisan.");
     } catch (error) {
-      Fluttertoast.showToast(
-        msg: "Greška prilikom brisanja oglasa: $error",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
+      ToastUtils.showErrorToast(
+          message: "Greška prilikom zavrsavanja oglasa: $error");
+    }
+  }
+
+  Future<void> _markAsDone(int automobileId) async {
+    try {
+      await _automobileAdService.markAsDone(automobileId);
+      _pagingController.refresh();
+    } catch (error) {
+      ToastUtils.showErrorToast(
+          message: "Greška prilikom zavrsavanja oglasa: $error");
     }
   }
 
@@ -183,8 +180,12 @@ class _MyAutomobileAdsScreenState extends State<MyAutomobileAdsScreen>
                       itemBuilder: (context, item, index) {
                         return MyAutomobileAdsCard(
                           automobileAd: item,
+                          selectedTab: _selectedTab,
                           onRemove: (id) async {
                             await _removeAutomobile(id);
+                          },
+                          onComplete: (id) async {
+                            _markAsDone(id);
                           },
                         );
                       },

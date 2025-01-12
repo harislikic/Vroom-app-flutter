@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:vroom_app/components/ConfirmationDialog.dart';
+import 'package:vroom_app/components/shared/ToastUtils.dart';
 import 'package:vroom_app/services/CommentService.dart';
 import 'package:vroom_app/models/comment.dart';
 import 'package:vroom_app/services/AuthService.dart';
@@ -45,22 +46,11 @@ class CommentsSection extends StatelessWidget {
                       userId: comment.user.id,
                       content: _controller.text,
                     );
-                    Fluttertoast.showToast(
-                      msg: "Komentar editovan",
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.BOTTOM,
-                      backgroundColor: Colors.green,
-                      textColor: Colors.white,
-                    );
+                    ToastUtils.showToast(message: "Komentar editovan");
                     onUpdate();
                   } catch (e) {
-                    Fluttertoast.showToast(
-                      msg: "Greška prilikom editovanja",
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.BOTTOM,
-                      backgroundColor: Colors.red,
-                      textColor: Colors.white,
-                    );
+                    ToastUtils.showErrorToast(
+                        message: "Greška prilikom editovanja oglasa: $e");
                   } finally {
                     Navigator.pop(context);
                   }
@@ -89,13 +79,8 @@ class CommentsSection extends StatelessWidget {
               await commentService.deleteComment(commentId: comment.commentId);
               onUpdate();
             } catch (e) {
-              Fluttertoast.showToast(
-                msg: "Greška prilikom brisanja",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
-                backgroundColor: Colors.red,
-                textColor: Colors.white,
-              );
+              ToastUtils.showErrorToast(message: "Greška prilikom brisanja");
+
               throw e; // Ponovno bacanje greške kako bi `ConfirmationDialog` mogao da je obradi.
             }
           },
@@ -143,13 +128,9 @@ class CommentsSection extends StatelessWidget {
 
               Future<void> _addComment() async {
                 if (_commentController.text.isEmpty) {
-                  Fluttertoast.showToast(
-                    msg: "Unesite komentar prije slanja.",
-                    toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.BOTTOM,
-                    backgroundColor: Colors.red,
-                    textColor: Colors.white,
-                  );
+                  ToastUtils.showErrorToast(
+                      message: "Unesite komentar prije slanja.");
+
                   return;
                 }
 
@@ -163,24 +144,13 @@ class CommentsSection extends StatelessWidget {
                   );
 
                   _commentController.clear();
-                  Fluttertoast.showToast(
-                    msg: "Komentar uspješno dodan.",
-                    toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.BOTTOM,
-                    backgroundColor: Colors.green,
-                    textColor: Colors.white,
-                  );
+                  ToastUtils.showToast(message: "Komentar uspješno dodan.");
 
                   // Refresh comments
                   await _refreshComments();
                 } catch (e) {
-                  Fluttertoast.showToast(
-                    msg: "Greška pri dodavanju komentara.",
-                    toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.BOTTOM,
-                    backgroundColor: Colors.red,
-                    textColor: Colors.white,
-                  );
+                  ToastUtils.showErrorToast(
+                      message: "Greška pri dodavanju komentara.");
                 }
               }
 

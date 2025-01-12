@@ -3,6 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:vroom_app/components/ImagePicker.dart';
 import 'package:vroom_app/components/shared/DatePicker.dart';
+import 'package:vroom_app/components/shared/ToastUtils.dart';
 import 'package:vroom_app/services/AutmobileDropDownService.dart';
 import 'package:vroom_app/services/AutomobileAdService.dart';
 import 'package:vroom_app/models/carBrand.dart';
@@ -155,38 +156,16 @@ class _AddAutomobileScreenState extends State<AddAutomobileScreen> {
             .createAutomobileAd(adData, authHeaders, _imageFiles);
 
         if (success) {
-          Fluttertoast.showToast(
-            msg: 'Uspješno ste kreirali oglas',
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.green,
-            textColor: Colors.white,
-            fontSize: 16.0,
-          );
+          ToastUtils.showToast(message: "Uspješno ste kreirali oglas");
+
           Navigator.of(context).pop(); // Redirekcija na prethodnu stranicu
         } else {
-          Fluttertoast.showToast(
-            msg: 'Greška prilikom kreiranja oglasa',
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
-            fontSize: 16.0,
-          );
+          ToastUtils.showErrorToast(
+              message: "Greška prilikom kreiranja oglasa:");
         }
       } catch (e) {
         print('Error creating ad: $e');
-        Fluttertoast.showToast(
-          msg: 'Greška prilikom slanja podataka',
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0,
-        );
+        ToastUtils.showErrorToast(message: "Greška prilikom kreiranja oglasa:");
       } finally {
         setState(() {
           _isLoading = false;
@@ -347,7 +326,6 @@ class _AddAutomobileScreenState extends State<AddAutomobileScreen> {
                     _color = value, // Directly save the color as a StringR
                 keyboardType: TextInputType.text, // Use text input for strings
               ),
-
 
               Column(
                 children: [

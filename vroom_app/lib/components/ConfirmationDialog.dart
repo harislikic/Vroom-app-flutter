@@ -38,6 +38,7 @@ class ConfirmationDialog extends StatelessWidget {
             Navigator.of(context).pop(); // Close the dialog
 
             // Show toast message after confirmation
+
             Fluttertoast.showToast(
               msg: successMessage,
               toastLength: Toast.LENGTH_SHORT,

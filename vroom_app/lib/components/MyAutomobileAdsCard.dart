@@ -7,11 +7,15 @@ import '../screens/automobileDetailsScreen.dart';
 class MyAutomobileAdsCard extends StatelessWidget {
   final AutomobileAd automobileAd;
   final Future<void> Function(int automobileId) onRemove;
+  final Future<void> Function(int automobileId) onComplete;
+  final String selectedTab;
 
   const MyAutomobileAdsCard({
     Key? key,
     required this.automobileAd,
     required this.onRemove,
+    required this.onComplete,
+    required this.selectedTab,
   }) : super(key: key);
 
   void _showConfirmationDialog(BuildContext context) {
@@ -23,12 +27,26 @@ class MyAutomobileAdsCard extends StatelessWidget {
           content: "Da li ste sigurni da želite da uklonite ovaj oglas?",
           successMessage: "Oglas je uspešno uklonjen.",
           onConfirm: () async {
-            // Pozivanje funkcije za brisanje
             await onRemove(automobileAd.id);
           },
-          onCancel: () {
-            // Ovde nije potrebno ništa ako samo zatvara dijalog
+          onCancel: () {},
+        );
+      },
+    );
+  }
+
+  void _showCompleteDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ConfirmationDialog(
+          title: "Potvrda završavanja",
+          content: "Da li ste sigurni da želite završiti ovaj oglas?",
+          successMessage: "Oglas je uspešno završen.",
+          onConfirm: () async {
+            await onComplete(automobileAd.id);
           },
+          onCancel: () {},
         );
       },
     );
@@ -72,7 +90,6 @@ class MyAutomobileAdsCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Naslov sa ikonom
                 Row(
                   children: [
                     const Icon(
@@ -94,15 +111,11 @@ class MyAutomobileAdsCard extends StatelessWidget {
                     ),
                   ],
                 ),
-
-                // Tanka linija ispod naslova
                 const Divider(
                   color: Colors.grey,
                   thickness: 0.5,
                   height: 20,
                 ),
-
-                // Datum sa ikonom
                 Row(
                   children: [
                     const Icon(
@@ -120,15 +133,11 @@ class MyAutomobileAdsCard extends StatelessWidget {
                     ),
                   ],
                 ),
-
-                // Tanka linija ispod datuma
                 const Divider(
                   color: Colors.grey,
                   thickness: 0.5,
                   height: 20,
                 ),
-
-                // Cena sa ikonom
                 Row(
                   children: [
                     const Icon(
@@ -150,24 +159,25 @@ class MyAutomobileAdsCard extends StatelessWidget {
               ],
             ),
           ),
-          // Ikone za brisanje i navigaciju
+
+          // Buttons for actions
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Ikona za brisanje sa senkom
+                // Delete Icon at the start
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade200, // Pozadina za ikonu
-                    shape: BoxShape.circle, // Zaokruženi oblik
+                    color:
+                        Colors.grey.shade200, // Background color for the icon
+                    shape: BoxShape.circle, // Rounded shape
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.1), // Boja senke
-                        blurRadius: 6, // Zamagljivanje senke
-                        spreadRadius: 3, // Širenje senke
-                        offset: const Offset(
-                            0, 3), // Pomeraj senke (horizontalno, vertikalno)
+                        color: Colors.black.withOpacity(0.1), // Shadow color
+                        blurRadius: 6, // Shadow blur
+                        spreadRadius: 3, // Shadow spread
+                        offset: const Offset(0, 3), // Shadow offset
                       ),
                     ],
                   ),
@@ -180,41 +190,66 @@ class MyAutomobileAdsCard extends StatelessWidget {
                     onPressed: () => _showConfirmationDialog(context),
                   ),
                 ),
-                // Dugme "Posjeti oglas"
-                ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AutomobileDetailsScreen(
-                          automobileAdId: automobileAd.id,
+
+                // Buttons for "Završi" and "Posjeti"
+                Row(
+                  children: [
+                    // Complete Ad Button
+                    if (selectedTab != 'done')
+                      ElevatedButton.icon(
+                        onPressed: () => _showCompleteDialog(context),
+                        icon: const Icon(Icons.check_circle_outline,
+                            size: 20, color: Colors.green),
+                        label: const Text(
+                          "Završi",
+                          style: TextStyle(color: Colors.blueGrey),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: Colors.white,
+                          side: const BorderSide(
+                              color: Colors.blueGrey, width: 1.5),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0, vertical: 8.0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
                         ),
                       ),
-                    );
-                  },
-                  icon: const Icon(
-                    Icons.directions_car, // Nova ikona
-                    size: 20,
-                    color: Colors.white,
-                  ),
-                  label: const Text(
-                    "Posjeti oglas",
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
+                    if (selectedTab != 'done')
+                      const SizedBox(width: 8), // Small space
+
+                    // Visit Ad Button
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AutomobileDetailsScreen(
+                              automobileAdId: automobileAd.id,
+                            ),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.directions_car,
+                          size: 20, color: Colors.white),
+                      label: const Text(
+                        "Posjeti",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.lightBlue.shade300,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16.0, vertical: 8.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        elevation: 4,
+                        shadowColor: Colors.lightBlueAccent,
+                      ),
                     ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: Colors.blue, // Boja teksta i ikone
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0, vertical: 8.0),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    elevation: 8, // Dodaje "shadow" efekat
-                    shadowColor: Colors.blueAccent, // Boja senke
-                  ),
+                  ],
                 ),
               ],
             ),

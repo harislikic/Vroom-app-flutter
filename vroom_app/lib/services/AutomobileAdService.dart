@@ -164,6 +164,17 @@ class AutomobileAdService {
     }
   }
 
+  Future<void> markAsDone(int automobileId) async {
+    final uri = Uri.parse(
+        '${ApiConfig.baseUrl}/AutomobileAd/mark-as-done/$automobileId');
+    final headers = {'accept': '*/*'};
+
+    final response = await http.put(uri, headers: headers);
+    if (response.statusCode != 200) {
+      throw Exception('Failed to mark automobile as done');
+    }
+  }
+
   Future<List<AutomobileAd>> fetchRecommendAutomobiles() async {
     final userId = await AuthService.getUserId();
     if (userId == null) {
