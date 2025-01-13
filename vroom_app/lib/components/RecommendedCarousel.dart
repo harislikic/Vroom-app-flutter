@@ -17,7 +17,7 @@ class _RecommendedCarouselState extends State<RecommendedCarousel> {
   @override
   void initState() {
     super.initState();
-    _futureRecommendedAds = _fetchRecommendedAds();
+   _futureRecommendedAds = _fetchRecommendedAds();
   }
 
   Future<List<AutomobileAd>> _fetchRecommendedAds() async {

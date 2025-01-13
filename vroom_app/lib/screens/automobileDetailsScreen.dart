@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:vroom_app/components/CarDetailsCards/CarDescriptionCard.dart';
 import 'package:vroom_app/components/CommentSection.dart';
-import 'package:vroom_app/components/RecommendedCarousel.dart';
+import 'package:vroom_app/components/Reservation/ReservationCalendar.dart';
+import 'package:vroom_app/models/reservation.dart';
 import 'package:vroom_app/services/AuthService.dart';
+import 'package:vroom_app/services/ReservationService.dart';
 import '../components/CarDetailsCards/AdditionalEquipmentCard.dart';
 import '../components/UserAdsCarousel.dart';
 import '../models/automobileAd.dart';
@@ -23,26 +25,32 @@ class AutomobileDetailsScreen extends StatefulWidget {
   _AutomobileDetailsScreenState createState() =>
       _AutomobileDetailsScreenState();
 }
-
 class _AutomobileDetailsScreenState extends State<AutomobileDetailsScreen> {
   late Future<AutomobileAd> futureAutomobileAd;
+  late Future<List<Reservation>> futureReservations;
+
   final AutomobileAdService automobileAdService = AutomobileAdService();
 
   bool _isLoggedIn = false;
+
+  Future<List<Reservation>> _fetchReservations() async {
+    return await ReservationService()
+        .getReservationsByAutomobileId(automobileAdId: widget.automobileAdId);
+  }
 
   @override
   void initState() {
     super.initState();
     futureAutomobileAd =
         automobileAdService.getAutomobileById(widget.automobileAdId);
+    futureReservations = _fetchReservations();
     _checkLoginStatus();
   }
 
   Future<void> _checkLoginStatus() async {
-    final userId = await AuthService.getUserId(); // Pozivanje getUserId
+    final userId = await AuthService.getUserId();
     setState(() {
-      _isLoggedIn =
-          userId != null; // Ako je userId null, korisnik nije prijavljen
+      _isLoggedIn = userId != null;
     });
   }
 
@@ -51,8 +59,8 @@ class _AutomobileDetailsScreenState extends State<AutomobileDetailsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Detalji oglasa'),
-        iconTheme: IconThemeData(
-          color: Colors.blue, // Set the back icon color to blue
+        iconTheme: const IconThemeData(
+          color: Colors.blue,
         ),
       ),
       body: FutureBuilder<AutomobileAd>(
@@ -66,56 +74,72 @@ class _AutomobileDetailsScreenState extends State<AutomobileDetailsScreen> {
             final automobileAd = snapshot.data!;
             final isDone = automobileAd.status == "Done";
 
-            return SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // CarImageCarousel without padding
-                  CarImageCarousel(images: automobileAd.images),
+            return FutureBuilder<List<Reservation>>(
+              future: futureReservations,
+              builder: (context, reservationSnapshot) {
+                if (reservationSnapshot.connectionState ==
+                    ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (reservationSnapshot.hasError) {
+                  return Center(
+                      child: Text('Error: ${reservationSnapshot.error}'));
+                } else if (reservationSnapshot.hasData) {
+                  final reservations = reservationSnapshot.data!;
 
-                  // Rest of the content with padding
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
+                  return SingleChildScrollView(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(height: 0),
-                        CarDetailsCard(automobileAd: automobileAd),
-                        Container(
-                          margin: const EdgeInsets.only(bottom: 16.0),
-                          child:
-                              CarSpecificationsCard(automobileAd: automobileAd),
+                        CarImageCarousel(images: automobileAd.images),
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CarDetailsCard(automobileAd: automobileAd),
+                              Container(
+                                margin: const EdgeInsets.only(bottom: 16.0),
+                                child: CarSpecificationsCard(
+                                    automobileAd: automobileAd),
+                              ),
+                              CarAdditionalInfoCard(
+                                  automobileAd: automobileAd),
+                              CarAdditionalEquipmentCard(
+                                  automobileAdEquipments:
+                                      automobileAd.automobileAdEquipments),
+                              CarDescriptionCard(
+                                  description: automobileAd.description),
+                              CarOwnerInfoCard(automobileAd: automobileAd),
+                              const SizedBox(height: 16),
+                              ReservationCalendar(
+                                reservations: reservations,
+                                automobileAdId: automobileAd.id,
+                              ),
+                              const SizedBox(height: 32),
+                              if (!isDone)
+                                CommentsSection(automobileAd.id),
+                            ],
+                          ),
                         ),
-                        CarAdditionalInfoCard(automobileAd: automobileAd),
-                        CarAdditionalEquipmentCard(
-                            automobileAdEquipments:
-                                automobileAd.automobileAdEquipments),
-                        CarDescriptionCard(
-                            description: automobileAd.description),
-                        CarOwnerInfoCard(automobileAd: automobileAd),
-                        const SizedBox(height: 16),
-                        if(!isDone)
-                        CommentsSection(automobileAd.id)
+                        Padding(
+                          padding:
+                              const EdgeInsets.symmetric(vertical: 16.0),
+                          child: UserAdsCarousel(
+                            currentAdId: automobileAd.id,
+                            userId: automobileAd.user!.id,
+                          ),
+                        ),
+                        if (_isLoggedIn)
+                          const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 16.0),
+                          ),
                       ],
                     ),
-                  ),
-
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    child: UserAdsCarousel(
-                      currentAdId: automobileAd.id,
-                      userId:
-                          automobileAd.user!.id, // Prosljeđujemo ID korisnika
-                    ),
-                  ),
-
-                  if (_isLoggedIn)
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 16.0),
-                      child: RecommendedCarousel(),
-                    ),
-                ],
-              ),
+                  );
+                } else {
+                  return const Center(child: Text('No data available'));
+                }
+              },
             );
           } else {
             return const Center(child: Text('No data available'));

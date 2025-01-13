@@ -7,7 +7,7 @@ class ToastUtils {
     ToastGravity gravity = ToastGravity.BOTTOM,
     Color backgroundColor = Colors.green,
     Color textColor = Colors.white,
-    Toast toastLength = Toast.LENGTH_SHORT,
+    Toast toastLength = Toast.LENGTH_LONG,
     double fontSize = 16.0,
   }) {
     Fluttertoast.showToast(
@@ -30,6 +30,21 @@ class ToastUtils {
       gravity: gravity,
       backgroundColor: Colors.red,
       textColor: Colors.white,
+      toastLength: Toast.LENGTH_LONG,
+      fontSize: fontSize,
+    );
+  }
+
+  static void showInfoToast({
+    required String message,
+    ToastGravity gravity = ToastGravity.BOTTOM,
+    double fontSize = 16.0,
+  }) {
+    showToast(
+      message: message,
+      gravity: gravity,
+      backgroundColor: Colors.amberAccent,
+      textColor: Colors.black,
       toastLength: Toast.LENGTH_LONG,
       fontSize: fontSize,
     );
