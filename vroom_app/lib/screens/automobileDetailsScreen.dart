@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vroom_app/components/CarDetailsCards/CarDescriptionCard.dart';
 import 'package:vroom_app/components/CommentSection.dart';
+import 'package:vroom_app/components/RecommendedCarousel.dart';
 import 'package:vroom_app/components/Reservation/ReservationCalendar.dart';
 import 'package:vroom_app/models/reservation.dart';
 import 'package:vroom_app/services/AuthService.dart';
@@ -128,6 +129,10 @@ class _AutomobileDetailsScreenState extends State<AutomobileDetailsScreen> {
                             currentAdId: automobileAd.id,
                             userId: automobileAd.user!.id,
                           ),
+                        ),
+                           const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 16.0),
+                          child: RecommendedCarousel(),
                         ),
                         if (_isLoggedIn)
                           const Padding(

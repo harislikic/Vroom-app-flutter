@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:vroom_app/components/shared/CloseModalButton.dart';
 import 'package:vroom_app/components/shared/ToastUtils.dart';
 
 class ReservationModal extends StatefulWidget {
@@ -56,9 +57,27 @@ class _ReservationModalState extends State<ReservationModal> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            'Odaberite vrijeme za datum: ${DateFormat('yyyy-MM-dd').format(widget.selectedDay)}',
-            style: const TextStyle(fontSize: 18),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment:
+                CrossAxisAlignment.start, // Poravnanje prema vrhu
+            children: [
+              const SizedBox(), // Ostavlja prostor sa leve strane
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end, // Tekst ispod X-a
+                children: [
+                  CloseModalButton(
+                    onPressed: () =>
+                        Navigator.of(context).pop(), // Zatvaranje modala
+                  ),
+                  const SizedBox(height: 8), // Razmak između ikone i teksta
+                  Text(
+                    'Odaberite vrijeme za datum: ${DateFormat('yyyy-MM-dd').format(widget.selectedDay)}',
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                ],
+              ),
+            ],
           ),
           const SizedBox(height: 16),
           OutlinedButton.icon(
@@ -85,8 +104,8 @@ class _ReservationModalState extends State<ReservationModal> {
               padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
               backgroundColor: Colors.white, // Pozadina dugmeta
               foregroundColor: Colors.blueAccent, // Boja teksta i ikona
-              side: const BorderSide(
-                  color: Colors.blueGrey, width: 2), // Border
+              side:
+                  const BorderSide(color: Colors.blueGrey, width: 2), // Border
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12), // Zaobljeni uglovi
               ),

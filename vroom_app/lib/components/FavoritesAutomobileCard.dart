@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:vroom_app/components/ConfirmationDialog.dart';
 import 'package:vroom_app/models/favoritesAutomobiles.dart';
 import 'package:vroom_app/screens/automobileDetailsScreen.dart';
+import 'package:vroom_app/utils/helpers.dart';
 
 class FavoritesAutomobileCard extends StatelessWidget {
   final FavoritesAutomobiles favoritesAutomobile;
@@ -156,12 +157,9 @@ class FavoritesAutomobileCard extends StatelessWidget {
                       const SizedBox(height: 4), // Small spacing
                       // Price of the car
                       Text(
-                        '${favoritesAutomobile.price.toStringAsFixed(2)} KM',
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                          formatPrice(favoritesAutomobile.price),
+                          style: const TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.bold)),
                     ],
                   ),
                 ),
