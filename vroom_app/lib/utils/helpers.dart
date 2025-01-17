@@ -32,3 +32,17 @@ String formatPrice(double? price) {
   final NumberFormat formatter = NumberFormat("#,##0", "en_US");
   return '${formatter.format(price)} KM';
 }
+
+String formatPhoneNumber(String phoneNumber) {
+  final RegExp regex = RegExp(r'(\+\d{3})(\d{2})(\d{3})(\d{3})');
+  final Match? match = regex.firstMatch(phoneNumber);
+
+  if (match != null) {
+    final String countryCode = match.group(1) ?? '';
+    final String areaCode = match.group(2) ?? '';
+    final String firstPart = match.group(3) ?? '';
+    final String secondPart = match.group(4) ?? '';
+    return '$countryCode $areaCode $firstPart-$secondPart';
+  }
+  return phoneNumber;
+}

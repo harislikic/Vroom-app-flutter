@@ -19,7 +19,6 @@ class ProfileCard extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(4),
       ),
-      // Samo ubacimo 2 piksela vertical margin da bude razmak među karticama
       margin: const EdgeInsets.symmetric(vertical: 2),
       child: Padding(
         padding: const EdgeInsets.symmetric(
@@ -31,9 +30,9 @@ class ProfileCard extends StatelessWidget {
           children: [
             Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 14,
-                color: Colors.grey,
+                color: Colors.grey[800], // Tamnija siva boja
               ),
             ),
             const SizedBox(height: 4),

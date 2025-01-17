@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vroom_app/screens/OwnerScreen.dart';
+import 'package:vroom_app/utils/helpers.dart';
 import '../../models/automobileAd.dart';
 
 class CarOwnerInfoCard extends StatefulWidget {
@@ -125,7 +126,10 @@ class _CarOwnerInfoCardState extends State<CarOwnerInfoCard>
                                 ),
                                 const SizedBox(width: 8),
                                 Text(
-                                  widget.automobileAd.user?.phoneNumber ?? '',
+                                  widget.automobileAd.user?.phoneNumber != null
+                                      ? formatPhoneNumber(widget
+                                          .automobileAd.user!.phoneNumber!)
+                                      : '',
                                   style: const TextStyle(
                                     fontSize: 14,
                                     color: Colors.black87,

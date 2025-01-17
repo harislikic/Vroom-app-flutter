@@ -143,8 +143,13 @@ class _OwnerScreenState extends State<OwnerScreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildUserInfoRow(Icons.phone, 'Broj Telefona',
-                    widget.owner.phoneNumber ?? 'N/A'),
+                _buildUserInfoRow(
+                  Icons.phone,
+                  'Broj telefona',
+                  widget.owner.phoneNumber != null
+                      ? formatPhoneNumber(widget.owner.phoneNumber!)
+                      : 'N/A',
+                ),
               ],
             ),
           ),

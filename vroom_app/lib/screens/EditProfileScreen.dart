@@ -71,7 +71,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
     if (image != null) {
       setState(() {
-        profileImagePath = image.path; 
+        profileImagePath = image.path;
         isLocalImage = true;
         editedProfile["profilePicture"] = image.path;
       });
@@ -151,11 +151,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Izmena profila"),
+        title: const Text("Uredi profil"),
         backgroundColor: Colors.blueGrey[900],
+        iconTheme: const IconThemeData(
+          color: Colors.blueAccent,
+        ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.save),
+          TextButton.icon(
+            icon: const Icon(
+              Icons.save,
+              color: Colors.blueAccent,
+            ),
+            label: const Text(
+              'Sačuvaj',
+              style: TextStyle(color: Colors.blueAccent),
+            ),
             onPressed: _saveChanges,
           ),
         ],
@@ -199,7 +209,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           TextButton.icon(
             onPressed: pickProfileImage,
             icon: const Icon(Icons.camera_alt),
-            label: const Text("Promeni sliku"),
+            label: const Text("Promijeni sliku"),
           ),
         ],
       ),

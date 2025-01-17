@@ -40,10 +40,14 @@ class UserService {
       print('profilePicture::: ${profilePicture}');
 
       var request = http.MultipartRequest(
-        'PUT',
-        Uri.parse(
-            '${ApiConfig.baseUrl}/User/$userId${_createQueryParams(userData)}'),
+        'PATCH',
+        Uri.parse('${ApiConfig.baseUrl}/User/$userId'),
       )..headers.addAll(headers);
+      userData.forEach((key, value) {
+        if (value != null && value.toString().isNotEmpty) {
+          request.fields[key] = value.toString();
+        }
+      });
 
       if (isImageUpdated && profilePicture != null) {
         request.files.add(await http.MultipartFile.fromPath(
@@ -64,10 +68,5 @@ class UserService {
     } catch (e) {
       throw Exception('Error while updating user profile: $e');
     }
-  }
-
-  static String _createQueryParams(Map<String, dynamic> userData) {
-    return '?${userData.entries.where((e) => e.key != "id")
-        .map((e) => '${e.key}=${Uri.encodeComponent(e.value.toString())}').join('&')}';
   }
 }

@@ -141,7 +141,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   ProfileCard(
                     label: "Telefon",
-                    value: phone,
+                   value: formatPhoneNumber(phone),
                   ),
                   ProfileCard(
                     label: "Adresa",
