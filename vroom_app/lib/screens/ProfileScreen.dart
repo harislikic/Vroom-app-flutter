@@ -37,7 +37,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       setState(() {
         isLoading = false;
       });
-      ToastUtils.showErrorToast(message: "Greška tokom dohvata profila");
+      if (userProfile != null) {
+        ToastUtils.showErrorToast(message: "Greška tokom dohvata profila");
+      }
     }
   }
 
@@ -141,7 +143,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   ProfileCard(
                     label: "Telefon",
-                   value: formatPhoneNumber(phone),
+                    value: formatPhoneNumber(phone),
                   ),
                   ProfileCard(
                     label: "Adresa",
@@ -151,10 +153,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     label: "Datum rođenja",
                     value: dob,
                   ),
-                  ProfileCard(
-                    label: "Grad",
-                    value: city
-                  ),
+                  ProfileCard(label: "Grad", value: city),
                 ],
               ),
             ),

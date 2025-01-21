@@ -4,7 +4,7 @@ import 'package:vroom_app/models/equipment.dart';
 import 'ApiConfig.dart';
 
 class EquipmentService {
-  Future<List<Equipment>> fetchEquipments({int page = 0, int pageSize = 25}) async {
+  Future<List<Equipment>> fetchEquipments({int page = 0, int pageSize = 50}) async {
     const String baseUrl = '${ApiConfig.baseUrl}/Equipment';
 
     final Uri uri = Uri.parse(baseUrl).replace(queryParameters: {

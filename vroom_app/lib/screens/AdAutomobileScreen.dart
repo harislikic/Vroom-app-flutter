@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:vroom_app/components/ImagePicker.dart';
+import 'package:vroom_app/components/LoginButton.dart';
 import 'package:vroom_app/components/shared/DatePicker.dart';
 import 'package:vroom_app/components/shared/ToastUtils.dart';
 import 'package:vroom_app/services/AutmobileDropDownService.dart';
@@ -26,6 +26,7 @@ class AddAutomobileScreen extends StatefulWidget {
 class _AddAutomobileScreenState extends State<AddAutomobileScreen> {
   bool _isLoading = false;
   final _formKey = GlobalKey<FormState>();
+  bool _isLoggedIn = false;
 
   String? _title;
   String? _description;
@@ -88,7 +89,15 @@ class _AddAutomobileScreenState extends State<AddAutomobileScreen> {
   @override
   void initState() {
     super.initState();
+    _checkLoginState();
     _fetchAutomobileDropDownData();
+  }
+
+  Future<void> _checkLoginState() async {
+    final bool result = await AuthService.checkIfUserIsLoggedIn();
+    setState(() {
+      _isLoggedIn = result;
+    });
   }
 
   Future<void> _selectDate(BuildContext context, DateTime? initialDate,
@@ -233,6 +242,38 @@ class _AddAutomobileScreenState extends State<AddAutomobileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (!_isLoggedIn) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Dodaj oglas'),
+          iconTheme: const IconThemeData(
+            color: Colors.blue,
+          ),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                "Morate se prijaviti da biste dodali oglas.",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black54,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+              LoginButton(
+                onPressed: () {
+                  Navigator.pushReplacementNamed(context, '/login');
+                },
+              ),
+            ],
+          ),
+        ),
+      );
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text('Dodaj oglas'),

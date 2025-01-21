@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:vroom_app/components/ConfirmationDialog.dart';
 import 'package:vroom_app/components/shared/ToastUtils.dart';
 import 'package:vroom_app/services/CommentService.dart';
@@ -95,7 +94,7 @@ class CommentsSection extends StatelessWidget {
   void _showCommentsModal(BuildContext context, List<Comment> comments) async {
     final loggedInUserId = await AuthService.getUserId();
     final isLoggedIn =
-        loggedInUserId != null; // Provera da li je korisnik prijavljen
+        loggedInUserId != null;
 
     showModalBottomSheet(
       context: context,

@@ -179,7 +179,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   _buildProfileImage(),
                   _buildEditableField("Ime", "firstName"),
                   _buildEditableField("Prezime", "lastName"),
-                  _buildEditableField("Korisničko ime", "userName"),
                   _buildEditableField("Email", "email"),
                   _buildEditableField("Telefon", "phoneNumber"),
                   _buildEditableField("Adresa", "adress"),

@@ -264,15 +264,50 @@ class _CarDetailsCardState extends State<CarDetailsCard> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Flexible(
-                      child: Text(
-                        widget.automobileAd.title,
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Glavni naslov
+                          Text(
+                            widget.automobileAd.title,
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+
+                          if (widget.automobileAd.highlightExpiryDate != null &&
+                              userId == widget.automobileAd.user?.id)
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(
+                                  Icons.rocket_launch,
+                                  size: 14,
+                                  color: Colors.black,
+                                ),
+                                const SizedBox(width: 4),
+                                if (widget.automobileAd.highlightExpiryDate !=
+                                        null &&
+                                    userId == widget.automobileAd.user?.id)
+                                  Text(
+                                    FormatRemainingTime(widget
+                                        .automobileAd.highlightExpiryDate!),
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.blueGrey,
+                                    ),
+                                  ),
+                              ],
+                            ),
+                        ],
                       ),
                     ),
                     const SizedBox(width: 8),
+
+                    // Ostatak tvog koda za "favorite" ikonu:
                     if (userId != null &&
                         widget.automobileAd.user != null &&
                         userId != widget.automobileAd.user?.id &&

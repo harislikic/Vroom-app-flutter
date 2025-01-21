@@ -5,7 +5,7 @@ import 'ApiConfig.dart';
 
 class CarModelService {
   Future<List<CarModel>> fetchCarModels(
-      {int page = 0, int pageSize = 25}) async {
+      {int page = 0, int pageSize = 50}) async {
 
     const String baseUrl = '${ApiConfig.baseUrl}/CarModel';
 
