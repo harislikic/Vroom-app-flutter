@@ -42,7 +42,7 @@ class _ReservationCalendarState extends State<ReservationCalendar> {
     }
 
     if (userId == widget.automobileOwnerId) {
-      ToastUtils.showErrorToast(message: 'Ne možete rezervirati vlastiti oglas.');
+      ToastUtils.showErrorToast(message: 'Ne možete rezervisati vlastiti oglas.');
       return;
     }
 
