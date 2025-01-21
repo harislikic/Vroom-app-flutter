@@ -115,6 +115,7 @@ class _AutomobileDetailsScreenState extends State<AutomobileDetailsScreen> {
                               ReservationCalendar(
                                 reservations: reservations,
                                 automobileAdId: automobileAd.id,
+                                automobileOwnerId:automobileAd.user!.id
                               ),
                               const SizedBox(height: 32),
                               if (!isDone)

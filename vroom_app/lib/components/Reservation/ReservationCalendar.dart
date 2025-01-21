@@ -10,11 +10,13 @@ import 'package:vroom_app/services/ReservationService.dart';
 class ReservationCalendar extends StatefulWidget {
   final List<Reservation> reservations;
   final int automobileAdId;
+  final int automobileOwnerId;
 
   const ReservationCalendar({
     Key? key,
     required this.reservations,
     required this.automobileAdId,
+    required this.automobileOwnerId,
   }) : super(key: key);
 
   @override
@@ -31,7 +33,19 @@ class _ReservationCalendarState extends State<ReservationCalendar> {
     _currentReservations = widget.reservations;
   }
 
-  void _showReservationModal(BuildContext context, DateTime selectedDay) {
+  void _showReservationModal(BuildContext context, DateTime selectedDay) async {
+    final userId = await AuthService.getUserId();
+
+    if (userId == null) {
+      ToastUtils.showErrorToast(message: 'Morate biti prijavljeni da biste napravili rezervaciju.');
+      return;
+    }
+
+    if (userId == widget.automobileOwnerId) {
+      ToastUtils.showErrorToast(message: 'Ne možete rezervirati vlastiti oglas.');
+      return;
+    }
+
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
