@@ -4,24 +4,25 @@ class ProfileHeader extends StatelessWidget {
   final String? profileImageUrl;
   final VoidCallback onEdit;
   final VoidCallback onLogout;
+  final VoidCallback onReservations;
 
   const ProfileHeader({
     Key? key,
     required this.profileImageUrl,
     required this.onEdit,
     required this.onLogout,
+    required this.onReservations,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        // Background container sa Flutter gradientom (umesto network image)
+        // Background container sa gradientom
         Container(
           width: double.infinity,
-          height: 200,
+          height: 240,
           decoration: BoxDecoration(
-            // Primer linearnog gradijenta sa nijansama teals
             gradient: LinearGradient(
               colors: [Colors.teal.shade800, Colors.teal.shade300],
               begin: Alignment.topLeft,
@@ -58,7 +59,7 @@ class ProfileHeader extends StatelessWidget {
                 onPressed: onEdit,
                 style: ElevatedButton.styleFrom(
                   side: BorderSide(
-                    color: Colors.teal.shade200, // linija oko dugmeta
+                    color: Colors.teal.shade200,
                     width: 2,
                   ),
                   backgroundColor: Colors.transparent,
@@ -72,11 +73,32 @@ class ProfileHeader extends StatelessWidget {
                 child: const Text(
                   "Uredi profil",
                   style: TextStyle(
-                    color: Colors.white, 
+                    color: Colors.white,
                     fontSize: 14,
                   ),
                 ),
-              )
+              ),
+              const SizedBox(height: 8),
+              // Dugme za "Pogledaj rezervacije"
+              ElevatedButton.icon(
+                onPressed: onReservations,
+                icon: const Icon(
+                  Icons.event,
+                  color: Colors.white,
+                ),
+                label: const Text(
+                  "Pogledaj rezervacije",
+                  style: TextStyle(color: Colors.white),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.teal.shade800,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
             ],
           ),
         ),

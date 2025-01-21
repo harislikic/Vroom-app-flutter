@@ -1,24 +1,38 @@
 class Reservation {
+  final int reservationId;
   final String reservationDate;
   final String status;
-  final int? userId; // Može biti null u slučaju da nije vraćen userId
-  final ReservationUser? user; // Takođe može biti null
+  final int? userId;
+  final ReservationUser? user;
+  final int? automobileAdId;
+  final String? title; // Naziv oglasa
+  final int? price; // Naziv oglasa
+  final String? firstImage; // URL prve slike oglasa
 
   Reservation({
+    required this.reservationId,
     required this.reservationDate,
     required this.status,
     this.userId,
     this.user,
+    this.automobileAdId,
+    this.title,
+    this.price,
+    this.firstImage,
   });
 
   factory Reservation.fromJson(Map<String, dynamic> json) {
     return Reservation(
+      reservationId: json['id'],
       reservationDate: json['reservationDate'] ?? '',
       status: json['status'] ?? '',
-      userId: json['userId'], 
-      user: json['user'] != null
-          ? ReservationUser.fromJson(json['user'])
-          : null, 
+      userId: json['userId'],
+      user:
+          json['user'] != null ? ReservationUser.fromJson(json['user']) : null,
+      automobileAdId: json['automobileAdId'],
+      title: json['title'],
+      price: json['price'],
+      firstImage: json['firstImage'],
     );
   }
 }
