@@ -188,7 +188,7 @@ class _UserReservationsScreenState extends State<UserReservationsScreen> {
               children: [
                 _buildStatusButton("Pending", "Na čekanju"),
                 _buildStatusButton("Approved", "Odobrene"),
-                _buildStatusButton("Declined", "Odbijene"),
+                _buildStatusButton("Rejected", "Odbijene"),
               ],
             ),
           ),

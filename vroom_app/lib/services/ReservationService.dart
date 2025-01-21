@@ -150,10 +150,14 @@ class ReservationService {
     final String url = '${ApiConfig.baseUrl}/Reservation/reject/$reservationId';
     final headers = await AuthService.getAuthHeaders();
 
-    final response = await http.delete(
+    final response = await http.post(
       Uri.parse(url),
       headers: headers,
     );
+
+    print('rul ${url}');
+
+    print('reservationId ${reservationId}');
 
     if (response.statusCode == 200) {
       print('Reservation rejected successfully.');

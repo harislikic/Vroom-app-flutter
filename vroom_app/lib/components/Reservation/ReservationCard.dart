@@ -161,7 +161,7 @@ class ReservationCard extends StatelessWidget {
 
               // Prikazuje dugme "Obriši" za statuse "Approved" i "Declined"
               if (reservation.status == "Approved" ||
-                  reservation.status == "Declined")
+                  reservation.status == "Rejected")
                 ElevatedButton.icon(
                   onPressed: onDelete,
                   style: ElevatedButton.styleFrom(
