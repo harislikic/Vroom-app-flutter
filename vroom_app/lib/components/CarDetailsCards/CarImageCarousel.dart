@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:vroom_app/services/ApiConfig.dart';
 import '../../models/image.dart';
 
 class CarImageCarousel extends StatefulWidget {
@@ -27,7 +28,8 @@ class _CarImageCarouselState extends State<CarImageCarousel> {
                   viewportFraction: 1,
                   onPageChanged: (index, reason) {
                     setState(() {
-                      _currentIndex = index; // Ažuriraj trenutni index kada se slika promeni
+                      _currentIndex =
+                          index; // Ažuriraj trenutni index kada se slika promeni
                     });
                   },
                 ),
@@ -38,17 +40,18 @@ class _CarImageCarouselState extends State<CarImageCarousel> {
                       ClipRRect(
                         //borderRadius: BorderRadius.circular(15), // Zaobljeni kutovi
                         child: Image.network(
-                          'http://localhost:5194${image.imageUrl}',
+                          '${ApiConfig.baseUrl}${image.imageUrl}',
                           fit: BoxFit.cover,
                           width: double.infinity,
                         ),
                       ),
                       Positioned(
-                        top: 10,
+                        bottom: 10,
                         right: 10,
                         child: GestureDetector(
                           onTap: () {
-                            _showFullScreenImage(index); // Prikaži sliku u punoj veličini
+                            _showFullScreenImage(
+                                index); // Prikaži sliku u punoj veličini
                           },
                           child: Container(
                             decoration: BoxDecoration(
@@ -111,50 +114,86 @@ class _CarImageCarouselState extends State<CarImageCarousel> {
   }
 
   void _showFullScreenImage(int initialIndex) {
+    int currentIndex =
+        initialIndex; // Local variable for tracking current index
+
     showDialog(
       context: context,
       builder: (context) {
-        return Dialog(
-          backgroundColor: Colors.black,
-          insetPadding: const EdgeInsets.all(0), // Pun ekran
-          child: Stack(
-            children: [
-              PageView.builder(
-                itemCount: widget.images.length,
-                controller: PageController(initialPage: initialIndex),
-                onPageChanged: (index) {
-                  setState(() {
-                    _currentIndex = index; // Ažuriraj index kada se slika promeni
-                  });
-                },
-                itemBuilder: (context, index) {
-                  final image = widget.images[index];
-                  return InteractiveViewer(
-                    child: Image.network(
-                      'http://localhost:5194${image.imageUrl}',
-                      fit: BoxFit.contain,
-                      width: double.infinity,
-                      height: double.infinity,
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Dialog(
+              backgroundColor: Colors.black,
+              insetPadding: const EdgeInsets.all(0), // Fullscreen
+              child: Stack(
+                children: [
+                  CarouselSlider.builder(
+                    itemCount: widget.images.length,
+                    options: CarouselOptions(
+                      height: double.infinity, // Fullscreen height
+                      initialPage: initialIndex,
+                      viewportFraction: 1.0, // Show one image at a time
+                      enableInfiniteScroll: true,
+                      enlargeCenterPage: false,
+                      onPageChanged: (index, reason) {
+                        setModalState(() {
+                          currentIndex = index; // Update index in modal state
+                        });
+                      },
                     ),
-                  );
-                },
-              ),
-              Positioned(
-                top: 30,
-                right: 20,
-                child: GestureDetector(
-                  onTap: () => Navigator.of(context).pop(), // Zatvori dijalog
-                  child: const CircleAvatar(
-                    backgroundColor: Colors.white,
-                    child: Icon(
-                      Icons.close,
-                      color: Colors.black,
+                    itemBuilder: (context, index, realIndex) {
+                      final image = widget.images[index];
+                      return InteractiveViewer(
+                        child: Image.network(
+                          '${ApiConfig.baseUrl}${image.imageUrl}',
+                          fit: BoxFit.contain,
+                          width: double.infinity,
+                          height: double.infinity,
+                        ),
+                      );
+                    },
+                  ),
+                  // Close Button
+                  Positioned(
+                    top: 40,
+                    right: 20,
+                    child: GestureDetector(
+                      onTap: () => Navigator.of(context).pop(), // Close dialog
+                      child: const CircleAvatar(
+                        backgroundColor: Colors.white,
+                        child: Icon(
+                          Icons.close,
+                          color: Colors.black,
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                  // Dots Indicator
+                  Positioned(
+                    bottom: 20,
+                    left: 0,
+                    right: 0,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: widget.images.asMap().entries.map((entry) {
+                        return Container(
+                          width: 8,
+                          height: 8,
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: currentIndex == entry.key
+                                ? Colors.blueAccent
+                                : Colors.white.withOpacity(0.5),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         );
       },
     );
