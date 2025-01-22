@@ -4,6 +4,7 @@ import 'package:vroom_app/components/CommentSection.dart';
 import 'package:vroom_app/components/RecommendedCarousel.dart';
 import 'package:vroom_app/components/Reservation/ReservationCalendar.dart';
 import 'package:vroom_app/models/reservation.dart';
+import 'package:vroom_app/screens/EditAutomobileScreen.dart';
 import 'package:vroom_app/services/AuthService.dart';
 import 'package:vroom_app/services/ReservationService.dart';
 import '../components/CarDetailsCards/AdditionalEquipmentCard.dart';
@@ -33,6 +34,7 @@ class _AutomobileDetailsScreenState extends State<AutomobileDetailsScreen> {
   final AutomobileAdService automobileAdService = AutomobileAdService();
 
   bool _isLoggedIn = false;
+  int? _loggedInUserId;
 
   Future<List<Reservation>> _fetchReservations() async {
     return await ReservationService()
@@ -52,7 +54,17 @@ class _AutomobileDetailsScreenState extends State<AutomobileDetailsScreen> {
     final userId = await AuthService.getUserId();
     setState(() {
       _isLoggedIn = userId != null;
+      _loggedInUserId = userId;
     });
+  }
+
+  void _navigateToEditScreen(BuildContext context, AutomobileAd automobileAd) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditAutomobileScreen(automobileAd: automobileAd),
+      ),
+    );
   }
 
   @override
@@ -63,6 +75,26 @@ class _AutomobileDetailsScreenState extends State<AutomobileDetailsScreen> {
         iconTheme: const IconThemeData(
           color: Colors.blue,
         ),
+        actions: [
+          FutureBuilder<AutomobileAd>(
+            future: futureAutomobileAd,
+            builder: (context, snapshot) {
+              if (snapshot.hasData && _isLoggedIn) {
+                final automobileAd = snapshot.data!;
+                if (_loggedInUserId == automobileAd.user?.id) {
+                  return TextButton.icon(
+                    onPressed: () =>
+                        _navigateToEditScreen(context, automobileAd),
+                    icon: const Icon(Icons.edit, color: Colors.blue),
+                    label: const Text('Uredi',
+                        style: TextStyle(color: Colors.blue)),
+                  );
+                }
+              }
+              return const SizedBox.shrink();
+            },
+          ),
+        ],
       ),
       body: FutureBuilder<AutomobileAd>(
         future: futureAutomobileAd,
@@ -103,8 +135,7 @@ class _AutomobileDetailsScreenState extends State<AutomobileDetailsScreen> {
                                 child: CarSpecificationsCard(
                                     automobileAd: automobileAd),
                               ),
-                              CarAdditionalInfoCard(
-                                  automobileAd: automobileAd),
+                              CarAdditionalInfoCard(automobileAd: automobileAd),
                               CarAdditionalEquipmentCard(
                                   automobileAdEquipments:
                                       automobileAd.automobileAdEquipments),
@@ -115,30 +146,24 @@ class _AutomobileDetailsScreenState extends State<AutomobileDetailsScreen> {
                               ReservationCalendar(
                                 reservations: reservations,
                                 automobileAdId: automobileAd.id,
-                                automobileOwnerId:automobileAd.user!.id
+                                automobileOwnerId: automobileAd.user!.id,
                               ),
                               const SizedBox(height: 32),
-                              if (!isDone)
-                                CommentsSection(automobileAd.id),
+                              if (!isDone) CommentsSection(automobileAd.id),
                             ],
                           ),
                         ),
                         Padding(
-                          padding:
-                              const EdgeInsets.symmetric(vertical: 16.0),
+                          padding: const EdgeInsets.symmetric(vertical: 16.0),
                           child: UserAdsCarousel(
                             currentAdId: automobileAd.id,
                             userId: automobileAd.user!.id,
                           ),
                         ),
-                           const Padding(
+                        const Padding(
                           padding: EdgeInsets.symmetric(vertical: 16.0),
                           child: RecommendedCarousel(),
                         ),
-                        if (_isLoggedIn)
-                          const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 16.0),
-                          ),
                       ],
                     ),
                   );
