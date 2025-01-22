@@ -197,4 +197,100 @@ class AutomobileAdService {
       throw Exception('Error fetching recommended automobile ads: $e');
     }
   }
+
+  Future<bool> updateAutomobileAd(
+    int automobileId,
+    Map<String, dynamic> updatedFields, {
+    List<XFile>? newImages,
+    List<int>? removedImageIds,
+  }) async {
+    try {
+      // If there are images to delete, call the delete endpoint
+      if (removedImageIds != null && removedImageIds.isNotEmpty) {
+        final deleteSuccess = await deleteAutomobileImages(removedImageIds);
+        if (!deleteSuccess) {
+          print('Failed to delete images.');
+          return false;
+        }
+      }
+
+      // If there are no new images or fields to update, return true
+      if (updatedFields.isEmpty && (newImages == null || newImages.isEmpty)) {
+        return true; // Nothing to update
+      }
+
+      // Set the endpoint URL
+      final uri = Uri.parse('${ApiConfig.baseUrl}/AutomobileAd/$automobileId');
+
+      // Create a multipart request
+      var request = http.MultipartRequest('PATCH', uri);
+
+      // Add fields to the request
+      updatedFields.forEach((key, value) {
+        if (value != null) {
+          request.fields[key] = value.toString();
+        }
+      });
+
+      // Add new images if present
+      if (newImages != null && newImages.isNotEmpty) {
+        for (var image in newImages) {
+          request.files.add(
+            await http.MultipartFile.fromPath('Images', image.path),
+          );
+        }
+      }
+
+      // Add headers
+      final authHeaders = await AuthService.getAuthHeaders();
+      request.headers.addAll(authHeaders);
+
+      // Send the request
+      var response = await request.send();
+
+      // Check the response status
+      if (response.statusCode == 200) {
+        return true; // Successfully updated
+      } else {
+        print('Failed to update automobile ad. Status: ${response.statusCode}');
+        return false; // Failed to update
+      }
+    } catch (e) {
+      print('Error during PATCH request: $e');
+      return false;
+    }
+  }
+
+  Future<bool> deleteAutomobileImages(List<int> imageIds) async {
+    try {
+      final uri =
+          Uri.parse('${ApiConfig.baseUrl}/AutomobileImages/delete-images');
+      final headers = {
+        'Content-Type': 'application/json',
+        'accept': '*/*',
+      };
+
+      final body = json.encode(imageIds);
+
+      final response = await http.delete(
+        uri,
+        headers: headers,
+        body: body,
+      );
+
+      print('Request Body: $body');
+      print('Response Status Code: ${response.statusCode}');
+      print('Response Body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        return true; // Successfully deleted
+      } else {
+        print('Failed to delete images. Status: ${response.statusCode}');
+        return false; // Failed to delete
+      }
+    } catch (e) {
+      print('Error during DELETE request: $e');
+      return false; // Exception occurred
+    }
+  }
 }

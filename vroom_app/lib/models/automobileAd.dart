@@ -4,7 +4,6 @@ import 'automobileAdEquipment.dart';
 import 'carBrand.dart';
 import 'carCategory.dart';
 import 'carModel.dart';
-import 'equipment.dart';
 import 'fuelType.dart';
 import 'image.dart';
 import 'transmissionType.dart';
