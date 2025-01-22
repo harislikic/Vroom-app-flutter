@@ -63,7 +63,7 @@ class _EditAutomobileScreenState extends State<EditAutomobileScreen> {
     _colorController = TextEditingController(text: widget.automobileAd.color);
   }
 
-void _trackChanges(String field, dynamic newValue) {
+  void _trackChanges(String field, dynamic newValue) {
     final originalValue = _getOriginalValue(field);
     setState(() {
       if (originalValue != newValue) {
@@ -77,6 +77,7 @@ void _trackChanges(String field, dynamic newValue) {
       }
     });
   }
+
   dynamic _getOriginalValue(String field) {
     switch (field) {
       case 'title':
@@ -117,6 +118,7 @@ void _trackChanges(String field, dynamic newValue) {
     if (pickedImages != null) {
       setState(() {
         _newImages.addAll(pickedImages);
+        _isFormChanged = true;
       });
     }
   }
@@ -140,6 +142,7 @@ void _trackChanges(String field, dynamic newValue) {
 
         if (success) {
           ToastUtils.showToast(message: 'Uspjesno editovano');
+            Navigator.pop(context); 
         } else {
           ToastUtils.showToast(message: 'Greska prilikom editovanja');
         }
@@ -309,12 +312,11 @@ void _trackChanges(String field, dynamic newValue) {
                   side: BorderSide(color: Colors.blueGrey[900]!),
                   textStyle: const TextStyle(color: Colors.black),
                 ),
-                 child: const Text('Dodaj nove slike',
+                child: const Text('Dodaj nove slike',
                     style: TextStyle(color: Colors.black)),
-                
               ),
               const SizedBox(height: 16.0),
-                OutlinedButton(
+              OutlinedButton(
                 onPressed: _isFormChanged ? _submitForm : null,
                 style: OutlinedButton.styleFrom(
                   side: BorderSide(color: Colors.blueGrey[900]!),
