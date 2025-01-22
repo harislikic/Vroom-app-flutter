@@ -268,14 +268,31 @@ class _EditAutomobileScreenState extends State<EditAutomobileScreen> {
                       ],
                     ),
                   for (var newImage in _newImages)
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Image.file(
-                        File(newImage.path),
-                        width: 80,
-                        height: 80,
-                        fit: BoxFit.cover,
-                      ),
+                    Stack(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Image.file(
+                            File(newImage.path),
+                            width: 80,
+                            height: 80,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        Positioned(
+                          top: 0,
+                          right: 0,
+                          child: IconButton(
+                            icon: const Icon(Icons.remove_circle,
+                                color: Colors.red),
+                            onPressed: () {
+                              setState(() {
+                                _newImages.remove(newImage);
+                              });
+                            },
+                          ),
+                        ),
+                      ],
                     ),
                 ],
               ),
