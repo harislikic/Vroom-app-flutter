@@ -23,6 +23,8 @@ class _EditAutomobileScreenState extends State<EditAutomobileScreen> {
   final List<int> _removedImageIds = [];
   final List<XFile> _newImages = [];
 
+  bool _isFormChanged = false;
+
   late TextEditingController _titleController;
   late TextEditingController _descriptionController;
   late TextEditingController _priceController;
@@ -61,15 +63,20 @@ class _EditAutomobileScreenState extends State<EditAutomobileScreen> {
     _colorController = TextEditingController(text: widget.automobileAd.color);
   }
 
-  void _trackChanges(String field, dynamic newValue) {
+void _trackChanges(String field, dynamic newValue) {
     final originalValue = _getOriginalValue(field);
-    if (originalValue != newValue) {
-      _updatedFields[field] = newValue;
-    } else {
-      _updatedFields.remove(field);
-    }
+    setState(() {
+      if (originalValue != newValue) {
+        _updatedFields[field] = newValue;
+        _isFormChanged = true;
+      } else {
+        _updatedFields.remove(field);
+        _isFormChanged = _updatedFields.isNotEmpty ||
+            _removedImageIds.isNotEmpty ||
+            _newImages.isNotEmpty;
+      }
+    });
   }
-
   dynamic _getOriginalValue(String field) {
     switch (field) {
       case 'title':
@@ -298,12 +305,23 @@ class _EditAutomobileScreenState extends State<EditAutomobileScreen> {
               ),
               ElevatedButton(
                 onPressed: _pickNewImages,
-                child: const Text('Dodaj nove slike'),
+                style: OutlinedButton.styleFrom(
+                  side: BorderSide(color: Colors.blueGrey[900]!),
+                  textStyle: const TextStyle(color: Colors.black),
+                ),
+                 child: const Text('Dodaj nove slike',
+                    style: TextStyle(color: Colors.black)),
+                
               ),
               const SizedBox(height: 16.0),
-              ElevatedButton(
-                onPressed: _submitForm,
-                child: const Text('Spremi promjene'),
+                OutlinedButton(
+                onPressed: _isFormChanged ? _submitForm : null,
+                style: OutlinedButton.styleFrom(
+                  side: BorderSide(color: Colors.blueGrey[900]!),
+                  textStyle: const TextStyle(color: Colors.black),
+                ),
+                child: const Text('Spremi promjene',
+                    style: TextStyle(color: Colors.black)),
               ),
               const SizedBox(height: 16.0),
             ],
