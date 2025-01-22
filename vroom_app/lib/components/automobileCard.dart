@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:vroom_app/services/ApiConfig.dart';
 import '../models/automobileAd.dart';
 import '../screens/automobileDetailsScreen.dart';
 
@@ -13,199 +14,198 @@ class AutomobileCard extends StatelessWidget {
     required this.isGridView,
   }) : super(key: key);
 
-@override
-Widget build(BuildContext context) {
-  bool isHighlighted = automobileAd.highlightExpiryDate != null &&
-      automobileAd.highlightExpiryDate!.isAfter(DateTime.now());
-  bool isDone = automobileAd.status == "Done"; // Check if the status is Done
+  @override
+  Widget build(BuildContext context) {
+    bool isHighlighted = automobileAd.highlightExpiryDate != null &&
+        automobileAd.highlightExpiryDate!.isAfter(DateTime.now());
+    bool isDone = automobileAd.status == "Done"; // Check if the status is Done
 
-  return GestureDetector(
-    onTap: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              AutomobileDetailsScreen(automobileAdId: automobileAd.id),
-        ),
-      );
-    },
-    child: Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      elevation: 4,
-      clipBehavior: Clip.antiAlias,
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-            color: isHighlighted && !isDone
-                ? Colors.amber
-                : isDone
-                    ? Colors.red
-                    : Colors.transparent,
-            width: 1,
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                AutomobileDetailsScreen(automobileAdId: automobileAd.id),
           ),
+        );
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // ----- Image Section -----
-            if (automobileAd.images.isNotEmpty)
-              Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  Image.network(
-                    'http://localhost:5194${automobileAd.images.first.imageUrl}',
-                    height: isGridView ? 140 : 200,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
-                  if (isHighlighted && !isDone)
-                    Positioned(
-                      top: 4,
-                      right: 2,
-                      child: _buildHighlightBadge(),
+        elevation: 4,
+        clipBehavior: Clip.antiAlias,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: isHighlighted && !isDone
+                  ? Colors.amber
+                  : isDone
+                      ? Colors.red
+                      : Colors.transparent,
+              width: 1,
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // ----- Image Section -----
+              if (automobileAd.images.isNotEmpty)
+                Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Image.network(
+                      '${ApiConfig.baseUrl}${automobileAd.images.first.imageUrl}',
+                      height: isGridView ? 140 : 200,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
                     ),
-                  if (isDone) // Show "Završen" badge for Done status
-                    Positioned(
-                      top: 4,
-                      right: 2,
-                      child: _buildDoneBadge(),
-                    ),
-                  Positioned(
-                    bottom: -8,
-                    right: 8,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8.0, vertical: 4.0),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.6),
-                        borderRadius: BorderRadius.circular(8),
+                    if (isHighlighted && !isDone)
+                      Positioned(
+                        top: 4,
+                        right: 2,
+                        child: _buildHighlightBadge(),
                       ),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.visibility,
-                            size: 16,
-                            color: Colors.white,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            '${automobileAd.viewsCount}',
-                            style: const TextStyle(
-                              fontSize: 10,
+                    if (isDone) // Show "Završen" badge for Done status
+                      Positioned(
+                        top: 4,
+                        right: 2,
+                        child: _buildDoneBadge(),
+                      ),
+                    Positioned(
+                      bottom: -8,
+                      right: 8,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8.0, vertical: 4.0),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.6),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.visibility,
+                              size: 16,
                               color: Colors.white,
                             ),
-                          ),
-                        ],
+                            const SizedBox(width: 4),
+                            Text(
+                              '${automobileAd.viewsCount}',
+                              style: const TextStyle(
+                                fontSize: 10,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
+                  ],
+                )
+              else
+                Container(
+                  height: isGridView ? 140 : 200,
+                  color: Colors.grey.shade200,
+                  child: const Center(
+                    child: Icon(Icons.directions_car,
+                        size: 40, color: Colors.grey),
                   ),
-                ],
-              )
-            else
-              Container(
-                height: isGridView ? 140 : 200,
-                color: Colors.grey.shade200,
-                child: const Center(
-                  child: Icon(Icons.directions_car,
-                      size: 40, color: Colors.grey),
                 ),
-              ),
 
-            // ----- Rest of the Content -----
-            if (isGridView)
-              Expanded(
-                child: _buildCardContent(context, isGridView),
-              )
-            else
-              _buildCardContent(context, isGridView),
-          ],
-        ),
-      ),
-    ),
-  );
-}
-
-Widget _buildHighlightBadge() {
-  return Container(
-    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-    decoration: BoxDecoration(
-      color: Colors.amber.withOpacity(0.5),
-      borderRadius: BorderRadius.circular(8),
-      border: Border.all(
-        color: Colors.amber,
-        width: 1.2,
-      ),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withOpacity(0.1),
-          blurRadius: 10,
-          spreadRadius: 5,
-        ),
-      ],
-    ),
-    child: Row(
-      children: [
-        const Icon(
-          Icons.star,
-          size: 16,
-          color: Colors.black,
-        ),
-        const SizedBox(width: 4),
-        Text(
-          'Izdvojeno',
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
-            color: Colors.black.withOpacity(0.8),
+              // ----- Rest of the Content -----
+              if (isGridView)
+                Expanded(
+                  child: _buildCardContent(context, isGridView),
+                )
+              else
+                _buildCardContent(context, isGridView),
+            ],
           ),
         ),
-      ],
-    ),
-  );
-}
-
-Widget _buildDoneBadge() {
-  return Container(
-    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-    decoration: BoxDecoration(
-      color: Colors.red.withOpacity(0.7), // Semi-transparent red
-      borderRadius: BorderRadius.circular(8),
-      border: Border.all(
-        color: Colors.red,
-        width: 1.2,
       ),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withOpacity(0.1),
-          blurRadius: 10,
-          spreadRadius: 5,
+    );
+  }
+
+  Widget _buildHighlightBadge() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+      decoration: BoxDecoration(
+        color: Colors.amber.withOpacity(0.5),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: Colors.amber,
+          width: 1.2,
         ),
-      ],
-    ),
-    child: Row(
-      children: [
-        const Icon(
-          Icons.error_outline,
-          size: 16,
-          color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            spreadRadius: 5,
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          const Icon(
+            Icons.star,
+            size: 16,
+            color: Colors.black,
+          ),
+          const SizedBox(width: 4),
+          Text(
+            'Izdvojeno',
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: Colors.black.withOpacity(0.8),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDoneBadge() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+      decoration: BoxDecoration(
+        color: Colors.red.withOpacity(0.7), // Semi-transparent red
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: Colors.red,
+          width: 1.2,
         ),
-        const SizedBox(width: 4),
-        const Text(
-          'Završen',
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            spreadRadius: 5,
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          const Icon(
+            Icons.error_outline,
+            size: 16,
             color: Colors.white,
           ),
-        ),
-      ],
-    ),
-  );
-}
-
+          const SizedBox(width: 4),
+          const Text(
+            'Završen',
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _buildCardContent(BuildContext context, bool isGrid) {
     return Padding(
@@ -271,7 +271,7 @@ Widget _buildDoneBadge() {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      '${automobileAd.mileage} km',
+                      '${NumberFormat.decimalPattern().format(automobileAd.mileage)}',
                       style: TextStyle(
                         fontSize: isGrid ? 10 : 12,
                         color: Colors.black,

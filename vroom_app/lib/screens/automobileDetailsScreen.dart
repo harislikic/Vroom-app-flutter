@@ -207,6 +207,7 @@ class _AutomobileDetailsScreenState extends State<AutomobileDetailsScreen> {
                       userId: automobileAd.user!.id,
                     ),
                   ),
+                  if(_isLoggedIn)
                   const Padding(
                     padding: EdgeInsets.symmetric(vertical: 16.0),
                     child: RecommendedCarousel(),
