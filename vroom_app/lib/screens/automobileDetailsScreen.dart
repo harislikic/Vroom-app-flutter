@@ -188,6 +188,7 @@ class _AutomobileDetailsScreenState extends State<AutomobileDetailsScreen> {
                                 automobileAd.automobileAdEquipments),
                         CarDescriptionCard(
                             description: automobileAd.description),
+                        const SizedBox(height: 8),
                         CarOwnerInfoCard(automobileAd: automobileAd),
                         const SizedBox(height: 16),
                         ReservationCalendar(

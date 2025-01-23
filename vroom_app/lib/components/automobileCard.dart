@@ -241,7 +241,7 @@ class AutomobileCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
             ),
             padding:
-                const EdgeInsets.only(top: 8, left: 8, right: 8, bottom: 8),
+                const EdgeInsets.only(top: 6, left: 8, right: 8, bottom: 2),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

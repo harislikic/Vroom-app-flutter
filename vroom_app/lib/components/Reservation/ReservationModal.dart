@@ -62,18 +62,23 @@ class _ReservationModalState extends State<ReservationModal> {
             crossAxisAlignment:
                 CrossAxisAlignment.start, // Poravnanje prema vrhu
             children: [
-              const SizedBox(), // Ostavlja prostor sa leve strane
+              const SizedBox(),
               Column(
-                crossAxisAlignment: CrossAxisAlignment.end, // Tekst ispod X-a
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   CloseModalButton(
-                    onPressed: () =>
-                        Navigator.of(context).pop(), // Zatvaranje modala
+                    onPressed: () => Navigator.of(context).pop(),
                   ),
-                  const SizedBox(height: 8), // Razmak između ikone i teksta
+                  const SizedBox(height: 4),
+                  // Tekst sa datumom
                   Text(
-                    'Odaberite vrijeme za datum: ${DateFormat('yyyy-MM-dd').format(widget.selectedDay)}',
-                    style: const TextStyle(fontSize: 18),
+                    'Odaberite vrijeme za datum: ${DateFormat('dd.MM.yyyy').format(widget.selectedDay)}',
+                    style: const TextStyle(
+                      fontSize: 16, // Veličina teksta
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                    textAlign: TextAlign.right,
                   ),
                 ],
               ),

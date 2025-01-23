@@ -277,7 +277,7 @@ class _CarDetailsCardState extends State<CarDetailsCard> {
                           ),
                           const SizedBox(height: 4),
 
-                          if (widget.automobileAd.highlightExpiryDate != null &&
+                          if (widget.automobileAd.isHighlighted  &&
                               userId == widget.automobileAd.user?.id)
                             Row(
                               mainAxisSize: MainAxisSize.min,
@@ -288,8 +288,7 @@ class _CarDetailsCardState extends State<CarDetailsCard> {
                                   color: Colors.black,
                                 ),
                                 const SizedBox(width: 4),
-                                if (widget.automobileAd.highlightExpiryDate !=
-                                        null &&
+                                if (widget.automobileAd.isHighlighted  &&
                                     userId == widget.automobileAd.user?.id)
                                   Text(
                                     FormatRemainingTime(widget

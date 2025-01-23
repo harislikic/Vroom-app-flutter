@@ -8,16 +8,27 @@ class CarDescriptionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+  elevation: 4,
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(12),
+  ),
+  child: Container(
+    decoration: BoxDecoration(
+      color: Colors.blue[50], // Svetloplava pozadina
+      borderRadius: BorderRadius.circular(12),
+    ),
+    padding: const EdgeInsets.all(16.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Row(
           children: [
-            const Text(
+            Icon(
+              Icons.description,
+              color: Colors.blue,
+            ),
+            SizedBox(width: 8),
+            Text(
               'Detaljan opis:',
               style: TextStyle(
                 fontSize: 18,
@@ -25,17 +36,20 @@ class CarDescriptionCard extends StatelessWidget {
                 color: Colors.black,
               ),
             ),
-            const SizedBox(height: 8),
-            Text(
-              description,
-              style: const TextStyle(
-                fontSize: 16,
-                color: Colors.black54,
-              ),
-            ),
           ],
         ),
-      ),
-    );
+        const SizedBox(height: 8),
+        Text(
+          description,
+          style: const TextStyle(
+            fontSize: 17,
+            color: Colors.black87,
+          ),
+        ),
+      ],
+    ),
+  ),
+)
+;
   }
 }
