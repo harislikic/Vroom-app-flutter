@@ -88,7 +88,7 @@ class _CarImageCarouselState extends State<CarImageCarousel> {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: _currentIndex == entry.key
-                              ? Colors.blueAccent
+                              ? Colors.cyanAccent[400]
                               : Colors.grey,
                         ),
                       ),
@@ -183,7 +183,7 @@ class _CarImageCarouselState extends State<CarImageCarousel> {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: currentIndex == entry.key
-                                ? Colors.blueAccent
+                                ? Colors.cyanAccent[400]
                                 : Colors.white.withOpacity(0.5),
                           ),
                         );

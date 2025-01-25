@@ -5,6 +5,7 @@ import 'package:vroom_app/components/ImageGalleryEditAutomobile.dart';
 import 'package:vroom_app/components/shared/ToastUtils.dart';
 import 'package:vroom_app/models/automobileAd.dart';
 import 'package:vroom_app/models/equipment.dart';
+import 'package:vroom_app/screens/MyAutomobileAdsScreen.dart';
 import 'package:vroom_app/services/AutmobileDropDownService.dart';
 import 'package:vroom_app/services/AutomobileAdService.dart';
 
@@ -22,7 +23,8 @@ class _EditAutomobileScreenState extends State<EditAutomobileScreen> {
   final _formKey = GlobalKey<FormState>();
   final Map<String, dynamic> _updatedFields = {};
   final List<int> _removedImageIds = [];
-  final List<int> _removedEquipmentIds = []; // Nova lista za praćenje uklonjene opreme
+  final List<int> _removedEquipmentIds =
+      []; // Nova lista za praćenje uklonjene opreme
   final List<XFile> _newImages = [];
   bool _isFormChanged = false;
 
@@ -37,7 +39,8 @@ class _EditAutomobileScreenState extends State<EditAutomobileScreen> {
   List<Equipment> _allEquipments = [];
   List<int> _originalEquipmentIds = [];
 
-  final AutomobileDropDownService _dropDownService = AutomobileDropDownService();
+  final AutomobileDropDownService _dropDownService =
+      AutomobileDropDownService();
 
   @override
   void initState() {
@@ -58,7 +61,7 @@ class _EditAutomobileScreenState extends State<EditAutomobileScreen> {
     _colorController = TextEditingController(text: widget.automobileAd.color);
   }
 
- void _trackChanges(String field, dynamic newValue) {
+  void _trackChanges(String field, dynamic newValue) {
     final originalValue = _getOriginalValue(field);
     setState(() {
       if (originalValue != newValue) {
@@ -89,7 +92,6 @@ class _EditAutomobileScreenState extends State<EditAutomobileScreen> {
         return null;
     }
   }
-
 
   void _initializeSelectedEquipment() {
     _selectedEquipmentIds = widget.automobileAd.automobileAdEquipments
@@ -135,8 +137,10 @@ class _EditAutomobileScreenState extends State<EditAutomobileScreen> {
                           } else {
                             if (_selectedEquipmentIds.contains(equipment.id)) {
                               _selectedEquipmentIds.remove(equipment.id);
-                              if (_originalEquipmentIds.contains(equipment.id)) {
-                                _removedEquipmentIds.add(equipment.id); // Dodaj u uklonjene
+                              if (_originalEquipmentIds
+                                  .contains(equipment.id)) {
+                                _removedEquipmentIds
+                                    .add(equipment.id); // Dodaj u uklonjene
                               }
                             }
                           }
@@ -172,7 +176,6 @@ class _EditAutomobileScreenState extends State<EditAutomobileScreen> {
     }
   }
 
-
   void _removeImage(int imageId) {
     setState(() {
       _removedImageIds.add(imageId);
@@ -181,7 +184,7 @@ class _EditAutomobileScreenState extends State<EditAutomobileScreen> {
     });
   }
 
-    Future<void> _pickNewImages() async {
+  Future<void> _pickNewImages() async {
     final ImagePicker picker = ImagePicker();
     final List<XFile>? pickedImages = await picker.pickMultiImage();
     if (pickedImages != null) {
@@ -209,17 +212,18 @@ class _EditAutomobileScreenState extends State<EditAutomobileScreen> {
         // Ažuriraj novu opremu
         if (equipmentChanged) {
           _updatedFields['EquipmentIds'] = _selectedEquipmentIds;
-        } 
-        print('poslani idijev: ${_selectedEquipmentIds}');
+        }
 
         // Ukloni postojeću opremu
         if (_removedEquipmentIds.isNotEmpty) {
-          final deleteSuccess = await automobileAdService.deleteAutomobileEquipment(
+          final deleteSuccess =
+              await automobileAdService.deleteAutomobileEquipment(
             widget.automobileAd.id,
             _removedEquipmentIds,
           );
           if (!deleteSuccess) {
-            ToastUtils.showErrorToast(message: 'Greška prilikom brisanja opreme.');
+            ToastUtils.showErrorToast(
+                message: 'Greška prilikom brisanja opreme.');
             return;
           }
         }
@@ -234,7 +238,10 @@ class _EditAutomobileScreenState extends State<EditAutomobileScreen> {
 
         if (success) {
           ToastUtils.showToast(message: 'Uspješno editovano');
-          Navigator.pop(context);
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => MyAutomobileAdsScreen()),
+          );
         } else {
           ToastUtils.showErrorToast(message: 'Greška prilikom editovanja');
         }

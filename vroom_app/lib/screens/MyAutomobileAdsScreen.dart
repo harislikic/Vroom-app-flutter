@@ -121,6 +121,9 @@ class _MyAutomobileAdsScreenState extends State<MyAutomobileAdsScreen>
     return Scaffold(
       appBar: AppBar(
         title: const Text("Moji Oglasi"),
+        iconTheme: const IconThemeData(
+          color: Colors.blueAccent,
+        ),
       ),
       body: FutureBuilder<bool>(
         future: _checkIfLoggedIn(),
