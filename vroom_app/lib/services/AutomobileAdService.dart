@@ -203,36 +203,66 @@ class AutomobileAdService {
     Map<String, dynamic> updatedFields, {
     List<XFile>? newImages,
     List<int>? removedImageIds,
+    List<int>? removedEquipmentIds,
   }) async {
     try {
-      // If there are images to delete, call the delete endpoint
+      // Ako postoje slike za brisanje, pozovite delete endpoint
       if (removedImageIds != null && removedImageIds.isNotEmpty) {
-        final deleteSuccess = await deleteAutomobileImages(removedImageIds);
-        if (!deleteSuccess) {
+        final deleteImagesSuccess =
+            await deleteAutomobileImages(removedImageIds);
+        if (!deleteImagesSuccess) {
           print('Failed to delete images.');
           return false;
         }
       }
 
-      // If there are no new images or fields to update, return true
+      // Ako postoje ID-jevi opreme za brisanje, pozovite odgovarajući endpoint
+      if (removedEquipmentIds != null && removedEquipmentIds.isNotEmpty) {
+        final deleteEquipmentSuccess =
+            await deleteAutomobileEquipment(automobileId, removedEquipmentIds);
+        if (!deleteEquipmentSuccess) {
+          print('Failed to delete automobile equipment.');
+          return false;
+        }
+      }
+
+      // Ako nema novih slika ili polja za ažuriranje, vrati true
       if (updatedFields.isEmpty && (newImages == null || newImages.isEmpty)) {
         return true; // Nothing to update
       }
 
-      // Set the endpoint URL
+      // Ako postoji EquipmentIds, pozovite novu metodu
+      if (updatedFields.containsKey('EquipmentIds')) {
+        final equipmentIds = updatedFields['EquipmentIds'];
+        if (equipmentIds is List<int>) {
+          final success =
+              await updateAdditionalEquipment(automobileId, equipmentIds);
+          if (!success) {
+            print('Failed to update additional equipment.');
+            return false;
+          }
+          // Nakon uspešnog ažuriranja, uklonite EquipmentIds iz updatedFields
+          updatedFields.remove('EquipmentIds');
+        }
+      }
+
       final uri = Uri.parse('${ApiConfig.baseUrl}/AutomobileAd/$automobileId');
 
-      // Create a multipart request
       var request = http.MultipartRequest('PATCH', uri);
 
-      // Add fields to the request
       updatedFields.forEach((key, value) {
         if (value != null) {
           request.fields[key] = value.toString();
         }
       });
 
-      // Add new images if present
+      updatedFields.forEach((key, value) {
+        if (value != null) {
+          request.fields[key] = value.toString();
+        }
+      });
+
+      // Dodavanje novih slika ako postoje
       if (newImages != null && newImages.isNotEmpty) {
         for (var image in newImages) {
           request.files.add(
@@ -241,23 +271,92 @@ class AutomobileAdService {
         }
       }
 
-      // Add headers
+      // Dodajte zaglavlja
       final authHeaders = await AuthService.getAuthHeaders();
       request.headers.addAll(authHeaders);
 
-      // Send the request
+      // Pošaljite zahtev
       var response = await request.send();
 
-      // Check the response status
+      // Proverite status odgovora
       if (response.statusCode == 200) {
-        return true; // Successfully updated
+        return true; // Uspešno ažurirano
       } else {
         print('Failed to update automobile ad. Status: ${response.statusCode}');
-        return false; // Failed to update
+        return false; // Ažuriranje nije uspelo
       }
     } catch (e) {
       print('Error during PATCH request: $e');
       return false;
+    }
+  }
+
+  Future<bool> updateAdditionalEquipment(
+      int automobileAdId, List<int> equipmentIds) async {
+    try {
+      // Napravite odgovarajući URL za ažuriranje opreme
+      final uri = Uri.parse(
+          '${ApiConfig.baseUrl}/api/AutomobileAdEquipment/update-automobile');
+
+      // Kreirajte telo zahteva u JSON formatu
+      final body = json.encode({
+        'newAutomobileAdId': automobileAdId,
+        'equipmentIds': equipmentIds,
+      });
+
+      // Postavite odgovarajuće zaglavlje
+      final headers = {
+        'Content-Type': 'application/json',
+        'accept': '*/*',
+      };
+
+      // Pošaljite PATCH zahtev
+      final response = await http.put(uri, headers: headers, body: body);
+
+      if (response.statusCode == 200) {
+        // Ako je uspešno, vratite true
+        return true;
+      } else {
+        print(
+            'Failed to update additional equipment. Status: ${response.statusCode}');
+        return false;
+      }
+    } catch (e) {
+      print('Error during additional equipment update: $e');
+      return false;
+    }
+  }
+
+  Future<bool> deleteAutomobileEquipment(
+      int automobileAdId, List<int> equipmentIds) async {
+    try {
+      final uri = Uri.parse(
+          '${ApiConfig.baseUrl}/api/AutomobileAdEquipment/$automobileAdId');
+      final headers = {
+        'Content-Type': 'application/json',
+        'accept': '*/*',
+      };
+
+      final body = json.encode(equipmentIds);
+
+      final response = await http.delete(
+        uri,
+        headers: headers,
+        body: body,
+      );
+
+      print('response: ${response.body}');
+
+      if (response.statusCode == 200) {
+        return true; // Successfully deleted
+      } else {
+        print(
+            'Failed to delete automobile equipment. Status: ${response.statusCode}');
+        return false; // Failed to delete
+      }
+    } catch (e) {
+      print('Error during DELETE request for equipment: $e');
+      return false; // Exception occurred
     }
   }
 
