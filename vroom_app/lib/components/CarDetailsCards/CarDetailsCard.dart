@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vroom_app/components/shared/ToastUtils.dart';
@@ -206,8 +207,15 @@ class _CarDetailsCardState extends State<CarDetailsCard> {
 
                             ToastUtils.showToast(message: "Plaćanje uspešno!");
                           } catch (e) {
-                            ToastUtils.showErrorToast(
-                                message: "'Greška prilikom plaćanja: $e");
+                            if (e is StripeException) {
+                              ToastUtils.showInfoToast(
+                                message: "${e.error.localizedMessage}",
+                              );
+                            } else {
+                              ToastUtils.showErrorToast(
+                                message: "Greška prilikom plaćanja: $e",
+                              );
+                            }
                           }
                         },
                         icon: const Icon(
@@ -276,7 +284,7 @@ class _CarDetailsCardState extends State<CarDetailsCard> {
                           ),
                           const SizedBox(height: 4),
 
-                          if (widget.automobileAd.isHighlighted  &&
+                          if (widget.automobileAd.isHighlighted &&
                               userId == widget.automobileAd.user?.id)
                             Row(
                               mainAxisSize: MainAxisSize.min,
@@ -287,7 +295,7 @@ class _CarDetailsCardState extends State<CarDetailsCard> {
                                   color: Colors.black,
                                 ),
                                 const SizedBox(width: 4),
-                                if (widget.automobileAd.isHighlighted  &&
+                                if (widget.automobileAd.isHighlighted &&
                                     userId == widget.automobileAd.user?.id)
                                   Text(
                                     FormatRemainingTime(widget
