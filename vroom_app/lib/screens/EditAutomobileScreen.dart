@@ -1,10 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:vroom_app/components/ImageGalleryEditAutomobile.dart';
 import 'package:vroom_app/components/shared/ToastUtils.dart';
 import 'package:vroom_app/models/automobileAd.dart';
-import 'package:vroom_app/services/ApiConfig.dart';
 import 'package:vroom_app/services/AutomobileAdService.dart';
 
 class EditAutomobileScreen extends StatefulWidget {
@@ -29,11 +27,6 @@ class _EditAutomobileScreenState extends State<EditAutomobileScreen> {
   late TextEditingController _descriptionController;
   late TextEditingController _priceController;
   late TextEditingController _mileageController;
-  late TextEditingController _yearOfManufactureController;
-  late TextEditingController _enginePowerController;
-  late TextEditingController _numberOfDoorsController;
-  late TextEditingController _cubicCapacityController;
-  late TextEditingController _horsePowerController;
   late TextEditingController _colorController;
 
   @override
@@ -50,16 +43,6 @@ class _EditAutomobileScreenState extends State<EditAutomobileScreen> {
         TextEditingController(text: widget.automobileAd.price.toString());
     _mileageController =
         TextEditingController(text: widget.automobileAd.mileage.toString());
-    _yearOfManufactureController = TextEditingController(
-        text: widget.automobileAd.yearOfManufacture.toString());
-    _enginePowerController =
-        TextEditingController(text: widget.automobileAd.enginePower.toString());
-    _numberOfDoorsController = TextEditingController(
-        text: widget.automobileAd.numberOfDoors.toString());
-    _cubicCapacityController = TextEditingController(
-        text: widget.automobileAd.cubicCapacity.toString());
-    _horsePowerController =
-        TextEditingController(text: widget.automobileAd.horsePower.toString());
     _colorController = TextEditingController(text: widget.automobileAd.color);
   }
 
@@ -88,16 +71,6 @@ class _EditAutomobileScreenState extends State<EditAutomobileScreen> {
         return widget.automobileAd.price;
       case 'mileage':
         return widget.automobileAd.mileage;
-      case 'yearOfManufacture':
-        return widget.automobileAd.yearOfManufacture;
-      case 'enginePower':
-        return widget.automobileAd.enginePower;
-      case 'numberOfDoors':
-        return widget.automobileAd.numberOfDoors;
-      case 'cubicCapacity':
-        return widget.automobileAd.cubicCapacity;
-      case 'horsePower':
-        return widget.automobileAd.horsePower;
       case 'color':
         return widget.automobileAd.color;
       default:
@@ -109,6 +82,7 @@ class _EditAutomobileScreenState extends State<EditAutomobileScreen> {
     setState(() {
       _removedImageIds.add(imageId);
       widget.automobileAd.images.removeWhere((image) => image.id == imageId);
+      _isFormChanged = true;
     });
   }
 
@@ -142,7 +116,8 @@ class _EditAutomobileScreenState extends State<EditAutomobileScreen> {
 
         if (success) {
           ToastUtils.showToast(message: 'Uspjesno editovano');
-          Navigator.pop(context);
+
+          Navigator.pop(context, widget.automobileAd);
         } else {
           ToastUtils.showToast(message: 'Greska prilikom editovanja');
         }
@@ -173,13 +148,6 @@ class _EditAutomobileScreenState extends State<EditAutomobileScreen> {
                     value?.isEmpty ?? true ? 'Unesite naziv' : null,
               ),
               TextFormField(
-                controller: _descriptionController,
-                decoration: const InputDecoration(labelText: 'Detaljan opis'),
-                onChanged: (value) => _trackChanges('description', value),
-                validator: (value) =>
-                    value?.isEmpty ?? true ? 'Unesite opis' : null,
-              ),
-              TextFormField(
                 controller: _priceController,
                 decoration: const InputDecoration(labelText: 'Cijena'),
                 onChanged: (value) =>
@@ -198,122 +166,42 @@ class _EditAutomobileScreenState extends State<EditAutomobileScreen> {
                 keyboardType: TextInputType.number,
               ),
               TextFormField(
-                controller: _yearOfManufactureController,
-                decoration:
-                    const InputDecoration(labelText: 'Godina proizvodnje'),
-                onChanged: (value) => _trackChanges(
-                    'yearOfManufacture', int.tryParse(value) ?? 0),
-                validator: (value) => value?.isEmpty ?? true
-                    ? 'Unesite godinu proizvodnje'
-                    : null,
-                keyboardType: TextInputType.number,
-              ),
-              TextFormField(
-                controller: _enginePowerController,
-                decoration: const InputDecoration(labelText: 'Snaga motora'),
-                onChanged: (value) =>
-                    _trackChanges('enginePower', int.tryParse(value) ?? 0),
-                validator: (value) =>
-                    value?.isEmpty ?? true ? 'Unesite snagu motora' : null,
-                keyboardType: TextInputType.number,
-              ),
-              TextFormField(
-                controller: _numberOfDoorsController,
-                decoration: const InputDecoration(labelText: 'Broj vrata'),
-                onChanged: (value) =>
-                    _trackChanges('numberOfDoors', int.tryParse(value) ?? 0),
-                validator: (value) =>
-                    value?.isEmpty ?? true ? 'Unesite broj vrata' : null,
-                keyboardType: TextInputType.number,
-              ),
-              TextFormField(
-                controller: _cubicCapacityController,
-                decoration: const InputDecoration(labelText: 'Kubikaža'),
-                onChanged: (value) =>
-                    _trackChanges('cubicCapacity', int.tryParse(value) ?? 0),
-                validator: (value) =>
-                    value?.isEmpty ?? true ? 'Unesite kubikažu' : null,
-                keyboardType: TextInputType.number,
-              ),
-              TextFormField(
-                controller: _horsePowerController,
-                decoration: const InputDecoration(labelText: 'Konjskih snaga'),
-                onChanged: (value) =>
-                    _trackChanges('horsePower', int.tryParse(value) ?? 0),
-                validator: (value) =>
-                    value?.isEmpty ?? true ? 'Unesite konjske snage' : null,
-                keyboardType: TextInputType.number,
-              ),
-              TextFormField(
                 controller: _colorController,
                 decoration: const InputDecoration(labelText: 'Boja'),
                 onChanged: (value) => _trackChanges('color', value),
               ),
               const SizedBox(height: 16.0),
-              const Text('Slike:'),
-              Wrap(
-                spacing: 10.0,
-                runSpacing: 10.0,
-                children: [
-                  for (var image in widget.automobileAd.images)
-                    Container(
-                      margin: const EdgeInsets.all(
-                          4.0),
-                      child: Stack(
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Image.network(
-                              '${ApiConfig.baseUrl}${image.imageUrl}',
-                              width: 80,
-                              height: 80,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          Positioned(
-                            top: 0,
-                            right: 0,
-                            child: IconButton(
-                              icon: const Icon(Icons.remove_circle,
-                                  color: Colors.red),
-                              onPressed: () => _removeImage(image.id),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  for (var newImage in _newImages)
-                    Container(
-                      margin: const EdgeInsets.all(
-                          2.0),
-                      child: Stack(
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Image.file(
-                              File(newImage.path),
-                              width: 80,
-                              height: 80,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          Positioned(
-                            top: 0,
-                            right: 0,
-                            child: IconButton(
-                              icon: const Icon(Icons.remove_circle,
-                                  color: Colors.red),
-                              onPressed: () {
-                                setState(() {
-                                  _newImages.remove(newImage);
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                ],
+              TextFormField(
+                controller: _descriptionController,
+                decoration: const InputDecoration(
+                  labelText: 'Detaljan opis',
+                  border: OutlineInputBorder(), // Dodaje okvir oko polja
+                ),
+                onChanged: (value) => _trackChanges('description', value),
+                validator: (value) =>
+                    value?.isEmpty ?? true ? 'Unesite opis' : null,
+                maxLines: 4,
+                keyboardType: TextInputType.multiline,
+                textInputAction: TextInputAction.newline,
+                style: const TextStyle(fontSize: 16),
+                buildCounter: (_,
+                        {required int currentLength,
+                        required bool isFocused,
+                        maxLength}) =>
+                    null,
+              ),
+              const SizedBox(height: 16.0),
+            
+              ImageGalleryEditAutomobile(
+                existingImages: widget.automobileAd.images,
+                newImages: _newImages,
+                onRemoveExistingImage: (imageId) => _removeImage(imageId),
+                onRemoveNewImage: (newImage) {
+                  setState(() {
+                    _newImages.remove(newImage);
+                    _isFormChanged = true;
+                  });
+                },
               ),
               ElevatedButton(
                 onPressed: _pickNewImages,
