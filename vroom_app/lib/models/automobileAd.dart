@@ -36,7 +36,7 @@ class AutomobileAd {
   final List<AutomobileAdEquipment> automobileAdEquipments;
   final int enginePower;
   final int numberOfDoors;
-  final int cubicCapacity;
+  final double cubicCapacity;
   final int horsePower;
   final String color;
   final VehicleCondition? vehicleCondition;
