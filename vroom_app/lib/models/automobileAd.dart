@@ -129,7 +129,7 @@ class AutomobileAd {
           .toList(),
       enginePower: json['enginePower'] ?? 0,
       numberOfDoors: json['numberOfDoors'] ?? 0,
-      cubicCapacity: json['cubicCapacity'] ?? 0,
+      cubicCapacity: (json['cubicCapacity'] as num?)?.toDouble() ?? 0.0,
       horsePower: json['horsePower'] ?? 0,
       color: json['color'] ?? 'Unknown',
       vehicleCondition: json['vehicleCondition'] != null
