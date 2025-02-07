@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vroom_app/screens/OwnerScreen.dart';
+import 'package:vroom_app/services/ApiConfig.dart';
 import 'package:vroom_app/utils/helpers.dart';
 import '../../models/automobileAd.dart';
 
@@ -81,7 +82,7 @@ class _CarOwnerInfoCardState extends State<CarOwnerInfoCard>
                       child: CircleAvatar(
                         radius: 30,
                         backgroundImage: NetworkImage(
-                          'http://localhost:5194${widget.automobileAd.user?.profilePicture}',
+                          '${ApiConfig.baseUrl}${widget.automobileAd.user?.profilePicture}',
                         ), // User's profile picture
                         backgroundColor: Colors.grey.shade300,
                       ),

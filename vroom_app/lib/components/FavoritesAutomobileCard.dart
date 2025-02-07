@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:vroom_app/components/ConfirmationDialog.dart';
 import 'package:vroom_app/models/favoritesAutomobiles.dart';
 import 'package:vroom_app/screens/automobileDetailsScreen.dart';
+import 'package:vroom_app/services/ApiConfig.dart';
 import 'package:vroom_app/utils/helpers.dart';
 
 class FavoritesAutomobileCard extends StatelessWidget {
@@ -64,7 +66,7 @@ class FavoritesAutomobileCard extends StatelessWidget {
                 // Display the car image, title, and other details
                 if (favoritesAutomobile.images.isNotEmpty)
                   Image.network(
-                    'http://localhost:5194${favoritesAutomobile.images.first.imageUrl}',
+                    '${ApiConfig.baseUrl}${favoritesAutomobile.images.first.imageUrl}',
                     height: 140,
                     width: double.infinity,
                     fit: BoxFit.cover,
@@ -119,9 +121,11 @@ class FavoritesAutomobileCard extends StatelessWidget {
                                     size: 20, color: Colors.grey),
                                 const SizedBox(height: 2),
                                 Text(
-                                  '${favoritesAutomobile.mileage} km',
+                                  '${NumberFormat("#,###", "en_US").format(favoritesAutomobile.mileage)} km',
                                   style: const TextStyle(
-                                      fontSize: 10, color: Colors.black),
+                                    fontSize: 10,
+                                    color: Colors.black,
+                                  ),
                                 ),
                               ],
                             ),
@@ -156,8 +160,7 @@ class FavoritesAutomobileCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 4), // Small spacing
                       // Price of the car
-                      Text(
-                          formatPrice(favoritesAutomobile.price),
+                      Text(formatPrice(favoritesAutomobile.price),
                           style: const TextStyle(
                               fontSize: 14, fontWeight: FontWeight.bold)),
                     ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:vroom_app/services/ApiConfig.dart';
 import '../models/automobileAd.dart';
 import '../screens/automobileDetailsScreen.dart';
 
@@ -37,7 +38,7 @@ class AnotherCarsFromUserCard extends StatelessWidget {
               children: [
                 if (automobileAd.images.isNotEmpty)
                   Image.network(
-                    'http://localhost:5194${automobileAd.images.first.imageUrl}',
+                    '${ApiConfig.baseUrl}${automobileAd.images.first.imageUrl}',
                     height: 140,
                     width: double.infinity,
                     fit: BoxFit.cover,

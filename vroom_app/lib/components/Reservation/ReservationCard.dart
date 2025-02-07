@@ -86,7 +86,7 @@ class ReservationCard extends StatelessWidget {
                           backgroundImage: reservation.user?.profilePicture !=
                                   null
                               ? NetworkImage(
-                                  "http://localhost:5194${reservation.user?.profilePicture}")
+                                  "${ApiConfig.baseUrl}${reservation.user?.profilePicture}")
                               : const AssetImage(
                                   'assets/default_profile.png',
                                 ) as ImageProvider,
