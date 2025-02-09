@@ -27,8 +27,8 @@ class AutomobileAdService {
       if (searchTerm.isNotEmpty) 'Title': searchTerm,
       if (minPrice.isNotEmpty) 'MinPrice': minPrice,
       if (maxPrice.isNotEmpty) 'MaxPrice': maxPrice,
-      if (minMileage.isNotEmpty) 'MinMileage': minMileage,
-      if (maxMileage.isNotEmpty) 'MaxMileage': maxMileage,
+      if (minMileage.isNotEmpty) 'MinMilage': minMileage,
+      if (maxMileage.isNotEmpty) 'MaxMilage': maxMileage,
       if (yearOfManufacture.isNotEmpty) 'YearOfManufacture': yearOfManufacture,
       if (registered) 'Registered': registered.toString(),
       if (carBrandId.isNotEmpty) 'CarBrandId': carBrandId,
@@ -37,9 +37,13 @@ class AutomobileAdService {
       if (cityId.isNotEmpty) 'CityId': cityId,
     };
 
-    final uri = Uri.parse('${dotenv.env['BASE_URL']}/AutomobileAd?Status=Active')
-        .replace(queryParameters: queryParams);
+    final uri = Uri.parse('${dotenv.env['BASE_URL']}/AutomobileAd')
+        .replace(queryParameters: {
+      'Status': 'Active',
+      ...queryParams,
+    });
 
+    print('url:::: ${uri}');
     final response = await http.get(uri);
 
     if (response.statusCode == 200) {
@@ -125,8 +129,9 @@ class AutomobileAdService {
       queryParams['IsHighlighted'] = IsHighlighted.toString();
     }
 
-    final uri = Uri.parse('${dotenv.env['BASE_URL']}/AutomobileAd/user-ads/$userId')
-        .replace(queryParameters: queryParams);
+    final uri =
+        Uri.parse('${dotenv.env['BASE_URL']}/AutomobileAd/user-ads/$userId')
+            .replace(queryParameters: queryParams);
 
     try {
       final response = await http.get(uri);
@@ -246,7 +251,8 @@ class AutomobileAdService {
         }
       }
 
-      final uri = Uri.parse('${dotenv.env['BASE_URL']}/AutomobileAd/$automobileId');
+      final uri =
+          Uri.parse('${dotenv.env['BASE_URL']}/AutomobileAd/$automobileId');
 
       var request = http.MultipartRequest('PATCH', uri);
 
