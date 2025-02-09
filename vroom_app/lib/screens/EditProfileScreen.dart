@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:vroom_app/components/shared/ToastUtils.dart';
 import 'package:vroom_app/models/canton.dart';
 import 'package:vroom_app/models/city.dart';
-import 'package:vroom_app/services/ApiConfig.dart';
 import 'package:vroom_app/services/AutmobileDropDownService.dart';
 import 'package:vroom_app/services/UserService.dart';
 import 'package:vroom_app/utils/helpers.dart';
@@ -200,7 +200,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             backgroundImage: profileImagePath != null
                 ? (isLocalImage
                     ? FileImage(File(profileImagePath!))
-                    : NetworkImage("${ApiConfig.baseUrl}$profileImagePath")
+                    : NetworkImage("${dotenv.env['BASE_URL']}$profileImagePath")
                         as ImageProvider<Object>)
                 : const AssetImage('assets/default_avatar.png')
                     as ImageProvider<Object>,

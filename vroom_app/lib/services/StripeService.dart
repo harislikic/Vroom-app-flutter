@@ -3,10 +3,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:http/http.dart' as http;
-import 'package:vroom_app/services/ApiConfig.dart';
 
 class StripeService {
-  final String backendUrl = ApiConfig.baseUrl;
+  // final String backendUrl = ApiConfig.baseUrl;
   //final String stripeSecretKey = ApiConfig.stripeSecretKey;
   String stripeSecretKey = dotenv.env['STRIPE_SECRET_KEY'] ?? '';
 
@@ -24,8 +23,6 @@ class StripeService {
       final clientSecret = result["clientSecret"];
       final paymentIntentId = result["paymentIntentId"];
       final currency = result["currency"] ?? "EUR";
-
-      print('paymnet reuslt::::: ${result}');
 
       if (clientSecret == null || paymentIntentId == null) {
         print("clientSecret ili paymentIntentId are null");
@@ -137,7 +134,7 @@ class StripeService {
     try {
       final response = await http.post(
         Uri.parse(
-            '${ApiConfig.baseUrl}/AutomobileAd/api/highlight-ad?id=$automobileAdId'),
+            '${dotenv.env['BASE_URL']}/AutomobileAd/api/highlight-ad?id=$automobileAdId'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'highlightDays': highlightDays,

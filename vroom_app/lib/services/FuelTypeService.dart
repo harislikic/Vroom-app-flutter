@@ -1,11 +1,12 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:vroom_app/models/fuelType.dart';
-import 'ApiConfig.dart';
 
 class FuelTypeService {
-  Future<List<FuelType>> fetchFuelTypes({int page = 0, int pageSize = 25}) async {
-    const String baseUrl = '${ApiConfig.baseUrl}/FuelType';
+  Future<List<FuelType>> fetchFuelTypes(
+      {int page = 0, int pageSize = 25}) async {
+    final String baseUrl = '${dotenv.env['BASE_URL']}/FuelType';
 
     final Uri uri = Uri.parse(baseUrl).replace(queryParameters: {
       'Page': page.toString(),

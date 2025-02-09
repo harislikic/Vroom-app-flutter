@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/intl.dart';
 import 'package:vroom_app/components/ConfirmationDialog.dart';
-import 'package:vroom_app/services/ApiConfig.dart';
 import '../models/automobileAd.dart';
 import '../screens/automobileDetailsScreen.dart';
 
@@ -69,7 +69,7 @@ class MyAutomobileAdsCard extends StatelessWidget {
             borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
             child: automobileAd.images.isNotEmpty
                 ? Image.network(
-                    '${ApiConfig.baseUrl}${automobileAd.images.first.imageUrl}',
+                    '${dotenv.env['BASE_URL']}${automobileAd.images.first.imageUrl}',
                     height: 200,
                     width: double.infinity,
                     fit: BoxFit.cover,

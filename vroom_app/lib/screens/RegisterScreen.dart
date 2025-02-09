@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
@@ -7,7 +8,6 @@ import 'package:vroom_app/components/RegistrationForm.dart';
 import 'package:vroom_app/models/city.dart';
 import 'package:vroom_app/services/CityService.dart';
 
-import '../services/ApiConfig.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
@@ -170,7 +170,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
 
     try {
-      final url = Uri.parse('${ApiConfig.baseUrl}/User');
+      final url = Uri.parse('${dotenv.env['BASE_URL']}/User');
       final request = http.MultipartRequest('POST', url);
       request.headers['Content-Type'] = 'multipart/form-data';
 

@@ -1,13 +1,12 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:vroom_app/models/carModel.dart';
-import 'ApiConfig.dart';
 
 class CarModelService {
   Future<List<CarModel>> fetchCarModels(
       {int page = 0, int pageSize = 50}) async {
-
-    const String baseUrl = '${ApiConfig.baseUrl}/CarModel';
+    final String baseUrl = '${dotenv.env['BASE_URL']}/CarModel';
 
     final Uri uri = Uri.parse(baseUrl).replace(queryParameters: {
       'Page': page.toString(),

@@ -1,13 +1,11 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:vroom_app/models/city.dart';
-import 'ApiConfig.dart';
 
 class CityService {
-  Future<List<City>> fetchCities(
-      {int page = 0, int pageSize = 90}) async {
-
-    const String baseUrl = '${ApiConfig.baseUrl}/City';
+  Future<List<City>> fetchCities({int page = 0, int pageSize = 90}) async {
+    final String baseUrl = '${dotenv.env['BASE_URL']}/City';
 
     final Uri uri = Uri.parse(baseUrl).replace(queryParameters: {
       'Page': page.toString(),

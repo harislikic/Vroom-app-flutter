@@ -1,16 +1,15 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vroom_app/services/ApiConfig.dart';
 
 class AuthService {
   //static const String _baseUrl = 'http://localhost:5194'; // Vaša baza URL-a
 
-  /// Prijava korisnika
   static Future<bool> login(String username, String password) async {
     try {
       final response = await http.post(
-        Uri.parse('${ApiConfig.baseUrl}/User/login'),
+        Uri.parse('${dotenv.env['BASE_URL']}/User/login'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'username': username,

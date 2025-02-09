@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:vroom_app/screens/automobileDetailsScreen.dart';
-import 'package:vroom_app/services/ApiConfig.dart';
 import 'package:vroom_app/utils/helpers.dart';
 import '../../models/automobileAd.dart';
 import '../../models/user.dart';
@@ -91,7 +91,7 @@ class _OwnerScreenState extends State<OwnerScreen>
                 CircleAvatar(
                   radius: 40,
                   backgroundImage: NetworkImage(
-                    '${ApiConfig.baseUrl}${widget.owner.profilePicture}',
+                    '${dotenv.env['BASE_URL']}${widget.owner.profilePicture}',
                   ),
                 ),
                 const SizedBox(width: 16), // Space between image and text
@@ -182,7 +182,7 @@ class _OwnerScreenState extends State<OwnerScreen>
                           radius: 30,
                           backgroundImage: NetworkImage(
                             ad.images.isNotEmpty
-                                ? '${ApiConfig.baseUrl}${ad.images.first.imageUrl}'
+                                ? '${dotenv.env['BASE_URL']}${ad.images.first.imageUrl}'
                                 : 'https://via.placeholder.com/150', // Fallback URL
                           ),
                           backgroundColor: Colors.grey.shade300,

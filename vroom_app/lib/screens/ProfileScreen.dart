@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:vroom_app/components/LoginButton.dart';
 import 'package:vroom_app/components/ProfileCard.dart';
 import 'package:vroom_app/components/ProfileHeader.dart';
 import 'package:vroom_app/components/shared/ToastUtils.dart';
 import 'package:vroom_app/screens/EditProfileScreen.dart';
 import 'package:vroom_app/screens/UserReservationsScreen.dart';
-import 'package:vroom_app/services/ApiConfig.dart';
 import 'package:vroom_app/services/AuthService.dart';
 import 'package:vroom_app/services/UserService.dart';
 import 'package:vroom_app/utils/helpers.dart';
@@ -97,7 +97,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Center(
               child: ProfileHeader(
                 profileImageUrl: userProfile!["profilePicture"] != null
-                    ? "${ApiConfig.baseUrl}${userProfile!["profilePicture"]}"
+                    ? "${dotenv.env['BASE_URL']}${userProfile!["profilePicture"]}"
                     : null,
                 onEdit: () async {
                   final updatedProfile = await Navigator.push(

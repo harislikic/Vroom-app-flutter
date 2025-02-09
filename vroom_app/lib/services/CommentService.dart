@@ -1,14 +1,14 @@
 import 'dart:convert';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:vroom_app/models/comment.dart';
-import 'package:vroom_app/services/ApiConfig.dart';
 import 'package:http/http.dart' as http;
 import 'package:vroom_app/services/AuthService.dart';
 
 class CommentService {
   Future<List<Comment>> fetchCommentsByAutomobileId(int automobileId) async {
     final String baseUrl =
-        '${ApiConfig.baseUrl}/Comment/automobile/$automobileId';
+        '${dotenv.env['BASE_URL']}/Comment/automobile/$automobileId';
 
     final response = await http.get(Uri.parse(baseUrl));
 
@@ -31,7 +31,7 @@ class CommentService {
     required String content,
   }) async {
     final String url =
-        '${ApiConfig.baseUrl}/Comment/edit/$commentId?userId=$userId';
+        '${dotenv.env['BASE_URL']}/Comment/edit/$commentId?userId=$userId';
 
     final headers = await AuthService.getAuthHeaders();
     headers['Content-Type'] = 'application/json';
@@ -56,7 +56,7 @@ class CommentService {
     required int userId,
     required int automobileAdId,
   }) async {
-    final String url = '${ApiConfig.baseUrl}/Comment';
+    final String url = '${dotenv.env['BASE_URL']}/Comment';
 
     final headers = await AuthService.getAuthHeaders();
     headers['Content-Type'] = 'application/json';
@@ -83,7 +83,7 @@ class CommentService {
   Future<void> deleteComment({
     required int commentId,
   }) async {
-    final String url = '${ApiConfig.baseUrl}/Comment/$commentId';
+    final String url = '${dotenv.env['BASE_URL']}/Comment/$commentId';
     final headers = await AuthService.getAuthHeaders();
 
     final response = await http.delete(

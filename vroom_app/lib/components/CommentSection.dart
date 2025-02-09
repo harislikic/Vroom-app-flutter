@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:vroom_app/components/ConfirmationDialog.dart';
 import 'package:vroom_app/components/shared/ToastUtils.dart';
-import 'package:vroom_app/services/ApiConfig.dart';
 import 'package:vroom_app/services/CommentService.dart';
 import 'package:vroom_app/models/comment.dart';
 import 'package:vroom_app/services/AuthService.dart';
@@ -204,7 +204,7 @@ class CommentsSection extends StatelessWidget {
                                                   .user.profilePicture !=
                                               null
                                           ? NetworkImage(
-                                              '${ApiConfig.baseUrl}${comment.user.profilePicture}')
+                                              '${dotenv.env['BASE_URL']}${comment.user.profilePicture}')
                                           : const AssetImage(
                                                   'assets/default_profile.png')
                                               as ImageProvider,

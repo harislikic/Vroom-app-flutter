@@ -12,10 +12,14 @@ import 'components/CustomNavigationBar.dart';
 
 final RouteObserver<ModalRoute> routeObserver = RouteObserver<ModalRoute>();
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  try {
     await dotenv.load(fileName: ".env");
-    
+  } catch (e) {
+    print("⚠️ Greška pri učitavanju `.env`: $e");
+  }
+
   String stripePublishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY'] ?? '';
   Stripe.publishableKey = stripePublishableKey;
   //Stripe.publishableKey = ApiConfig.publishableKey;

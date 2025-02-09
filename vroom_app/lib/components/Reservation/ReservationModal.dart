@@ -74,7 +74,7 @@ class _ReservationModalState extends State<ReservationModal> {
                   Text(
                     'Odaberite vrijeme za datum: ${DateFormat('dd.MM.yyyy').format(widget.selectedDay)}',
                     style: const TextStyle(
-                      fontSize: 16, // Veličina teksta
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Colors.black87,
                     ),

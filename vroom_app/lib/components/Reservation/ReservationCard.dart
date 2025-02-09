@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/intl.dart';
 import 'package:vroom_app/models/reservation.dart';
 import 'package:vroom_app/screens/automobileDetailsScreen.dart';
-import 'package:vroom_app/services/ApiConfig.dart';
 
 class ReservationCard extends StatelessWidget {
   final Reservation reservation;
@@ -49,7 +49,7 @@ class ReservationCard extends StatelessWidget {
                     bottomLeft: Radius.circular(12),
                   ),
                   child: Image.network(
-                    "${ApiConfig.baseUrl}${reservation.firstImage}",
+                    "${dotenv.env['BASE_URL']}${reservation.firstImage}",
                     height: 120,
                     width: 120,
                     fit: BoxFit.cover,
@@ -86,7 +86,7 @@ class ReservationCard extends StatelessWidget {
                           backgroundImage: reservation.user?.profilePicture !=
                                   null
                               ? NetworkImage(
-                                  "${ApiConfig.baseUrl}${reservation.user?.profilePicture}")
+                                  "${dotenv.env['BASE_URL']}${reservation.user?.profilePicture}")
                               : const AssetImage(
                                   'assets/default_profile.png',
                                 ) as ImageProvider,
@@ -150,8 +150,8 @@ class ReservationCard extends StatelessWidget {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   ),
-                  icon: const Icon(Icons.delete,
-                      color: Colors.black), // Trash can ikona
+                  icon: const Icon(Icons.cancel,
+                      color: Colors.red), // Trash can ikona
                   label: const Text(
                     "Odbi",
                     style: TextStyle(color: Colors.black), // Crni tekst
@@ -169,7 +169,7 @@ class ReservationCard extends StatelessWidget {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   ),
-                  icon: const Icon(Icons.delete, color: Colors.black),
+                  icon: const Icon(Icons.delete, color: Colors.red),
                   label: const Text(
                     "Obriši",
                     style: TextStyle(color: Colors.black),
