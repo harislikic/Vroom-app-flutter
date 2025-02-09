@@ -43,7 +43,6 @@ class AutomobileAdService {
       ...queryParams,
     });
 
-    print('url:::: ${uri}');
     final response = await http.get(uri);
 
     if (response.statusCode == 200) {
@@ -132,6 +131,8 @@ class AutomobileAdService {
     final uri =
         Uri.parse('${dotenv.env['BASE_URL']}/AutomobileAd/user-ads/$userId')
             .replace(queryParameters: queryParams);
+
+            print("GOLASI USERA:: ${uri}");
 
     try {
       final response = await http.get(uri);

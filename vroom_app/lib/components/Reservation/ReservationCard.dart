@@ -105,7 +105,7 @@ class ReservationCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      "Želi da napravi rezervaciju dana ${DateFormat('dd.MM.yyyy').format(DateTime.parse(reservation.reservationDate))}.",
+                      "Želi da napravi rezervaciju dana ${DateFormat('dd.MM.yyyy HH:mm').format(DateTime.parse(reservation.reservationDate))}.",
                       style: const TextStyle(
                         fontSize: 14,
                         color: Colors.black,

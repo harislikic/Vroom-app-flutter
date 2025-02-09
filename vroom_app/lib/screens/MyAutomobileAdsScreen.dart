@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:vroom_app/components/LoginButton.dart';
 import 'package:vroom_app/components/shared/ToastUtils.dart';
@@ -110,10 +109,12 @@ class _MyAutomobileAdsScreenState extends State<MyAutomobileAdsScreen>
   }
 
   void _onTabSelected(String tab) {
-    setState(() {
-      _selectedTab = tab;
+    if (_selectedTab != tab) {
+      setState(() {
+        _selectedTab = tab;
+      });
       _pagingController.refresh();
-    });
+    }
   }
 
   @override
