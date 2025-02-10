@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:vroom_app/models/city.dart';
+import 'package:vroom_app/screens/RegisterScreen.dart';
 
 class RegistrationForm extends StatefulWidget {
   // Forma
@@ -14,10 +15,8 @@ class RegistrationForm extends StatefulWidget {
   final TextEditingController emailController;
   final TextEditingController phoneNumberController;
   final TextEditingController adressController;
-  final TextEditingController genderController;
   final TextEditingController passwordController;
   final TextEditingController passwordConfController;
-
   // Datum
   final DateTime? selectedDate;
   final VoidCallback onPickDate;
@@ -43,6 +42,9 @@ class RegistrationForm extends StatefulWidget {
   // Dodato: Callback za uklanjanje slike
   final VoidCallback? onRemoveImage;
 
+  final Gender? selectedGender;
+  final ValueChanged<Gender?> onGenderChanged;
+
   const RegistrationForm({
     Key? key,
     required this.formKey,
@@ -52,7 +54,6 @@ class RegistrationForm extends StatefulWidget {
     required this.emailController,
     required this.phoneNumberController,
     required this.adressController,
-    required this.genderController,
     required this.passwordController,
     required this.passwordConfController,
     required this.selectedDate,
@@ -67,7 +68,9 @@ class RegistrationForm extends StatefulWidget {
     this.validateEmail,
     this.validatePhone,
     this.validatePassword,
-    this.onRemoveImage, // Dodato: Callback za uklanjanje slike
+    this.onRemoveImage,
+    required this.selectedGender,
+    required this.onGenderChanged,
   }) : super(key: key);
 
   @override
@@ -117,18 +120,80 @@ class _RegistrationFormState extends State<RegistrationForm> {
           // Telefon
           TextFormField(
             controller: widget.phoneNumberController,
-            decoration: const InputDecoration(labelText: "Telefon"),
+            decoration: const InputDecoration(
+              labelText: "Telefon",
+              prefixText: '+387 ', // Ovde ubaci prefiks
+            ),
+            keyboardType: TextInputType.phone,
             validator: widget.validatePhone,
           ),
           // Adresa
           TextFormField(
             controller: widget.adressController,
             decoration: const InputDecoration(labelText: "Adresa"),
+            validator: (val) =>
+                val == null || val.isEmpty ? "Polje obavezno" : null,
           ),
           // Spol
-          TextFormField(
-            controller: widget.genderController,
-            decoration: const InputDecoration(labelText: "Spol (M/F)"),
+          FormField<Gender>(
+            builder: (field) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  FormField<Gender>(
+                    validator: (value) {
+                      // Ako korisnik nije izabrao pol, vrati grešku
+                      if (value == null) {
+                        return 'Polje obavezno';
+                      }
+                      return null;
+                    },
+                    builder: (field) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Radio<Gender>(
+                                value: Gender.male,
+                                groupValue: widget.selectedGender,
+                                onChanged: (val) {
+                                  field.didChange(val);
+                                  widget.onGenderChanged(val);
+                                },
+                              ),
+                              const Text('Muški (M)'),
+                              SizedBox(width: 20),
+                              Radio<Gender>(
+                                value: Gender.female,
+                                groupValue: widget.selectedGender,
+                                onChanged: (val) {
+                                  field.didChange(val);
+                                  widget.onGenderChanged(val);
+                                },
+                              ),
+                              const Text('Ženski (Z)'),
+                            ],
+                          ),
+                          if (field.hasError)
+                            Text(
+                              field.errorText ?? '',
+                              style: const TextStyle(color: Colors.red),
+                            ),
+                        ],
+                      );
+                    },
+                  ),
+
+                  // Ako validator vrati grešku, prikaži ispod
+                  if (field.hasError)
+                    Text(
+                      field.errorText ?? '',
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                ],
+              );
+            },
           ),
 
           // Lozinka
@@ -174,19 +239,42 @@ class _RegistrationFormState extends State<RegistrationForm> {
           const SizedBox(height: 10),
 
           // Date of Birth
-          InkWell(
-            onTap: widget.onPickDate,
-            child: InputDecorator(
-              decoration: const InputDecoration(labelText: "Datum rođenja"),
-              child: Text(
-                widget.selectedDate == null
-                    ? 'Izaberite datum'
-                    : widget.selectedDate!
-                        .toLocal()
-                        .toString()
-                        .split(' ')[0],
-              ),
-            ),
+          FormField<DateTime>(
+            validator: (value) {
+              if (widget.selectedDate == null) {
+                return "Morate izabrati datum rođenja.";
+              }
+              return null;
+            },
+            builder: (FormFieldState<DateTime> field) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  InkWell(
+                    onTap: () {
+                      widget.onPickDate();
+                      field.didChange(widget
+                          .selectedDate); // Obavesti formu da je vrednost promenjena
+                    },
+                    child: InputDecorator(
+                      decoration: InputDecoration(
+                        labelText: "Datum rođenja",
+                        errorText:
+                            field.errorText, // Prikazuje grešku ako postoji
+                      ),
+                      child: Text(
+                        widget.selectedDate == null
+                            ? 'Izaberite datum'
+                            : widget.selectedDate!
+                                .toLocal()
+                                .toString()
+                                .split(' ')[0],
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
 
           // Grad (dropdown)
@@ -247,12 +335,12 @@ class _RegistrationFormState extends State<RegistrationForm> {
                           height: 120,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(8),
-                            boxShadow: [
+                            boxShadow: const [
                               BoxShadow(
                                 color: Colors.black26,
                                 blurRadius: 4,
                                 spreadRadius: 2,
-                                offset: const Offset(2, 2),
+                                offset: Offset(2, 2),
                               ),
                             ],
                           ),
@@ -315,6 +403,8 @@ class _RegistrationFormState extends State<RegistrationForm> {
               style: TextStyle(fontSize: 16, color: Colors.white),
             ),
           ),
+
+          const SizedBox(height: 30),
         ],
       ),
     );

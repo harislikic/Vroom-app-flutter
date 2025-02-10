@@ -8,6 +8,7 @@ import 'package:vroom_app/models/city.dart';
 import 'package:vroom_app/services/CityService.dart';
 import 'package:vroom_app/services/config.dart';
 
+enum Gender { male, female }
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
@@ -26,7 +27,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _adressController = TextEditingController();
-  final TextEditingController _genderController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _passwordConfController = TextEditingController();
 
@@ -37,6 +37,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   List<City> _cities = [];
   bool _isLoadingCities = false;
+  Gender? _selectedGender;
 
   @override
   void initState() {
@@ -84,8 +85,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (value == null || value.isEmpty) {
       return 'Broj telefona je obavezan.';
     }
+
+    // Napravi pun broj uključujući prefiks
+    final fullNumber = '+387$value'; // ili '+387${value.trim()}'
+
     final phoneRegex = RegExp(r'^\+387\d{8,9}$');
-    if (!phoneRegex.hasMatch(value)) {
+    if (!phoneRegex.hasMatch(fullNumber)) {
       return 'Format: +387XXXXXXXX (8-9 brojeva).';
     }
     return null;
@@ -169,6 +174,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return;
     }
 
+    String? genderValue;
+    if (_selectedGender == Gender.male) {
+      genderValue = 'M';
+    } else if (_selectedGender == Gender.female) {
+      genderValue = 'Z';
+    } else {
+      Fluttertoast.showToast(
+        msg: 'Morate izabrati pol (M ili Z).',
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+      );
+      return;
+    }
+
     try {
       final url = Uri.parse('$baseUrl/User');
       final request = http.MultipartRequest('POST', url);
@@ -179,9 +198,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
       request.fields['firstName'] = _firstNameController.text;
       request.fields['lastName'] = _lastNameController.text;
       request.fields['email'] = _emailController.text;
-      request.fields['phoneNumber'] = _phoneNumberController.text;
-      request.fields['adress'] = _adressController.text;
-      request.fields['gender'] = _genderController.text;
+      final finalPhone = '+387${_phoneNumberController.text}';
+      request.fields['phoneNumber'] = finalPhone;
+        request.fields['adress'] = _adressController.text;
+      request.fields['gender'] = genderValue;
       request.fields['password'] = _passwordController.text;
       request.fields['passwordConfirmation'] = _passwordConfController.text;
       request.fields['isAdmin'] = _isAdmin.toString();
@@ -272,7 +292,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           emailController: _emailController,
           phoneNumberController: _phoneNumberController,
           adressController: _adressController,
-          genderController: _genderController,
+          //  genderController: _genderController,
           passwordController: _passwordController,
           passwordConfController: _passwordConfController,
           selectedDate: _selectedDate,
@@ -293,6 +313,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
           validatePassword: _validatePassword,
           onRemoveImage:
               _removePickedImage, // Implementiraj callback za uklanjanje slike
+          selectedGender: _selectedGender,
+          onGenderChanged: (newGender) {
+            setState(() {
+              _selectedGender = newGender;
+            });
+          },
         ),
       ),
     );
