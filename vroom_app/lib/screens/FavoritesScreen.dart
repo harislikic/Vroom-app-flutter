@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:vroom_app/components/FavoritesAutomobileCard.dart'; 
+import 'package:vroom_app/components/FavoritesAutomobileCard.dart';
 import 'package:vroom_app/components/LoginButton.dart';
-import 'package:vroom_app/models/favoritesAutomobiles.dart'; 
+import 'package:vroom_app/models/favoritesAutomobiles.dart';
 import 'package:vroom_app/services/FavoritesService.dart';
 import 'package:vroom_app/services/AuthService.dart';
 
-
-import 'package:vroom_app/main.dart' show routeObserver; 
+import 'package:vroom_app/main.dart' show routeObserver;
 
 class FavoritesScreen extends StatefulWidget {
   const FavoritesScreen({Key? key}) : super(key: key);
@@ -56,7 +55,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> with RouteAware {
   void _removeFavorite(int favoriteId) async {
     final userId = await AuthService.getUserId();
     await _favoritesService.removeFavorite(userId!, favoriteId);
-    _refreshFavorites(); 
+    _refreshFavorites();
   }
 
   @override
@@ -77,14 +76,18 @@ class _FavoritesScreenState extends State<FavoritesScreen> with RouteAware {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text(
-                    "Morate se prijaviti da biste videli svoje Favorite oglase.",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black54,
+                  const Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: 24.0),
+                    child: Text(
+                      "Morate se prijaviti da biste videli svoje Favorite oglase.",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black54,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 16),
                   LoginButton(

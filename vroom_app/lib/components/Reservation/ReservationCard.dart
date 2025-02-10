@@ -165,7 +165,7 @@ class ReservationCard extends StatelessWidget {
                 ElevatedButton.icon(
                   onPressed: onDelete,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey.shade300,
+                    backgroundColor: Colors.white,
                     padding:
                         const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   ),

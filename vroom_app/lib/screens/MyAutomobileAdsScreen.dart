@@ -37,10 +37,11 @@ class _MyAutomobileAdsScreenState extends State<MyAutomobileAdsScreen>
     final userId = await AuthService.getUserId();
     return userId != null; // Check if user ID exists
   }
+
   bool _isFetchingPage = false;
 
   Future<void> _fetchPage(int pageKey) async {
-    if (_isFetchingPage) return; 
+    if (_isFetchingPage) return;
 
     _isFetchingPage = true;
     final userId = await AuthService.getUserId();
@@ -149,14 +150,18 @@ class _MyAutomobileAdsScreenState extends State<MyAutomobileAdsScreen>
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
-                    "Morate se prijaviti da biste vidjeli svoje oglase.",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black54,
+                  const Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: 24.0), // Dodaje padding levo i desno
+                    child: Text(
+                      "Morate se prijaviti da biste vidjeli svoje oglase.",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black54,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 16),
                   LoginButton(
