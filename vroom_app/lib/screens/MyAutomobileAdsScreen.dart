@@ -37,16 +37,21 @@ class _MyAutomobileAdsScreenState extends State<MyAutomobileAdsScreen>
     final userId = await AuthService.getUserId();
     return userId != null; // Check if user ID exists
   }
+  bool _isFetchingPage = false;
 
   Future<void> _fetchPage(int pageKey) async {
+    if (_isFetchingPage) return; 
+
+    _isFetchingPage = true;
     final userId = await AuthService.getUserId();
     try {
       final myAutomobileAds = await _automobileAdService.fetchUserAutomobiles(
-          userId: userId.toString(),
-          page: pageKey,
-          pageSize: _pageSize,
-          status: _selectedTab == 'highlighted' ? null : _selectedTab,
-          IsHighlighted: _selectedTab == 'highlighted');
+        userId: userId.toString(),
+        page: pageKey,
+        pageSize: _pageSize,
+        status: _selectedTab == 'highlighted' ? null : _selectedTab,
+        IsHighlighted: _selectedTab == 'highlighted',
+      );
 
       final isLastPage = myAutomobileAds.length < _pageSize;
       if (isLastPage) {
@@ -58,6 +63,8 @@ class _MyAutomobileAdsScreenState extends State<MyAutomobileAdsScreen>
     } catch (error) {
       print("Fetch Page Error: $error");
       _pagingController.error = error;
+    } finally {
+      _isFetchingPage = false;
     }
   }
 
@@ -112,6 +119,7 @@ class _MyAutomobileAdsScreenState extends State<MyAutomobileAdsScreen>
     if (_selectedTab != tab) {
       setState(() {
         _selectedTab = tab;
+        _pagingController.itemList = [];
       });
       _pagingController.refresh();
     }

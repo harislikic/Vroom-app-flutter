@@ -27,7 +27,7 @@ class _EditAutomobileScreenState extends State<EditAutomobileScreen> {
       []; // Nova lista za praćenje uklonjene opreme
   final List<XFile> _newImages = [];
   bool _isFormChanged = false;
-
+  
   late TextEditingController _titleController;
   late TextEditingController _descriptionController;
   late TextEditingController _priceController;
@@ -283,8 +283,10 @@ class _EditAutomobileScreenState extends State<EditAutomobileScreen> {
               TextFormField(
                 controller: _mileageController,
                 decoration: const InputDecoration(labelText: 'Kilometraža'),
-                onChanged: (value) =>
-                    _trackChanges('mileage', int.tryParse(value) ?? 0),
+                onChanged: (value) {
+                  final intValue = double.tryParse(value)?.toInt() ?? 0;
+                  _trackChanges('milage', intValue);
+                },
                 validator: (value) =>
                     value?.isEmpty ?? true ? 'Unesite kilometražu' : null,
                 keyboardType: TextInputType.number,
