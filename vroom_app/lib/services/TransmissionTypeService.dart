@@ -1,13 +1,13 @@
 import 'dart:convert';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:vroom_app/models/transmissionType.dart';
+import 'package:vroom_app/services/config.dart';
 
 class TransmissionTypeService {
   Future<List<TransmissionType>> fetchTransmissionTypes({int page = 0, int pageSize = 25}) async {
-    final String baseUrl = '${dotenv.env['BASE_URL']}/TransmissionType';
+    final String url = '$baseUrl/TransmissionType';
 
-    final Uri uri = Uri.parse(baseUrl).replace(queryParameters: {
+    final Uri uri = Uri.parse(url).replace(queryParameters: {
       'Page': page.toString(),
       'PageSize': pageSize.toString(),
     });

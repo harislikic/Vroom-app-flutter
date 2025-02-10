@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/intl.dart';
 import 'package:vroom_app/models/reservation.dart';
 import 'package:vroom_app/screens/automobileDetailsScreen.dart';
+import 'package:vroom_app/services/config.dart';
 
 class ReservationCard extends StatelessWidget {
   final Reservation reservation;
@@ -49,7 +49,7 @@ class ReservationCard extends StatelessWidget {
                     bottomLeft: Radius.circular(12),
                   ),
                   child: Image.network(
-                    "${dotenv.env['BASE_URL']}${reservation.firstImage}",
+                    "$baseUrl${reservation.firstImage}",
                     height: 120,
                     width: 120,
                     fit: BoxFit.cover,
@@ -86,7 +86,7 @@ class ReservationCard extends StatelessWidget {
                           backgroundImage: reservation.user?.profilePicture !=
                                   null
                               ? NetworkImage(
-                                  "${dotenv.env['BASE_URL']}${reservation.user?.profilePicture}")
+                                  "$baseUrl${reservation.user?.profilePicture}")
                               : const AssetImage(
                                   'assets/default_profile.png',
                                 ) as ImageProvider,

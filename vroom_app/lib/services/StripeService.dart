@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:http/http.dart' as http;
+import 'package:vroom_app/services/config.dart';
 
 class StripeService {
   // final String backendUrl = ApiConfig.baseUrl;
@@ -134,7 +135,7 @@ class StripeService {
     try {
       final response = await http.post(
         Uri.parse(
-            '${dotenv.env['BASE_URL']}/AutomobileAd/api/highlight-ad?id=$automobileAdId'),
+            '$baseUrl/AutomobileAd/api/highlight-ad?id=$automobileAdId'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'highlightDays': highlightDays,

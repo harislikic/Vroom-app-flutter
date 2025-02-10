@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:vroom_app/models/reservation.dart';
+import 'package:vroom_app/services/config.dart';
 
 class ReservationCalendarView extends StatelessWidget {
   final Map<String, List<Reservation>> reservationsByDate;
@@ -103,7 +103,7 @@ class ReservationCalendarView extends StatelessWidget {
                     radius: 8,
                     backgroundImage: user?.profilePicture != null
                         ? NetworkImage(
-                            '${dotenv.env['BASE_URL']}${user?.profilePicture!}')
+                            '$baseUrl${user?.profilePicture!}')
                         : null,
                     child: user?.profilePicture == null
                         ? const Icon(Icons.person, size: 8)

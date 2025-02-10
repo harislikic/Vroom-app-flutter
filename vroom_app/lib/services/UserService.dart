@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:vroom_app/services/AuthService.dart';
+import 'package:vroom_app/services/config.dart';
 
 class UserService {
   static Future<Map<String, dynamic>?> getUserProfile() async {
@@ -13,7 +13,7 @@ class UserService {
 
       final headers = await AuthService.getAuthHeaders();
       final response = await http.get(
-        Uri.parse('${dotenv.env['BASE_URL']}/User/$userId'),
+        Uri.parse('$baseUrl/User/$userId'),
         headers: headers,
       );
 
@@ -41,7 +41,7 @@ class UserService {
 
       var request = http.MultipartRequest(
         'PATCH',
-        Uri.parse('${dotenv.env['BASE_URL']}/User/$userId'),
+        Uri.parse('$baseUrl/User/$userId'),
       )..headers.addAll(headers);
       userData.forEach((key, value) {
         if (value != null && value.toString().isNotEmpty) {

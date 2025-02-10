@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:vroom_app/services/config.dart';
 import '../../models/image.dart';
 
 class CarImageCarousel extends StatefulWidget {
@@ -40,7 +40,7 @@ class _CarImageCarouselState extends State<CarImageCarousel> {
                       ClipRRect(
                         //borderRadius: BorderRadius.circular(15), // Zaobljeni kutovi
                         child: Image.network(
-                          '${dotenv.env['BASE_URL']}${image.imageUrl}',
+                          '$baseUrl${image.imageUrl}',
                           fit: BoxFit.cover,
                           width: double.infinity,
                         ),
@@ -145,7 +145,7 @@ class _CarImageCarouselState extends State<CarImageCarousel> {
                       final image = widget.images[index];
                       return InteractiveViewer(
                         child: Image.network(
-                          '${dotenv.env['BASE_URL']}${image.imageUrl}',
+                          '$baseUrl${image.imageUrl}',
                           fit: BoxFit.contain,
                           width: double.infinity,
                           height: double.infinity,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/intl.dart';
+import 'package:vroom_app/services/config.dart';
 import '../models/automobileAd.dart';
 import '../screens/automobileDetailsScreen.dart';
 
@@ -38,7 +38,7 @@ class AnotherCarsFromUserCard extends StatelessWidget {
               children: [
                 if (automobileAd.images.isNotEmpty)
                   Image.network(
-                    '${dotenv.env['BASE_URL']}${automobileAd.images.first.imageUrl}',
+                    '$baseUrl${automobileAd.images.first.imageUrl}',
                     height: 140,
                     width: double.infinity,
                     fit: BoxFit.cover,

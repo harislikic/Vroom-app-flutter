@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:vroom_app/models/reservation.dart';
 import 'package:http/http.dart' as http;
 import 'package:vroom_app/services/AuthService.dart';
+import 'package:vroom_app/services/config.dart';
 
 class ReservationService {
   Future<List<Reservation>> getReservationsByAutomobileId({
@@ -17,7 +17,7 @@ class ReservationService {
     };
 
     final uri =
-        Uri.parse('${dotenv.env['BASE_URL']}/Reservation/automobile/$automobileAdId')
+        Uri.parse('$baseUrl/Reservation/automobile/$automobileAdId')
             .replace(queryParameters: queryParams);
 
     final response = await http.get(uri);
@@ -42,7 +42,7 @@ class ReservationService {
     required int userId,
     required int automobileAdId,
   }) async {
-    final String url = '${dotenv.env['BASE_URL']}/Reservation';
+    final String url = '$baseUrl/Reservation';
     final headers = await AuthService.getAuthHeaders();
     headers['Content-Type'] = 'application/json';
 
@@ -70,7 +70,7 @@ class ReservationService {
   Future<void> deleteReservation({
     required int reservationId,
   }) async {
-    final String url = '${dotenv.env['BASE_URL']}/Reservation/$reservationId';
+    final String url = '$baseUrl/Reservation/$reservationId';
     final headers = await AuthService.getAuthHeaders();
 
     final response = await http.delete(
@@ -99,7 +99,7 @@ class ReservationService {
     };
 
     final uri =
-        Uri.parse('${dotenv.env['BASE_URL']}/Reservation/user/$userId/reservations')
+        Uri.parse('$baseUrl/Reservation/user/$userId/reservations')
             .replace(
       queryParameters: queryParams,
     );
@@ -128,7 +128,7 @@ class ReservationService {
     required int reservationId,
   }) async {
     final String url =
-        '${dotenv.env['BASE_URL']}/Reservation/approve/$reservationId';
+        '$baseUrl/Reservation/approve/$reservationId';
     final headers = await AuthService.getAuthHeaders();
 
     final response = await http.post(
@@ -147,7 +147,7 @@ class ReservationService {
   Future<void> rejectReservation({
     required int reservationId,
   }) async {
-    final String url = '${dotenv.env['BASE_URL']}/Reservation/reject/$reservationId';
+    final String url = '$baseUrl/Reservation/reject/$reservationId';
     final headers = await AuthService.getAuthHeaders();
 
     final response = await http.post(

@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:vroom_app/models/favoritesAutomobiles.dart';
 import 'package:vroom_app/services/AuthService.dart';
+import 'package:vroom_app/services/config.dart';
 
 class FavoritesService {
   Future<List<FavoritesAutomobiles>> fetchFavorites(
@@ -11,7 +11,7 @@ class FavoritesService {
 
     final response = await http.get(
       Uri.parse(
-          '${dotenv.env['BASE_URL']}/Favorite/$userId?page=$page&pageSize=$pageSize'),
+          '$baseUrl/Favorite/$userId?page=$page&pageSize=$pageSize'),
     );
     
     if (response.statusCode == 200) {
@@ -34,7 +34,7 @@ class FavoritesService {
   Future<void> addFavorite(int userId, int automobileId) async {
     final response = await http.post(
       Uri.parse(
-          '${dotenv.env['BASE_URL']}/Favorite?userId=$userId&automobilId=$automobileId'),
+          '$baseUrl/Favorite?userId=$userId&automobilId=$automobileId'),
     );
 
     if (response.statusCode != 200) {
@@ -46,7 +46,7 @@ class FavoritesService {
   Future<void> removeFavorite(int userId, int automobileId) async {
     final response = await http.delete(
       Uri.parse(
-          '${dotenv.env['BASE_URL']}/Favorite?userId=$userId&automobilId=$automobileId'),
+          '$baseUrl/Favorite?userId=$userId&automobilId=$automobileId'),
     );
 
     if (response.statusCode != 200) {
@@ -56,7 +56,7 @@ class FavoritesService {
 
   Future<bool> isFavorite(int userId, int automobileId) async {
     final response = await http.get(
-      Uri.parse('${dotenv.env['BASE_URL']}/Favorite/$userId?page=1&pageSize=100'),
+      Uri.parse('$baseUrl/Favorite/$userId?page=1&pageSize=100'),
     );
 
     if (response.statusCode == 200) {

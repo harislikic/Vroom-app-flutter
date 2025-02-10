@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:vroom_app/screens/OwnerScreen.dart';
+import 'package:vroom_app/services/config.dart';
 import 'package:vroom_app/utils/helpers.dart';
 import '../../models/automobileAd.dart';
 
@@ -82,7 +82,7 @@ class _CarOwnerInfoCardState extends State<CarOwnerInfoCard>
                       child: CircleAvatar(
                         radius: 30,
                         backgroundImage: NetworkImage(
-                          '${dotenv.env['BASE_URL']}${widget.automobileAd.user?.profilePicture}',
+                          '$baseUrl${widget.automobileAd.user?.profilePicture}',
                         ), // User's profile picture
                         backgroundColor: Colors.grey.shade300,
                       ),

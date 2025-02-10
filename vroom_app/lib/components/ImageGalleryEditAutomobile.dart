@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:vroom_app/services/config.dart';
 
 class ImageGalleryEditAutomobile extends StatelessWidget {
   final List<dynamic> existingImages;
@@ -32,7 +32,7 @@ class ImageGalleryEditAutomobile extends StatelessWidget {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: Image.network(
-                    '${dotenv.env['BASE_URL']}${image.imageUrl}',
+                    '$baseUrl${image.imageUrl}',
                     width: 80,
                     height: 80,
                     fit: BoxFit.cover,

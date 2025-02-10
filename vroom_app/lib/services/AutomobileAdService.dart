@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:vroom_app/services/AuthService.dart';
+import 'package:vroom_app/services/config.dart';
 import '../models/automobileAd.dart';
 
 class AutomobileAdService {
@@ -37,7 +37,7 @@ class AutomobileAdService {
       if (cityId.isNotEmpty) 'CityId': cityId,
     };
 
-    final uri = Uri.parse('${dotenv.env['BASE_URL']}/AutomobileAd')
+    final uri = Uri.parse('$baseUrl/AutomobileAd')
         .replace(queryParameters: {
       'Status': 'Active',
       ...queryParams,
@@ -61,7 +61,7 @@ class AutomobileAdService {
 
   Future<AutomobileAd> getAutomobileById(int id) async {
     final response =
-        await http.get(Uri.parse('${dotenv.env['BASE_URL']}/AutomobileAd/$id'));
+        await http.get(Uri.parse('$baseUrl/AutomobileAd/$id'));
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
@@ -79,7 +79,7 @@ class AutomobileAdService {
 
       // Create MultipartRequest
       var request = http.MultipartRequest(
-          'POST', Uri.parse('${dotenv.env['BASE_URL']}/AutomobileAd'))
+          'POST', Uri.parse('$baseUrl/AutomobileAd'))
         ..headers.addAll(authHeaders);
 
       // Adding fields to the multipart request
@@ -129,7 +129,7 @@ class AutomobileAdService {
     }
 
     final uri =
-        Uri.parse('${dotenv.env['BASE_URL']}/AutomobileAd/user-ads/$userId')
+        Uri.parse('$baseUrl/AutomobileAd/user-ads/$userId')
             .replace(queryParameters: queryParams);
 
             print("GOLASI USERA:: ${uri}");
@@ -161,7 +161,7 @@ class AutomobileAdService {
     authHeaders['accept'] = 'text/plain';
 
     final response = await http.delete(
-      Uri.parse('${dotenv.env['BASE_URL']}/AutomobileAd/$automobileId'),
+      Uri.parse('$baseUrl/AutomobileAd/$automobileId'),
       headers: authHeaders,
     );
 
@@ -172,7 +172,7 @@ class AutomobileAdService {
 
   Future<void> markAsDone(int automobileId) async {
     final uri = Uri.parse(
-        '${dotenv.env['BASE_URL']}/AutomobileAd/mark-as-done/$automobileId');
+        '$baseUrl/AutomobileAd/mark-as-done/$automobileId');
     final headers = {'accept': '*/*'};
 
     final response = await http.put(uri, headers: headers);
@@ -188,7 +188,7 @@ class AutomobileAdService {
     }
 
     final uri =
-        Uri.parse('${dotenv.env['BASE_URL']}/AutomobileAd/$userId/recommend');
+        Uri.parse('$baseUrl/AutomobileAd/$userId/recommend');
 
     try {
       final response = await http.get(uri);
@@ -253,7 +253,7 @@ class AutomobileAdService {
       }
 
       final uri =
-          Uri.parse('${dotenv.env['BASE_URL']}/AutomobileAd/$automobileId');
+          Uri.parse('$baseUrl/AutomobileAd/$automobileId');
 
       var request = http.MultipartRequest('PATCH', uri);
 
@@ -303,7 +303,7 @@ class AutomobileAdService {
     try {
       // Napravite odgovarajući URL za ažuriranje opreme
       final uri = Uri.parse(
-          '${dotenv.env['BASE_URL']}/api/AutomobileAdEquipment/update-automobile');
+          '$baseUrl/api/AutomobileAdEquipment/update-automobile');
 
       // Kreirajte telo zahteva u JSON formatu
       final body = json.encode({
@@ -338,7 +338,7 @@ class AutomobileAdService {
       int automobileAdId, List<int> equipmentIds) async {
     try {
       final uri = Uri.parse(
-          '${dotenv.env['BASE_URL']}/api/AutomobileAdEquipment/$automobileAdId');
+          '$baseUrl/api/AutomobileAdEquipment/$automobileAdId');
       final headers = {
         'Content-Type': 'application/json',
         'accept': '*/*',
@@ -370,7 +370,7 @@ class AutomobileAdService {
   Future<bool> deleteAutomobileImages(List<int> imageIds) async {
     try {
       final uri =
-          Uri.parse('${dotenv.env['BASE_URL']}/AutomobileImages/delete-images');
+          Uri.parse('$baseUrl/AutomobileImages/delete-images');
       final headers = {
         'Content-Type': 'application/json',
         'accept': '*/*',
