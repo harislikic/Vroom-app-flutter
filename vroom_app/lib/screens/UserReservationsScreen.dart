@@ -49,9 +49,7 @@ class _UserReservationsScreenState extends State<UserReservationsScreen> {
 
   Future<void> _fetchReservations() async {
     if (userId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Morate biti prijavljeni.")),
-      );
+      ToastUtils.showToast(message: "Morate biti prijavljeni.");
       return;
     }
 
@@ -72,9 +70,8 @@ class _UserReservationsScreenState extends State<UserReservationsScreen> {
         hasMoreData = fetchedReservations.length == 25;
       });
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Greška pri dohvaćanju rezervacija: $e')),
-      );
+        ToastUtils.showErrorToast(message: "Greška pri dohvaćanju rezervacija: $e");
+
     } finally {
       setState(() {
         isLoading = false;
@@ -108,9 +105,7 @@ class _UserReservationsScreenState extends State<UserReservationsScreen> {
         });
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Greška pri dohvaćanju više rezervacija: $e')),
-      );
+       ToastUtils.showErrorToast(message: "Greška pri dohvaćanju rezervacija: $e");
     } finally {
       setState(() {
         isFetchingMore = false;
@@ -173,7 +168,7 @@ class _UserReservationsScreenState extends State<UserReservationsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Moje rezervacije"),
+        title: const Text("Rezervacije za mene"),
         backgroundColor: Colors.teal.shade800,
         iconTheme: const IconThemeData(
           color: Colors.blueAccent,

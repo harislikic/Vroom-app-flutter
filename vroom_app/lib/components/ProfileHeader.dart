@@ -4,14 +4,16 @@ class ProfileHeader extends StatelessWidget {
   final String? profileImageUrl;
   final VoidCallback onEdit;
   final VoidCallback onLogout;
-  final VoidCallback onReservations;
+  final VoidCallback onReservationsForMe;
+  final VoidCallback onMyReservations;
 
   const ProfileHeader({
     Key? key,
     required this.profileImageUrl,
     required this.onEdit,
     required this.onLogout,
-    required this.onReservations,
+    required this.onReservationsForMe,
+    required this.onMyReservations,
   }) : super(key: key);
 
   @override
@@ -21,7 +23,7 @@ class ProfileHeader extends StatelessWidget {
         // Background container sa gradientom
         Container(
           width: double.infinity,
-          height: 240,
+          height: 300,
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [Colors.teal.shade800, Colors.teal.shade300],
@@ -55,6 +57,7 @@ class ProfileHeader extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8),
+              // Uredi profil dugme
               ElevatedButton(
                 onPressed: onEdit,
                 style: ElevatedButton.styleFrom(
@@ -79,15 +82,14 @@ class ProfileHeader extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8),
-              // Dugme za "Pogledaj rezervacije"
               ElevatedButton.icon(
-                onPressed: onReservations,
+                onPressed: onReservationsForMe,
                 icon: const Icon(
-                  Icons.event,
+                  Icons.event_available,
                   color: Colors.white,
                 ),
                 label: const Text(
-                  "Pogledaj rezervacije",
+                  "Rezervacije za mene",
                   style: TextStyle(color: Colors.white),
                 ),
                 style: ElevatedButton.styleFrom(
@@ -99,6 +101,28 @@ class ProfileHeader extends StatelessWidget {
                   ),
                 ),
               ),
+              const SizedBox(height: 8),
+              // Dugme za "Moje rezervacije"
+              ElevatedButton.icon(
+                onPressed: onMyReservations,
+                icon: const Icon(
+                  Icons.event_note,
+                  color: Colors.white,
+                ),
+                label: const Text(
+                  "Moje rezervacije",
+                  style: TextStyle(color: Colors.white),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.teal.shade700,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
             ],
           ),
         ),

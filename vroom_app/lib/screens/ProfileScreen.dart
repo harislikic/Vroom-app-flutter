@@ -4,6 +4,7 @@ import 'package:vroom_app/components/ProfileCard.dart';
 import 'package:vroom_app/components/ProfileHeader.dart';
 import 'package:vroom_app/components/shared/ToastUtils.dart';
 import 'package:vroom_app/screens/EditProfileScreen.dart';
+import 'package:vroom_app/screens/MyReservationsScreen.dart';
 import 'package:vroom_app/screens/UserReservationsScreen.dart';
 import 'package:vroom_app/services/AuthService.dart';
 import 'package:vroom_app/services/UserService.dart';
@@ -118,11 +119,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   await AuthService.logout();
                   Navigator.pushReplacementNamed(context, '/login');
                 },
-                onReservations: () {
+                onReservationsForMe: () { 
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => const UserReservationsScreen()),
+                  );
+                },
+                 onMyReservations: () { 
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const MyReservationsScreen()),
                   );
                 },
               ),

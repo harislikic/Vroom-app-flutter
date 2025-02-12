@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:vroom_app/models/myReservation.dart';
 import 'package:vroom_app/models/reservation.dart';
 import 'package:http/http.dart' as http;
 import 'package:vroom_app/services/AuthService.dart';
@@ -16,9 +17,8 @@ class ReservationService {
       'pageSize': pageSize.toString(),
     };
 
-    final uri =
-        Uri.parse('$baseUrl/Reservation/automobile/$automobileAdId')
-            .replace(queryParameters: queryParams);
+    final uri = Uri.parse('$baseUrl/Reservation/automobile/$automobileAdId')
+        .replace(queryParameters: queryParams);
 
     final response = await http.get(uri);
 
@@ -99,8 +99,7 @@ class ReservationService {
     };
 
     final uri =
-        Uri.parse('$baseUrl/Reservation/user/$userId/reservations')
-            .replace(
+        Uri.parse('$baseUrl/Reservation/user/$userId/reservations').replace(
       queryParameters: queryParams,
     );
 
@@ -124,11 +123,45 @@ class ReservationService {
     }
   }
 
+  Future<List<MyReservation>> getMyReservations({
+    required int userId,
+    int page = 0,
+    int pageSize = 25,
+  }) async {
+    final queryParams = {
+      'page': page.toString(),
+      'pageSize': pageSize.toString(),
+    };
+
+    final uri = Uri.parse('$baseUrl/user-reservations/$userId').replace(
+      queryParameters: queryParams,
+    );
+
+
+    final headers = await AuthService.getAuthHeaders();
+
+    final response = await http.get(uri, headers: headers);
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+
+      if (data['data'] is List) {
+        return (data['data'] as List)
+            .map((json) => MyReservation.fromJson(json))
+            .toList();
+      } else {
+        return [];
+      }
+    } else {
+      throw Exception(
+          'Failed to load my reservations. Status Code: ${response.statusCode}');
+    }
+  }
+
   Future<void> approveReservation({
     required int reservationId,
   }) async {
-    final String url =
-        '$baseUrl/Reservation/approve/$reservationId';
+    final String url = '$baseUrl/Reservation/approve/$reservationId';
     final headers = await AuthService.getAuthHeaders();
 
     final response = await http.post(
@@ -166,5 +199,4 @@ class ReservationService {
           'Failed to reject reservation. Status Code: ${response.statusCode}');
     }
   }
-
 }
